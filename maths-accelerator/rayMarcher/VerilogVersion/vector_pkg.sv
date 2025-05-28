@@ -37,6 +37,7 @@ package vector_pkg;
     make_vec3.y = y;
     make_vec3.z = z;
   endfunction
+  
   // vector addition
   function automatic vec3 vec3_add(vec3 a, vec3 b);
     vec3_add.x = a.x + b.x;
