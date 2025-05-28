@@ -157,15 +157,33 @@ float raymarch(vec3 ro, vec3 rd) {
     return rayDist;
 }
 
-vec3 getSurfaceNormal(vec3 p) 
-{ //See blog explanation here: https://iquilezles.org/articles/normalsSDF/
-    const float eps = 0.001; 
-    const vec2 h = vec2(eps,0);
-    vec3 normalVector(scene(p.addition(h.xyy())) - scene(p.subtraction(h.xyy())), 
-                    scene(p.addition(h.yxy())) - scene(p.subtraction(h.yxy())),
-                    scene(p.addition(h.yyx())) - scene(p.subtraction(h.yyx())));
+// vec3 getSurfaceNormal(vec3 p) //Normal technique (6 evaluations)
+// { //See blog explanation here: https://iquilezles.org/articles/normalsSDF/
+//     const float eps = 0.001; 
+//     const vec2 h = vec2(eps,0);
+//     vec3 normalVector(scene(p.addition(h.xyy())) - scene(p.subtraction(h.xyy())), 
+//                     scene(p.addition(h.yxy())) - scene(p.subtraction(h.yxy())),
+//                     scene(p.addition(h.yyx())) - scene(p.subtraction(h.yyx())));
+//     return normalVector.normalise();
+// }
+
+vec3 getSurfaceNormal(vec3 p) //Tetrahedral technique (4 evaluations towards each point in a tetrahedron) slight bias
+{
+    const float eps = 0.0001f;
+    vec3 h1(1, -1, -1);
+    vec3 h2(-1, -1, 1);
+    vec3 h3(-1, 1, -1);
+    vec3 h4(1, 1, 1);
+
+    vec3 a = h1.scalarMul(scene(p.addition(h1.scalarMul(eps))));
+    vec3 b = h2.scalarMul(scene(p.addition(h2.scalarMul(eps))));
+    vec3 c = h3.scalarMul(scene(p.addition(h3.scalarMul(eps))));
+    vec3 d = h4.scalarMul(scene(p.addition(h4.scalarMul(eps))));
+
+    vec3 normalVector = a.addition(b).addition(c).addition(d);
     return normalVector.normalise();
 }
+
 
 float dot(vec3 v1, vec3 v2){
     return v1.x * v2.x + v1.y * v2.y + v1.z * v2.z;
