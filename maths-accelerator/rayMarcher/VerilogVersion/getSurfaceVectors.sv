@@ -5,6 +5,7 @@ module getSurfaceVectors #(
     parameter fp eps = 32'h00004189; //eps = 0.001;
 )(
     input clk,
+    input rst,
     input vec3 p,
     input vec3 lightPos,
     output vec3 surfaceNormal,
@@ -64,12 +65,14 @@ module getSurfaceVectors #(
 
     inv_sqrt normalVec_getSqrt(
             .clk(clk),
+            .rst(rst),
             .x(normalVec_mag_sq),
             .inv_sqrt(inv_normalVec_mag)
     );
 
     inv_sqrt lightVec_getSqrt(
             .clk(clk),
+            .rst(rst),
             .x(lightVec_mag_sq),
             .inv_sqrt(inv_lightVec_mag)
     );

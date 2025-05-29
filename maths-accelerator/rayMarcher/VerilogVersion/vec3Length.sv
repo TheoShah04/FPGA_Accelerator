@@ -6,6 +6,7 @@ module vec3Length #(
     parameter int FRAC_BITS = 24    // Fractional bits
 )(
     input logic clk,
+    input logic rst,
     input vec3 vec,
     output logic [`WORD_WIDTH-1:0] length
 );
@@ -18,6 +19,7 @@ module vec3Length #(
 
     inv_sqrt getSqrt (
         .clk(clk),
+        .rst(rst),
         .x(sum_squares),
         .inv_sqrt(inv_sqrt_out)
     );
