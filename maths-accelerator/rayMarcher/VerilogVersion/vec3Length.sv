@@ -1,4 +1,4 @@
-5import vector_pkg::*;
+import vector_pkg::*;
 `include "common_defs.sv"
 
 module vec3Length #(
@@ -8,10 +8,13 @@ module vec3Length #(
     input logic clk,
     input logic rst,
     input vec3 vec,
-    output logic [`WORD_WIDTH-1:0] length
+    input logic valid_in,
+    output logic [`WORD_WIDTH-1:0] length,
+    output logic valid_out
 );
 
     logic [N-1:0] sum_squares, inv_sqrt_out; //Sum_squares 32 bits?
+    logic module_finished;
 
     always_comb begin
         sum_squares = vec3_dot(vec, vec);
@@ -19,13 +22,14 @@ module vec3Length #(
 
     inv_sqrt getSqrt (
         .clk(clk),
+        .valid_in(valid_in),
         .rst(rst),
         .x(sum_squares),
-        .inv_sqrt(inv_sqrt_out)
+        .inv_sqrt(inv_sqrt_out),
+        .valid_out(module_finished)
     );
 
-    always_comb begin
-        length = fp_mul(sum_squares, inv_sqrt_out);
-    end
+    assign length = fp_mul(sum_squares, inv_sqrt_out);
+    assign valid_out = module_finished;
 
 endmodule
