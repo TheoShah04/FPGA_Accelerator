@@ -19,10 +19,6 @@ package vector_pkg;
     return a+b;
   endfunction
 
-  function automatic fp fp_add3(input fp a, input fp b, input fp c);
-    return a+b+c;
-  endfunction
-
   function automatic fp fp_mul(input fp a, input fp b);
     logic signed [63:0] result;
     result = $signed(a) * $signed(b);
