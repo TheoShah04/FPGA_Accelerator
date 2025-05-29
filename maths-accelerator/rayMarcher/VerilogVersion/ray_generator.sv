@@ -37,14 +37,22 @@ fp pixel_x_fp, pixel_y_fp;
 // 1: normalizing pixel coords to [-1,1]
 always_ff @(posedge clk) begin
     if (!rst) begin
+        ndc_x <= '0;
+        ndc_y <= '0;
         valid_r1 <= 0;
     end else begin
-        pixel_x_fp <= screen_x << `FRAC_BITS;
-        pixel_y_fp <= screen_y << `FRAC_BITS;
-
-        ndc_x <= fp_mul(pixel_x_fp, INV_HALF_WIDTH) - FP_ONE;
-        ndc_y <= FP_ONE - fp_mul(pixel_y_fp, INV_HALF_HEIGHT);
         valid_r1 <= coords_valid;
+        if(coords_valid) begin
+            logic [63:0] temp_x, temp_y;
+
+            // [0,2] range
+            temp_x = screen_x * SCALE_X;
+            temp_y = screen_y * SCALE_Y;
+
+            // [-1,1] range
+            ndc_x <= temp_x[31:0] - FP_ONE;
+            ndc_y <= FP_ONE - temp_y[31:0];
+        end
     end
 end
 
@@ -52,29 +60,28 @@ end
 
 always_ff @(posedge clk) begin
     if(!rst) begin
-        camera_x <= 0;
-        camera_y <= 0;
+        camera_right <= 0;
+        camera_up <= 0;
         valid_r2 <= 0;
     end else begin
-        camera_x <= fp_mul(fp_mul(ndc_x, ASPECT_RATIO_640_480), tan_half_fov);
-        camera_y <= fp_mul(ndc_y, tan_half_fov);
+        camera_right <= fp_mul(fp_mul(ndc_x, ASPECT_RATIO_640_480), tan_half_fov);
+        camera_up <= fp_mul(ndc_y, tan_half_fov);
         valid_r2 <= valid_r1;
     end
 end
 
 // ray direction
-
-vec3 ray_unscaled;
-fp ray_len_sq, ray_inv_len;
-
 always_ff @(posedge clk) begin
     if(!rst) begin
         ray <= `{default:0};
         valid_r3 <= 0;
     end else begin
-        ray.x <= camera_x;
-        ray.y <= camera_y;
+        ray.x <= camera_right;
+        ray.y <= camera_up;
         ray.z <= -FP_ONE;
+        ray_mag_sq <= fp_mul(camera_right, camera_right) +
+                      fp_mul(camera_up, camera_up) +
+                      fp_mul(FP_ONE, FP_ONE);
         valid_r3 <= valid_r2;
     end
 end
@@ -98,26 +105,33 @@ always_comb begin
                         fp_mul(ray.y, camera_up.z) + 
                         fp_mul(ray.z, camera_forward.z);
     end
-end
-
-// normalization
-always_comb begin
     ray_mag_sq = vec3_dot(world_ray, world_ray);
 end
 
 inv_sqrt invsq_ray(
     .clk(clk),
     .rst(rst),
+    .valid_in(valid_r3),
     .x(ray_mag_sq),
+    .valid_out(invsq_valid_out)
     .inv_sqrt(inv_ray_mag)
 );
 
-always_comb begin
-    ray_direction.x = fp_mul(world_ray.x, inv_ray_mag);
-    ray_direction.y = fp_mul(world_ray.y, inv_ray_mag);
-    ray_direction.z = fp_mul(world_ray.z, inv_ray_mag);
-    valid = valid_r3;
+//normalize ray direction
+always_ff @(posedge clk) begin
+    if(!rst) begin
+        ray_direction <= `{default: `0};
+        valid <= 0;
+    end else begin
+        if(invsq_valid_out) begin
+            ray_direction.x <= fp_mul(world_ray.x, inv_ray_mag);
+            ray_direction.y <= fp_mul(world_ray.y, inv_ray_mag);
+            ray_direction.z <= fp_mul(world_ray.z, inv_ray_mag);
+            valid <= 1;
+        end else begin
+            valid <= 0;
+        end
+    end
 end
-    
 
 endmodule
