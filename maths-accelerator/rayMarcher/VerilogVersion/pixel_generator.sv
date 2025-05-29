@@ -181,6 +181,7 @@ wire [31:0] lightx = regfile[0];
 wire [31:0] lighty = regfile[1];
 wire [31:0] lightz = regfile[2];
 
+
 wire ready;
 
 vec3 light_pos = make_vec3(lightx, lighty, lightz); //default: 32'h0093EA1C 
@@ -231,7 +232,7 @@ ray_unit rayunit (
     vec3 normal_vec;
     vec3 light_vec;
 
-getSurfaceNormal surface_normal(
+getSurfaceVectors surface_calc(
 
 );
 
