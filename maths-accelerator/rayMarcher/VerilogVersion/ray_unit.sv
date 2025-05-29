@@ -41,7 +41,7 @@ rayMarcher ray_marcher(
     .rayDir(ray_direction),
     .distance(distance),
     .point(surface_point),
-    .done (valid)
+    .valid_out (valid)
 );
 
 endmodule
