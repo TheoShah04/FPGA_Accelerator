@@ -26,6 +26,8 @@ localparam fp FP_TWO = 32'h02000000;
 localparam fp INV_HALF_WIDTH = 32'h00051EB8;  // 1/320
 localparam fp INV_HALF_HEIGHT = 32'h006AAAAB; // 1/240 precomputed recipricol for now
 localparam fp ASPECT_RATIO_640_480 = 32'h01555555;
+localparam fp SCALE_X = 32'h00051EB8;   // 2/SCREEN_WIDTH
+localparam fp SCALE_Y = 32'h006AAAAB;   // 2/SCREEN_HEIGHT
 
 // camera looking down z axis
 localparam vec3 CAMERA_RIGHT = make_vec3(32'h01000000, 32'h00000000, 32'h00000000); // (1,0,0)
@@ -77,36 +79,18 @@ always_ff @(posedge clk) begin
         ray <= 0;
         valid_r3 <= 0;
     end else begin
-        ray.x <= CAMERA_RIGHT;
-        ray.y <= CAMERA_UP;
-        ray.z <= -FP_ONE;
-        // ray_mag_sq <= fp_mul(CAMERA_RIGHT, CAMERA_RIGHT) +
-        //               fp_mul(CAMERA_UP, CAMERA_UP) +
-        //               fp_mul(FP_ONE, FP_ONE);
-        ray_mag_sq <= 32'h03000000;
+        ray.x <= fp_mul(ndc_x, CAMERA_RIGHT.x) + fp_mul(ndc_y, CAMERA_UP.x) + fp_mul(-FP_ONE, camera_forward.x);
+        ray.y <= fp_mul(ndc_x, CAMERA_RIGHT.y) + fp_mul(ndc_y, CAMERA_UP.y) + fp_mul(-FP_ONE, camera_forward.y);
+        ray.z <= fp_mul(ndc_x, CAMERA_RIGHT.z) + fp_mul(ndc_y, CAMERA_UP.z) + fp_mul(-FP_ONE, camera_forward.z);
         valid_r3 <= valid_r1;
     end
 end
 
-// have to transform to world space if we are rotating camera (can skip if camera fixed)
+// have to transform to world space if we are rotating camera
+// skip for now since we fix camera pos
 vec3 world_ray;
-always @(*) begin
-    if(camera_forward.x == 0 && camera_forward == 0 && camera_forward.z == -FP_ONE) begin
-        world_ray = ray;
-    end
-    else begin
-        world_ray.x <= fp_mul(ray.x, CAMERA_RIGHT.x) + 
-                          fp_mul(ray.y, CAMERA_UP.x) + 
-                          fp_mul(ray.z, camera_forward.x);
-                          
-        world_ray.y <= fp_mul(ray.x, CAMERA_RIGHT.y) + 
-                        fp_mul(ray.y, CAMERA_UP.y) + 
-                        fp_mul(ray.z, camera_forward.y);
-                        
-        world_ray.z <= fp_mul(ray.x, CAMERA_RIGHT.z) + 
-                        fp_mul(ray.y, CAMERA_UP.z) + 
-                        fp_mul(ray.z, camera_forward.z);
-    end
+always_comb begin
+    world_ray = ray;  
     ray_mag_sq = vec3_dot(world_ray, world_ray);
 end
 
