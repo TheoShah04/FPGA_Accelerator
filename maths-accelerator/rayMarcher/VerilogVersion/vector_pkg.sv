@@ -11,7 +11,6 @@ package vector_pkg;
 
   // parameterize your element width
   parameter DATA_WIDTH = 32;
-  typedef logic signed [DATA_WIDTH-1:0] num;
 
   // normal fixed point arithmetic
   function automatic fp fp_mul(input fp a, input fp b);
@@ -23,7 +22,7 @@ package vector_pkg;
 
   // vector arithmetic
 
-  function automatic vec3 make_vec3(input num x, input num y, input num z);
+  function automatic vec3 make_vec3(input fp x, input fp y, input fp z);
     make_vec3.x = x;
     make_vec3.y = y;
     make_vec3.z = z;
