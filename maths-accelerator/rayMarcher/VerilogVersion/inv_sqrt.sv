@@ -97,9 +97,9 @@ module inv_sqrt#(
                 logic [2*WIDTH-1:0] mult_res1, mult_res2;
 
                 mult_res1 = norm_x * 32'h00466666;
-                linear = mult_result1[WIDTH-1:0];
+                linear = mult_res1[WIDTH-1:0];
                 mult_res2 = (INV_SQRT_HALF - linear) * scale;
-                inv_sqrt <= mult_result2[WIDTH-1:0];
+                inv_sqrt <= mult_res2[WIDTH-1:0];
             end
         end        
     end
