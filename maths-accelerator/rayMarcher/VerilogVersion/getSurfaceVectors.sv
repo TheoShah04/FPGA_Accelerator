@@ -5,10 +5,12 @@ module getSurfaceVectors #(
     parameter fp eps = 32'h00004189; //eps = 0.001;
 )(
     input clk,
+    input logic valid_in,
     input vec3 p,
     input vec3 lightPos,
     output vec3 surfaceNormal,
-    output vec3 surfaceLightVector
+    output vec3 surfaceLightVector,
+    output logic valid_out
 );
     fp FP_ONE = 32'h01000000; //1.0f;
     fp FP_NEG_ONE = 32'hff000000; //-1.0f;
@@ -25,29 +27,38 @@ module getSurfaceVectors #(
     fp dS_xyy, dS_yxy, dS_yyx, dS_xxx;
     vec3 a, b, c, d, normalVec, lightVec;
     fp normalVec_mag_sq, inv_normalVec_mag, lightVec_mag_sq, inv_lightVec_mag;
+    logic module_finished_xyy, module_finished_yxy, module_finished_yyx, module_finished_xxx;
 
     sceneQuery getClosestDist_xyy (
         .clk(clk),
         .pos(pos_xyy),
-        .closestDistance(dS_xyy)
+        .closestDistance(dS_xyy),
+        .valid_in(valid_in),
+        .valid_out(module_finished_xyy)
     );
 
     sceneQuery getClosestDist_yxy (
         .clk(clk),
         .pos(pos_yxy),
-        .closestDistance(dS_yxy)
+        .closestDistance(dS_yxy),
+        .valid_in(valid_in),
+        .valid_out(module_finished_yxy)
     );
 
     sceneQuery getClosestDist_yyx (
         .clk(clk),
         .pos(pos_yyx),
-        .closestDistance(dS_yyx)
+        .closestDistance(dS_yyx),
+        .valid_in(valid_in),
+        .valid_out(module_finished_yyx)
     );
 
     sceneQuery getClosestDist_xxx (
         .clk(clk),
         .pos(pos_xxx),
-        .closestDistance(dS_xxx)
+        .closestDistance(dS_xxx),
+        .valid_in(valid_in),
+        .valid_out(module_finished_xxx)
     );
 
     always_comb begin

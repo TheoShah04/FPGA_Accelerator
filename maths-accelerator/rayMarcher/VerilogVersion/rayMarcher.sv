@@ -12,20 +12,23 @@ module rayMarcher #(
     input vec3 rayDir,
     output fp distance,
     output vec3 point, //the 3d coordinate of the end of the ray
-    output logic done //signal to send to higher module that raymarch process is done
+    output logic valid_out //signal to send to higher module that raymarch process is done
 );
 
     fp rayDist, dS;
     vec3 stepVec, position;
     int stepCounter;
+    logic module_finished;
 
     typedef enum {IDLE, STEP, DONE} state;
     state currentState, nextState;
 
     sceneQuery getClosestDist (
         .clk(clk),
+        .valid_in(valid_in),
         .pos(position),
-        .closestDistance(dS)
+        .closestDistance(dS),
+        .valid_out(module_finished)
     );
 
     initial begin
@@ -33,33 +36,27 @@ module rayMarcher #(
     end
 
     always_ff @(posedge clk or posedge start) begin //asynchronous
-        if (start) begin
-            currentState <= IDLE;
-            rayDist <= '0;
+        currentState <= nextState;
+        if (currentState == IDLE) begin
+            rayDist <= 0;
             stepCounter <= 0;
-            done <= 1'b0;
+            valid_out <= 1'b0;
             point <= '0;
-        end else begin
-            currentState <= nextState;
-            if (currentState == IDLE) begin
-                rayDist <= 0;
-                stepCounter <= 0;
-                done <= 1'b0;
-                point <= '0;
-            end
-            else if (currentState == STEP) begin
+        end
+        else if (currentState == STEP) begin
+            if(module_finished) begin
                 rayDist <= fp_add(rayDist, dS); 
                 stepCount <= stepCount + 1;
             end
-            else if (currentState == DONE) begin
-                done <= 1'b1;
-            end
+        end
+        else if (currentState == DONE) begin
+            valid_out <= 1'b1;
         end
     end
 
      always_comb begin
         case (currentState)
-            IDLE: nextState = STEP;
+            IDLE: nextState = start ? STEP : IDLE;
             STEP: begin
                 stepVec = vec3_scale(rayDir, rayDist);
                 position = vec3_add(rayOrigin, stepVec);
@@ -67,7 +64,7 @@ module rayMarcher #(
                     nextState = DONE;
                 else nextState = STEP;
             end
-            DONE: nextState = DONE;
+            DONE: nextState = IDLE;
         endcase
     end
 
