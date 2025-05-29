@@ -1,4 +1,4 @@
-import vector_pkg::*;
+`include "vector_pkg.svh";
 `include "common_defs.svh";
 
 module getSurfaceVectors #(
