@@ -1,5 +1,5 @@
 `timescale 1ns/1ps
-import vector_pkg::*;
+`include "vector_pkg.svh"
 `include "common_defs.svh"
 
 module tb_ray_generator;
@@ -7,7 +7,7 @@ module tb_ray_generator;
   // Clock & reset
   logic clk;
   logic rst;
-  forever #5 clk = ~clk;
+  always #5 clk = ~clk;
 
   // DUT inputs
   fp      screen_x;
@@ -31,7 +31,6 @@ module tb_ray_generator;
     .screen_y(screen_y),
     .coords_valid(coords_valid),
     .camera_forward(camera_forward),
-    .tan_half_fov(tan_half_fov),
     .ray_direction(ray_direction),
     .valid(valid)
   );
