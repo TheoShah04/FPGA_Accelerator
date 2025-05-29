@@ -1,4 +1,4 @@
-5import vector_pkg::*;
+import vector_pkg::*;
 `include "common_defs.sv"
 
 module vec3Length #(
@@ -6,6 +6,7 @@ module vec3Length #(
     parameter int FRAC_BITS = 24    // Fractional bits
 )(
     input logic clk,
+    input logic rst,
     input vec3 vec,
     input logic valid_in,
     output logic [`WORD_WIDTH-1:0] length,
@@ -22,6 +23,7 @@ module vec3Length #(
     inv_sqrt getSqrt (
         .clk(clk),
         .valid_in(valid_in),
+        .rst(rst),
         .x(sum_squares),
         .inv_sqrt(inv_sqrt_out),
         .valid_out(module_finished)
