@@ -21,6 +21,18 @@ function automatic fp fp_mul(input fp a, input fp b);
   return result[31:0];
 endfunction
 
+function automatic fp_neg(input fp a);
+  return -a;
+endfunction
+
+function automatic fp_max(input fp a, input fp b);
+  return ($signed(a) > $signed(b)) ? a : b;
+endfunction
+
+function automatic fp fp_abs(input fp a);
+  return $signed(a) < $signed(0) ? fp_neg(a) : a;
+endfunction
+
 // vector arithmetic
 
 function automatic vec3 make_vec3(input fp x, input fp y, input fp z);
@@ -67,6 +79,15 @@ function automatic vec3 vec3_scale(vec3 a, logic signed [DATA_WIDTH-1:0] s);
   vec3_scale.z = (a.z * s) >>> `FRAC_BITS;
 endfunction
 
-  
+function automatic fp fast_cd(input vec3 point, input fp half_size);
+  fp x_abs, y_abs, z_abs, xy_max, xyz_max;
+  x_abs = fp_abs(point.x);
+  y_abs = fp_abs(point.y);
+  z_abs = fp_abs(point.z);
+  //finding face of cube which point closest to
+  xy_max = fp_max(x_abs, y_abs);
+  xyz_max = fp_max(xy_max, z_abs);
+  return xyz_max - half_size;
+endfunction
 
 `endif
