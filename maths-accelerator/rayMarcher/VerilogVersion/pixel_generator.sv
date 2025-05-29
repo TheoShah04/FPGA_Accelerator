@@ -233,7 +233,11 @@ ray_unit rayunit (
     vec3 light_vec;
 
 getSurfaceVectors surface_calc(
-
+    .clk(out_stream_aclk),
+    .p(surface_point),
+    .lightPos(light_pos),
+    .surfaceNormal(normal_vec),
+    .surfaceLightVector(light_vec)
 );
 
     //Shading I/O ports
@@ -241,8 +245,8 @@ getSurfaceVectors surface_calc(
     logic [`COLOR_WIDTH - 1:0] pixel_color;
 
 shading shading_m(
-    .normal_vec(),
-    .light_vec(),
+    .normal_vec(normal_vec),
+    .light_vec(light_vec),
     .shade_out(pixel_color)
 
 );
