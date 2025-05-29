@@ -212,7 +212,7 @@ end
     logic rst_gen = 1'b1;
     fp distance;
     vec3 surface_point;
-    logic rayunit_valid
+    logic rayunit_valid, surfaceVec_valid, shading_valid;
 
 ray_unit rayunit (
     .clk(out_stream_aclk),
@@ -234,10 +234,13 @@ ray_unit rayunit (
 
 getSurfaceVectors surface_calc(
     .clk(out_stream_aclk),
+    .rst(rst_gen),
+    .valid_in(rayunit_valid),
     .p(surface_point),
     .lightPos(light_pos),
     .surfaceNormal(normal_vec),
-    .surfaceLightVector(light_vec)
+    .surfaceLightVector(light_vec), 
+    .valid_out(surfaceVec_valid)
 );
 
     //Shading I/O ports
@@ -245,10 +248,11 @@ getSurfaceVectors surface_calc(
     logic [`COLOR_WIDTH - 1:0] pixel_color;
 
 shading shading_m(
+    .valid_in(surfaceVec_valid),
     .normal_vec(normal_vec),
     .light_vec(light_vec),
     .shade_out(pixel_color)
-
+    .valid_out(shading_valid) //Connect this to pixel packer
 );
 
 logic [`COLOR_WIDTH-1:0] r, g, b;
