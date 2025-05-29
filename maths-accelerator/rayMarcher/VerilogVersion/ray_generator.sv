@@ -1,4 +1,4 @@
-import vector_pkg::*;
+`include "vector_pkg.sv";
 `include "common_defs.svh";
 
 module ray_generator #(
@@ -80,9 +80,10 @@ always_ff @(posedge clk) begin
         ray.x <= CAMERA_RIGHT;
         ray.y <= CAMERA_UP;
         ray.z <= -FP_ONE;
-        ray_mag_sq <= fp_mul(CAMERA_RIGHT, CAMERA_RIGHT) +
-                      fp_mul(CAMERA_UP, CAMERA_UP) +
-                      fp_mul(FP_ONE, FP_ONE);
+        // ray_mag_sq <= fp_mul(CAMERA_RIGHT, CAMERA_RIGHT) +
+        //               fp_mul(CAMERA_UP, CAMERA_UP) +
+        //               fp_mul(FP_ONE, FP_ONE);
+        ray_mag_sq <= 32'h03000000;
         valid_r3 <= valid_r1;
     end
 end
