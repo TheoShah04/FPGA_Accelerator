@@ -1,17 +1,28 @@
 module tb_vec3Length;
-
+    //Parameters
     parameter N = 32;
     parameter FRAC = 24;
 
+    //DUT inputs
+    logic clk, rst;
     vec3 vec;
+    logic valid_in;
+
+    //DUT outputs
     logic [N-1:0] length;
+    logic valid_out;
+
 
     vec3Length #(
         .N(N),
         .FRAC(FRAC)
     ) uut (
+        .clk(clk),
+        .rst(rst),
         .vec(vec),
-        .length(length)
+        .valid_in(valid_in),
+        .length(length),
+        .valid_out(valid_out)
     );
 
     function logic [31:0] to_fixed(real val);
