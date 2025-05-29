@@ -29,19 +29,20 @@
 * Discussed week milestone and further optimisations
 
 ### 27/05/24
-* first point
-* second point
-* third point
+* Created core modules such as inv_sqrt.sv and the rayMarcher.sv
+* Established bram for the inv_sqrt module
 
 ### 28/05/24
-* first point
-* second point
-* third point
+* Created the sdf and sceneQuery modules
+* Integrated the ray_generator and rayMarcher into a ray unit
+* Utilised header files and packages to neaten code
+* Discussed how to implement a moving/rotating camera view
 
 ### 29/05/24
-* first point
-* second point
-* third point
+* Created the module to get surface normals and light direction vectors
+* Started writing testbench modules for each module and bugfixing
+* Intergrated all modules into the pixel generator, as well as including camera view transformations
+* Started to add pipelining stages to some modules 
 
 ### 30/05/24
 * first point
