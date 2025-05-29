@@ -1,7 +1,7 @@
 module tb_vec3Length;
 
     parameter N = 32;
-    parameter FRAC = 8;
+    parameter FRAC = 24;
 
     vec3 vec;
     logic [N-1:0] length;

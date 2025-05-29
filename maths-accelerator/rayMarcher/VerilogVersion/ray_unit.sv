@@ -1,4 +1,4 @@
-import vector_pkg::*;
+`include "vector_pkg.svh";
 `include "common_defs.svh";
 
 module ray_unit #(
@@ -41,7 +41,7 @@ rayMarcher ray_marcher(
     .rayDir(ray_direction),
     .distance(distance),
     .point(surface_point),
-    .done (valid)
+    .valid_out (valid)
 );
 
 endmodule
