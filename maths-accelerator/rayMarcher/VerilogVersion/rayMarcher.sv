@@ -11,7 +11,7 @@ module rayMarcher #(
     input vec3 rayOrigin,
     input vec3 rayDir,
     output fp distance,
-    output vec3 point,
+    output vec3 point, //the 3d coordinate of the end of the ray
     output logic done //signal to send to higher module that raymarch process is done
 );
 
