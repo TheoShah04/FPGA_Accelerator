@@ -1,7 +1,7 @@
 `ifndef VECTOR_PKG_SVH
 `define VECTOR_PKG_SVH
 
-`include "common_defs.svh";
+`include "common_defs.svh"
 
 typedef logic signed [`WORD_WIDTH-1:0] fp;
 typedef struct packed {
@@ -62,9 +62,9 @@ endfunction
 
 // scalar multiply
 function automatic vec3 vec3_scale(vec3 a, logic signed [DATA_WIDTH-1:0] s);
-  vec3_scale.x = (a.x * s) >>> FRAC_BITS; // if fixed-point you shift down by FRACT bits
-  vec3_scale.y = (a.y * s) >>> FRAC_BITS;
-  vec3_scale.z = (a.z * s) >>> FRAC_BITS;
+  vec3_scale.x = (a.x * s) >>> `FRAC_BITS; // if fixed-point you shift down by FRACT bits
+  vec3_scale.y = (a.y * s) >>> `FRAC_BITS;
+  vec3_scale.z = (a.z * s) >>> `FRAC_BITS;
 endfunction
 
   
