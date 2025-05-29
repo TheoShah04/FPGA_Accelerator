@@ -181,6 +181,7 @@ wire [31:0] lightx = regfile[0];
 wire [31:0] lighty = regfile[1];
 wire [31:0] lightz = regfile[2];
 
+
 wire ready;
 
 vec3 light_pos = make_vec3(lightx, lighty, lightz); //default: 32'h0093EA1C 
@@ -231,8 +232,12 @@ ray_unit rayunit (
     vec3 normal_vec;
     vec3 light_vec;
 
-getSurfaceNormal surface_normal(
-
+getSurfaceVectors surface_calc(
+    .clk(out_stream_aclk),
+    .p(surface_point),
+    .lightPos(light_pos),
+    .surfaceNormal(normal_vec),
+    .surfaceLightVector(light_vec)
 );
 
     //Shading I/O ports
@@ -240,8 +245,8 @@ getSurfaceNormal surface_normal(
     logic [`COLOR_WIDTH - 1:0] pixel_color;
 
 shading shading_m(
-    .normal_vec(),
-    .light_vec(),
+    .normal_vec(normal_vec),
+    .light_vec(light_vec),
     .shade_out(pixel_color)
 
 );

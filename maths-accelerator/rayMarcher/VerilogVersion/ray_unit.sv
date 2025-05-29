@@ -19,10 +19,8 @@ module ray_unit #(
     vec3 ray_direction, q_ray_direction;
 
 always_ff @ (posedge clk) begin
-
     q_raygen_valid <= raygen_valid;
     q_ray_direction <= ray_direction;
-
 end
 
 ray_generator ray_gen (

@@ -30,8 +30,6 @@ int main() {
     uint32_t* pixels = new uint32_t[width * height];
     uint32_t lastTime = SDL_GetTicks();
     //SETUP FINISHED
-    
-
 
     vec3 camera_pos(0, 0, -3);
     float fov = 90.0f; //This is the angle of the view cone (vertical FOV so from top to bottom of the pixel plane is 90 degrees)
@@ -57,6 +55,17 @@ int main() {
             10.0f,
             10.0f * cosf(uTime * 0.5f)
         ); //Rotating light position
+        
+
+        // float yaw = uTime * 0.5f; // Or control with user input
+        // float cosYaw = cosf(yaw);
+        // float sinYaw = sinf(yaw);
+
+        // vec3 camera_pos(
+        //     3.0f * sinf(yaw), // X
+        //     0.0f,             // Y
+        //     3.0f * cosf(yaw)  // Z
+        // );
 
         for (int y = 0; y < height; ++y) {
             for (int x = 0; x < width; ++x) { //Raster pattern
@@ -70,6 +79,13 @@ int main() {
 
                 vec3 ray_dir(px, py, 1); //This ray goes 1 unit forward in the camera's local +z direction. px and py point the ray in the correct direction
                 ray_dir = ray_dir.normalise(); //Normalise so that we can easily project it to certain distances
+                
+                // vec3 ray_dir_world(
+                //     ray_dir.x * cosYaw + ray_dir.z * sinYaw,
+                //     ray_dir.y,
+                //     -ray_dir.x * sinYaw + ray_dir.z * cosYaw
+                // );
+
 
                 float dist = raymarch(camera_pos, ray_dir); //Raymarch this certain ray 
                 vec3 p = camera_pos.addition(ray_dir.scalarMul(dist)); //p is the position of the ray after it is done ray marching. p = a + lambda * d 
