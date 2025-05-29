@@ -5,6 +5,7 @@ module inv_sqrt#(
     parameter WIDTH = 32,
 )(
     input logic clk,
+    input logic rst,
     input logic [WIDTH-1:0] x,
     output logic [WIDTH-1:0] inv_sqrt
 );
@@ -19,6 +20,12 @@ module inv_sqrt#(
     logic [3:0] exp_adj;
     
     always_ff @(posedge clk) begin
+        if(!rst) begin
+            x_reg <= `0;
+            norm_x <= `0;
+            exp_adj <= `0;
+            scale <= FP_ONE;
+        end else begin
         x_reg <= x;
 
         //casez synthesises to priority encoder
@@ -71,6 +78,7 @@ module inv_sqrt#(
             4'hF: scale <= 32'h0001680A; 
             default: scale <= 32'h01000000;
         endcase
+        end
     end
 
     // linear interpolation in [0.5, 2]

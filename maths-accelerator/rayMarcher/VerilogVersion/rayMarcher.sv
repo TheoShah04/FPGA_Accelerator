@@ -48,7 +48,7 @@ module rayMarcher #(
                 point <= '0;
             end
             else if (currentState == STEP) begin
-                rayDist <= fp_add(rayDist, dS); 
+                rayDist <= rayDist + dS; 
                 stepCount <= stepCount + 1;
             end
             else if (currentState == DONE) begin
