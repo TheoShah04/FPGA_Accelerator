@@ -7,10 +7,12 @@ module vec3Length #(
 )(
     input logic clk,
     input vec3 vec,
-    output logic [`WORD_WIDTH-1:0] length
+    output logic [`WORD_WIDTH-1:0] length,
+    output logic done
 );
 
     logic [N-1:0] sum_squares, inv_sqrt_out; //Sum_squares 32 bits?
+    logic module_finished;
 
     always_comb begin
         sum_squares = vec3_dot(vec, vec);
@@ -19,11 +21,18 @@ module vec3Length #(
     inv_sqrt getSqrt (
         .clk(clk),
         .x(sum_squares),
-        .inv_sqrt(inv_sqrt_out)
+        .inv_sqrt(inv_sqrt_out),
+        .done(module_finished)
     );
 
     always_comb begin
-        length = fp_mul(sum_squares, inv_sqrt_out);
+        if(module_finished) begin
+            length = fp_mul(sum_squares, inv_sqrt_out);
+            done = 1'b1;
+        end
+        else begin
+            done = 1'b0;
+        end
     end
 
 endmodule
