@@ -1,5 +1,5 @@
-`include "vector_pkg.sv";
-`include "common_defs.sv"
+`include "vector_pkg.svh";
+`include "common_defs.svh"
 
 module sceneQuery(
     input logic clk,

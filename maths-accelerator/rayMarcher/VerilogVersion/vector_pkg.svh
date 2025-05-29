@@ -1,5 +1,5 @@
-`ifndef VECTOR_PKG_SV
-`define VECTOR_PKG_SV
+`ifndef VECTOR_PKG_SVH
+`define VECTOR_PKG_SVH
 
 `include "common_defs.svh";
 

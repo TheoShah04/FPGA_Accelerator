@@ -1,5 +1,5 @@
 `include "common_defs.svh";
-`include "vector_pkg.sv";
+`include "vector_pkg.svh";
 
 module inv_sqrt#(
     parameter WIDTH = 32,

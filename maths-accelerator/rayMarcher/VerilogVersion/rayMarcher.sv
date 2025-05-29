@@ -1,4 +1,4 @@
-`include "vector_pkg.sv";
+`include "vector_pkg.svh";
 `include "common_defs.svh";
 
 module rayMarcher #(
