@@ -86,8 +86,17 @@ always_comb begin
         world_ray = ray;
     end
     else begin
-        // TODO:
-        // do transformation from local ray to world 
+        ray_world.x <= fp_mul(ray.x, camera_right.x) + 
+                          fp_mul(ray.y, camera_up.x) + 
+                          fp_mul(ray.z, camera_forward.x);
+                          
+        ray_world.y <= fp_mul(ray.x, camera_right.y) + 
+                        fp_mul(ray.y, camera_up.y) + 
+                        fp_mul(ray.z, camera_forward.y);
+                        
+        ray_world.z <= fp_mul(ray.x, camera_right.z) + 
+                        fp_mul(ray.y, camera_up.z) + 
+                        fp_mul(ray.z, camera_forward.z);
     end
 end
 
@@ -98,6 +107,7 @@ end
 
 inv_sqrt invsq_ray(
     .clk(clk),
+    .rst(rst),
     .x(ray_mag_sq),
     .inv_sqrt(inv_ray_mag)
 );

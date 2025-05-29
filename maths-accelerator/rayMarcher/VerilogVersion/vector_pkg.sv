@@ -11,14 +11,8 @@ package vector_pkg;
 
   // parameterize your element width
   parameter DATA_WIDTH = 32;
-  typedef logic signed [DATA_WIDTH-1:0] num;
 
   // normal fixed point arithmetic
-
-  function automatic fp fp_add(input fp a, input fp b);
-    return a+b;
-  endfunction
-
   function automatic fp fp_mul(input fp a, input fp b);
     logic signed [63:0] result;
     result = $signed(a) * $signed(b);
@@ -28,7 +22,7 @@ package vector_pkg;
 
   // vector arithmetic
 
-  function automatic vec3 make_vec3(input num x, input num y, input num z);
+  function automatic vec3 make_vec3(input fp x, input fp y, input fp z);
     make_vec3.x = x;
     make_vec3.y = y;
     make_vec3.z = z;
@@ -56,10 +50,7 @@ package vector_pkg;
   endfunction
 
   function automatic fp vec3_dot(input vec3 a, input vec3 b);
-    fp xr = fp_mul(a.x, b.x);
-    fp yr = fp_mul(a.y, b,y);
-    fp zr = fp_mul(a.z, b,z);
-    fp sum = fp_add(xr, fp_add(yr,zr));
+    return fp_mul(a.x, b.x) + fp_mul(a.y, b.y) + fp_mul(a.z, b.z);
   endfunction
 
   function automatic vec3 vec3_cross(input vec3 a, input vec3 b);
