@@ -1,4 +1,4 @@
-import vector_pkg::*;
+`include "vector_pkg.sv";
 `include "common_defs.svh";
 
 module ray_generator #(
@@ -12,7 +12,7 @@ module ray_generator #(
     input logic coords_valid,
 
     input vec3 camera_forward,
-    input fp tan_half_fov, // tan(fov / 2)
+    //input fp tan_half_fov, // tan(fov / 2)
     // should be taking aspect ratio as an input? Compute width/height (make division module)
     
     output vec3 ray_direction,
@@ -27,7 +27,10 @@ localparam fp INV_HALF_WIDTH = 32'h00051EB8;  // 1/320
 localparam fp INV_HALF_HEIGHT = 32'h006AAAAB; // 1/240 precomputed recipricol for now
 localparam fp ASPECT_RATIO_640_480 = 32'h01555555;
 
-vec3 camera_right, camera_up;
+// camera looking down z axis
+localparam vec3 CAMERA_RIGHT = '{x: 32'h01000000, y: 32'h00000000, z: 32'h00000000}; // (1,0,0)
+localparam vec3 CAMERA_UP    = '{x: 32'h00000000, y: 32'h01000000, z: 32'h00000000}; // (0,1,0)
+
 logic valid_r1, valid_r2, valid_r3;
 vec3 ray;
 fp ray_mag_sq, inv_ray_mag;
@@ -58,17 +61,15 @@ end
 
 // 2: FOV and aspect ratio to calculate camera up and camera right
 
-always_ff @(posedge clk) begin
-    if(!rst) begin
-        camera_right <= 0;
-        camera_up <= 0;
-        valid_r2 <= 0;
-    end else begin
-        camera_right <= fp_mul(fp_mul(ndc_x, ASPECT_RATIO_640_480), tan_half_fov);
-        camera_up <= fp_mul(ndc_y, tan_half_fov);
-        valid_r2 <= valid_r1;
-    end
-end
+// always_ff @(posedge clk) begin
+//     if(!rst) begin
+//         valid_r2 <= 0;
+//     end else begin
+//         CAMERA_RIGHT <= fp_mul(fp_mul(ndc_x, ASPECT_RATIO_640_480), tan_half_fov);
+//         camera_up <= fp_mul(ndc_y, tan_half_fov);
+//         valid_r2 <= valid_r1;
+//     end
+// end
 
 // ray direction
 always_ff @(posedge clk) begin
@@ -76,13 +77,14 @@ always_ff @(posedge clk) begin
         ray <= `{default:0};
         valid_r3 <= 0;
     end else begin
-        ray.x <= camera_right;
-        ray.y <= camera_up;
+        ray.x <= CAMERA_RIGHT;
+        ray.y <= CAMERA_UP;
         ray.z <= -FP_ONE;
-        ray_mag_sq <= fp_mul(camera_right, camera_right) +
-                      fp_mul(camera_up, camera_up) +
-                      fp_mul(FP_ONE, FP_ONE);
-        valid_r3 <= valid_r2;
+        // ray_mag_sq <= fp_mul(CAMERA_RIGHT, CAMERA_RIGHT) +
+        //               fp_mul(CAMERA_UP, CAMERA_UP) +
+        //               fp_mul(FP_ONE, FP_ONE);
+        ray_mag_sq <= 32'h03000000;
+        valid_r3 <= valid_r1;
     end
 end
 
@@ -93,16 +95,16 @@ always_comb begin
         world_ray = ray;
     end
     else begin
-        ray_world.x <= fp_mul(ray.x, camera_right.x) + 
-                          fp_mul(ray.y, camera_up.x) + 
+        ray_world.x <= fp_mul(ray.x, CAMERA_RIGHT.x) + 
+                          fp_mul(ray.y, CAMERA_UP.x) + 
                           fp_mul(ray.z, camera_forward.x);
                           
-        ray_world.y <= fp_mul(ray.x, camera_right.y) + 
-                        fp_mul(ray.y, camera_up.y) + 
+        ray_world.y <= fp_mul(ray.x, CAMERA_RIGHT.y) + 
+                        fp_mul(ray.y, CAMERA_UP.y) + 
                         fp_mul(ray.z, camera_forward.y);
                         
-        ray_world.z <= fp_mul(ray.x, camera_right.z) + 
-                        fp_mul(ray.y, camera_up.z) + 
+        ray_world.z <= fp_mul(ray.x, CAMERA_RIGHT.z) + 
+                        fp_mul(ray.y, CAMERA_UP.z) + 
                         fp_mul(ray.z, camera_forward.z);
     end
     ray_mag_sq = vec3_dot(world_ray, world_ray);
@@ -113,7 +115,7 @@ inv_sqrt invsq_ray(
     .rst(rst),
     .valid_in(valid_r3),
     .x(ray_mag_sq),
-    .valid_out(invsq_valid_out)
+    .valid_out(invsq_valid_out),
     .inv_sqrt(inv_ray_mag)
 );
 
