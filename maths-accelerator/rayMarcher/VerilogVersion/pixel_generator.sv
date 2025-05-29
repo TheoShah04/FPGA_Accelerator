@@ -232,7 +232,11 @@ ray_unit rayunit (
     vec3 light_vec;
 
 getSurfaceNormal surface_normal(
-
+    .clk(out_stream_aclk),
+    .p(surface_point),
+    .lightPos(light_pos),
+    .surfaceNormal(normal_vec),
+    .surfaceLightVector(light_vec)
 );
 
     //Shading I/O ports
@@ -240,8 +244,8 @@ getSurfaceNormal surface_normal(
     logic [`COLOR_WIDTH - 1:0] pixel_color;
 
 shading shading_m(
-    .normal_vec(),
-    .light_vec(),
+    .normal_vec(normal_vec),
+    .light_vec(light_vec),
     .shade_out(pixel_color)
 
 );
