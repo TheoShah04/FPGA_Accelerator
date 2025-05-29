@@ -1,9 +1,9 @@
-`include "vector_pkg.svh";
+`include "vector_pkg.svh"
 `include "common_defs.svh"
 
 module vec3Length #(
-    parameter int N = 32,     // Total bits
-    parameter int FRAC_BITS = 24    // Fractional bits
+    parameter int DATA_WIDTH = `DATA_WIDTH,     // Total bits
+    parameter int FRAC_BITS = `FRAC_BITS    // Fractional bits
 )(
     input logic clk,
     input logic rst,
@@ -13,7 +13,7 @@ module vec3Length #(
     output logic valid_out
 );
 
-    logic [N-1:0] sum_squares, inv_sqrt_out; //Sum_squares 32 bits?
+    logic [DATA_WIDTH-1:0] sum_squares, inv_sqrt_out; //Sum_squares 32 bits?
     logic module_finished;
 
     always_comb begin
