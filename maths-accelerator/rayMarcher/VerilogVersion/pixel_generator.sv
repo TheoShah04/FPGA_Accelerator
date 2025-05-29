@@ -1,4 +1,4 @@
-import vector_pkg::*;
+`include "vector_pkg.sv";
 `include "common_defs.svh";
 
 module pixel_generator(
