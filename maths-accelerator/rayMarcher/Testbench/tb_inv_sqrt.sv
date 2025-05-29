@@ -23,6 +23,12 @@ module tb_inv_sqrt;
     initial clk = 0;
     always #5 clk = ~clk;
 
+    //Simulation configuration
+    initial begin
+        $dumpfile("inv_sqrt_test.vcd");
+        $dumpvars(0,tb_inv_sqrt);
+    end
+
     // output terminall
     always_ff @(posedge clk) begin
         if (valid_out)

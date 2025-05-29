@@ -2,14 +2,14 @@
 `include "common_defs.svh"
 
 module vec3Length #(
-    parameter int DATA_WIDTH = `DATA_WIDTH,     // Total bits
+    parameter int DATA_WIDTH = `WORD_WIDTH,     // Total bits
     parameter int FRAC_BITS = `FRAC_BITS    // Fractional bits
 )(
     input logic clk,
     input logic rst,
     input vec3 vec,
     input logic valid_in,
-    output logic [`WORD_WIDTH-1:0] length,
+    output logic [DATA_WIDTH-1:0] length,
     output logic valid_out
 );
 
