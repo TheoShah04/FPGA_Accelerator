@@ -45,7 +45,7 @@
 * Started to add pipelining stages to some modules 
 
 ### 30/05/24
-* first point
+* Meeting with Ed Stott, where we dicussed
 * second point
 * third point
 
