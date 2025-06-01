@@ -45,9 +45,9 @@
 * Started to add pipelining stages to some modules 
 
 ### 30/05/24
-* Meeting with Ed Stott, where we dicussed
-* second point
-* third point
+* Meeting with Ed Stott, where we dicussed user interface, parallelism oppurtunities and object rotation
+* Continued working on creating testbenches and testing modules
+* Contiued work on the top level module
 
 ### 31/05/24
 * first point

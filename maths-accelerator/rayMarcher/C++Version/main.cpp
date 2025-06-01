@@ -50,10 +50,10 @@ int main() {
         uTime += deltaTime; //Timing stuff for the rotating light
 
         vec3 lightPosition(
-            10.0f * sinf(uTime * 0.5f),
+            10.0f * sinf(uTime * 1.0f),
             //8.0f + 2.0f * sinf(uTime * 0.3f), 
             10.0f,
-            10.0f * cosf(uTime * 0.5f)
+            10.0f * cosf(uTime * 1.0f)
         ); //Rotating light position
         
 
