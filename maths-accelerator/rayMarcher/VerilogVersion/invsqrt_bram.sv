@@ -16,7 +16,7 @@ module invsqrt_bram #(
     logic [DATA_WIDTH-1:0] lut_rom [0:(1<<ADDR_LENGTH)-1];
 
     initial begin
-     $readmemh("VerilogVersion/lut_init.mem", lut_rom);
+     $readmemh("lut_init.mem", lut_rom);
     end
 
     // then in your logic: creates a an additional one clock memory to read from the BRAM
