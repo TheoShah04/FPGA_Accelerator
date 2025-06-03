@@ -10,7 +10,16 @@ module tb_inv_sqrt;
     logic [WIDTH-1:0] inv_sqrt;
 
     
-    inv_sqrt #(.WIDTH(WIDTH)) dut (
+    // inv_sqrt #(.WIDTH(WIDTH)) dut (
+    //     .clk(clk),
+    //     .rst(rst),
+    //     .valid_in(valid_in),
+    //     .x(x),
+    //     .valid_out(valid_out),
+    //     .inv_sqrt(inv_sqrt)
+    // );
+
+    inv_sqrt_dos dut (
         .clk(clk),
         .rst(rst),
         .valid_in(valid_in),
@@ -30,7 +39,7 @@ module tb_inv_sqrt;
     end
 
     // output terminall
-    always_ff @(posedge clk) begin
+    always @(posedge clk) begin
         if (valid_out)
             $display("Time: %0t | Input x = %h | inv_sqrt = %h", $time, x, inv_sqrt);
     end
@@ -43,14 +52,14 @@ module tb_inv_sqrt;
         #20;
 
         rst = 1;
-        #10;
+        #15;
 
         // Test known input: 25 in Q8.24
         valid_in = 1;
         x = 32'h19000000;  // 25 * 2^24
         #10;
         valid_in = 0;
-        #20;
+        #40;
 
         // Random inputs
         repeat (5) begin
@@ -58,7 +67,7 @@ module tb_inv_sqrt;
             x = $random;
             #10;
             valid_in = 0;
-            #20;
+            #40;
         end
 
         $finish;
