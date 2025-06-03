@@ -48,7 +48,7 @@ module tb_inv_sqrt;
 
         // Test known input: 25 in Q8.24
         valid_in = 1;
-        x = 32'h19000000;  // 25 * 2^24
+        x = 32'h00031825;  // 25 * 2^24
         #10;
         valid_in = 0;
         #40;

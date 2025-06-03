@@ -2,7 +2,7 @@
 `include "common_defs.svh"
 `include "vector_pkg.svh"
 
-module inv_sqrt#(
+module inv_sqrt_dos#(
     parameter WIDTH = 32
 )(
     input logic clk,
