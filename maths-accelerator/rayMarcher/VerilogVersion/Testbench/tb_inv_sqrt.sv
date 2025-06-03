@@ -10,16 +10,7 @@ module tb_inv_sqrt;
     logic [WIDTH-1:0] inv_sqrt;
 
     
-    // inv_sqrt #(.WIDTH(WIDTH)) dut (
-    //     .clk(clk),
-    //     .rst(rst),
-    //     .valid_in(valid_in),
-    //     .x(x),
-    //     .valid_out(valid_out),
-    //     .inv_sqrt(inv_sqrt)
-    // );
-
-    inv_sqrt_dos dut (
+    inv_sqrt #(.WIDTH(WIDTH)) dut (
         .clk(clk),
         .rst(rst),
         .valid_in(valid_in),
@@ -27,6 +18,7 @@ module tb_inv_sqrt;
         .valid_out(valid_out),
         .inv_sqrt(inv_sqrt)
     );
+
 
     // Clk
     initial clk = 0;
