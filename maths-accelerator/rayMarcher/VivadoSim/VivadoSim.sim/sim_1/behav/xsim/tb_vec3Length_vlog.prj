@@ -1,0 +1,11 @@
+# compile verilog/system verilog design source files
+sv xil_defaultlib  --include "../../../../../VerilogVersion" \
+"../../../../../VerilogVersion/inv_sqrt.sv" \
+"../../../../../VerilogVersion/vec3Length.sv" \
+"../../../../../VerilogVersion/Testbench/tb_vec3Length.sv" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort
