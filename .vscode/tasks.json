@@ -1,0 +1,31 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Compile SystemVerilog",
+      "type": "shell",
+      "command": "iverilog",
+      "args": [
+        "-g2012",
+        "-o", "maths-accelerator/rayMarcher/VerilogVersion/RGB_out",
+        "maths-accelerator/rayMarcher/VerilogVersion/inv_sqrt.sv",
+        "maths-accelerator/rayMarcher/VerilogVersion/Testbench/tb_inv_sqrt.sv"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Run Simulation",
+      "type": "shell",
+      "command": "vvp",
+      "args": [
+        "inv_sqrt_out"
+      ],
+      "dependsOn": "Compile SystemVerilog",
+      "group": "test"
+    }
+  ]
+}
