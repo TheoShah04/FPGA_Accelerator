@@ -1,7 +1,7 @@
 `include "common_defs.svh"
 `include "vector_pkg.svh"
 
-module inv_sqrt#(
+module inv_sqrt_dos#(
     parameter WIDTH = 32
 )(
     input logic clk,
@@ -16,18 +16,16 @@ module inv_sqrt#(
     localparam [WIDTH-1:0] FP_ONE = 32'h01000000; 
     localparam [WIDTH-1:0] FP_FOUR = 32'h04000000;
 
-    // normalize to [1.0, 4.0]
+    // normalize to [0.5, 1.0]
     // ≈ 1.037259 - 0.148204*x
-    localparam [WIDTH-1:0] LINEAR_A = 32'h017772C5;    // New: 1.466595 Old: 1.037259
-    localparam [WIDTH-1:0] LINEAR_B = 32'h006B4568;   // New: 0.419028  Old: 0.148204
 
     logic [WIDTH-1:0] norm_x, scale;
     logic [3:0] exp_adj;
-    logic valid_stage1;
+    logic valid_stage1,valid_stage2;
 
     logic [WIDTH-1:0] norm_x_next, scale_next;
     logic [3:0] exp_adj_next;
-    logic [WIDTH-1:0] linear_approx;
+    logic [WIDTH-1:0] bram_approx;
     
     // normalize and scaling calculation
     always_comb begin
@@ -91,7 +89,7 @@ module inv_sqrt#(
     always_ff @(posedge clk or negedge rst) begin
         if (!rst) begin
             norm_x <= '0;
-            exp_adj <= '0;
+            exp_adj <= '0;  
             scale <= FP_ONE;
             valid_stage1 <= 1'b0;
         end else begin
@@ -104,21 +102,28 @@ module inv_sqrt#(
         end
     end
 
-    assign  linear_approx = LINEAR_A - fp_mul(norm_x, LINEAR_B);  // 1.037259 - 0.148204*norm_x
+    invsqrt_bram inv_sqrt_mem(
+        .clk(clk),
+        .in_addr(norm_x[23:12]),
+        .en(valid_stage1),
+        .out_sqrtinv(bram_approx),
+        .valid_out(valid_stage2)
+    );
 
-    // stage 2 optimal linear approximation and scaling
+        // stage 2 optimal linear approximation and scaling
     always_ff @(posedge clk or negedge rst) begin
         if (!rst) begin
             inv_sqrt <= '0;
             valid_out <= 1'b0;
         end else begin
-            valid_out <= valid_stage1;
-            if (valid_stage1) begin
-                // scaling : result = linear_approx * scale
-                inv_sqrt <= fp_mul(linear_approx, scale);
+            valid_out <= valid_stage2;
+            if (valid_stage2) begin
+                // scaling : result = bram_approx * scale
+                inv_sqrt <= fp_mul(bram_approx, scale) << 6;
             end
         end
     end
 
 
 endmodule
+
