@@ -73,10 +73,10 @@ function automatic vec3 vec3_cross(input vec3 a, input vec3 b);
 endfunction
 
 // scalar multiply
-function automatic vec3 vec3_scale(vec3 a, logic signed [DATA_WIDTH-1:0] s);
-  vec3_scale.x = (a.x * s) >>> `FRAC_BITS; // if fixed-point you shift down by FRACT bits
-  vec3_scale.y = (a.y * s) >>> `FRAC_BITS;
-  vec3_scale.z = (a.z * s) >>> `FRAC_BITS;
+function automatic vec3 vec3_scale(vec3 a, fp s);
+  vec3_scale.x = fp_mul(a.x, s); // if fixed-point you shift down by FRACT bits
+  vec3_scale.y = fp_mul(a.y, s);
+  vec3_scale.z = fp_mul(a.z, s);
 endfunction
 
 function automatic fp fast_cd(input vec3 point, input fp half_size);

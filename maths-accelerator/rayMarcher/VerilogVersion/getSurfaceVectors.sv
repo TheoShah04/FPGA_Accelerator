@@ -43,42 +43,43 @@ module getSurfaceVectors #(
         end
     end
 
-    always_comb begin
+    always @(*) begin
             pos_xyy = vec3_add(p, vec3_scale(h_xyy, eps));
             pos_yxy = vec3_add(p, vec3_scale(h_yxy, eps));
             pos_yyx = vec3_add(p, vec3_scale(h_yyx, eps));
             pos_xxx = vec3_add(p, vec3_scale(h_xxx, eps));
     end
 
+    // If too expensive, we instantiate only one block and perform folding 4 times
     sceneQuery getClosestDist_xyy (
         .clk(clk),
+        .valid_in(stage1_valid),
         .pos(pos_xyy),
         .closestDistance(dS_xyy),
-        .valid_in(stage1_valid),
         .valid_out(module_finished_xyy)
     );
 
     sceneQuery getClosestDist_yxy (
         .clk(clk),
+        .valid_in(stage1_valid),
         .pos(pos_yxy),
         .closestDistance(dS_yxy),
-        .valid_in(stage1_valid),
         .valid_out(module_finished_yxy)
     );
 
     sceneQuery getClosestDist_yyx (
         .clk(clk),
+        .valid_in(stage1_valid),
         .pos(pos_yyx),
         .closestDistance(dS_yyx),
-        .valid_in(stage1_valid),
         .valid_out(module_finished_yyx)
     );
 
     sceneQuery getClosestDist_xxx (
         .clk(clk),
+        .valid_in(stage1_valid),
         .pos(pos_xxx),
         .closestDistance(dS_xxx),
-        .valid_in(stage1_valid),
         .valid_out(module_finished_xxx)
     );
 
@@ -86,8 +87,8 @@ module getSurfaceVectors #(
     logic stage2_valid;
     assign stage2_valid = module_finished_xyy && module_finished_yxy && module_finished_yyx && module_finished_xxx; //If all the queries dont complete at the same time this wont work. Might have to change later.
 
-    always_ff @ (posedge clk) begin
-        if (rst) begin
+    always_ff @ (posedge clk or negedge rst) begin
+        if (!rst) begin
             a <= '0; b <= '0; c <= '0; d <= '0;
             normalVec <= '0;
             normalVec_mag_sq <= '0;
@@ -114,7 +115,7 @@ module getSurfaceVectors #(
     end
 
     //Calculate normal and light vectors S = m.x^2 + m.y^2 + m.z^2
-    always_comb begin
+    always @(*) begin
         normalVec = vec3_add(vec3_add(a, b), vec3_add(c, d));
         normalVec_mag_sq = vec3_dot(normalVec, normalVec);
 
@@ -141,8 +142,8 @@ module getSurfaceVectors #(
     );
 
     //Final Stage 3 (Calculate S * 1/sqrt(S))
-    always_ff @ (posedge clk) begin 
-        if (rst) begin
+    always_ff @ (posedge clk or negedge rst) begin 
+        if (!rst) begin
             surfaceNormal <= '0;
             surfaceLightVector <= '0;
             valid_out <= 1'b0;

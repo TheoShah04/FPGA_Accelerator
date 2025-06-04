@@ -1,3 +1,4 @@
+`timescale 1ns/1ps
 `include "vector_pkg.svh"
 `include "common_defs.svh"
 
@@ -50,7 +51,7 @@ module tb_getSurfaceVectors;
         rst = 1'b1;
         //Set input params - surface point and light position
         #10;
-        p = make_vec3(0, 0, `FP_THREE);
+        p = make_vec3(0, 0, 32'h0019999a);
         lightPos = make_vec3 (`FP_FOUR, `FP_FIVE, `FP_THREE);
         #5;
         valid_in = 1'b1;
@@ -69,7 +70,7 @@ module tb_getSurfaceVectors;
                  surfaceLightVector.x, surfaceLightVector.y, surfaceLightVector.z);
         $display("valid_out pulsed at time %0t ns", $time);
 
-        // 7) End simulation
+        // End simulation
         #20;
         $finish;
     end
