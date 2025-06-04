@@ -50,7 +50,7 @@ module tb_inv_sqrt;
         x = 32'h19000000;  // 25 * 2^24
         #10;
         valid_in = 0;
-        #20;
+        #40;
 
         // Random inputs
         repeat (5) begin
@@ -58,7 +58,7 @@ module tb_inv_sqrt;
             x = $random;
             #10;
             valid_in = 0;
-            #20;
+            #40;
         end
 
         $finish;
