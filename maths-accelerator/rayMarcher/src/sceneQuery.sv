@@ -26,14 +26,14 @@ module sceneQuery(
     // );
 
     fp s = 32'h0019999a; //s = 0.1
-    // sdfSphere sphere (
-    //     .clk(clk),
-    //     .valid_in(valid_in),
-    //     .p(pos),
-    //     .radius(s),
-    //     .outputDistance(sdf_objects[0]),
-    //     .valid_out(sdf_valid[0])
-    // );
+    sdfSphere sphere (
+        .clk(clk),
+        .valid_in(valid_in),
+        .p(pos),
+        .radius(s),
+        .outputDistance(sdf_objects[0]),
+        .valid_out(sdf_valid[0])
+    );
 
     sdfCube cube (
         .clk(clk),
