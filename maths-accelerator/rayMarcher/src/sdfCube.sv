@@ -1,5 +1,5 @@
-`include "vector_pkg.svh";
-`include "common_defs.svh";
+`include "vector_pkg.svh"
+`include "common_defs.svh"
 
 module sdfCube(
     input logic clk,
@@ -11,7 +11,7 @@ module sdfCube(
 );
 
 fp half_size;
-assign half_size = fp_mul(radius, `FP_HALF);
+assign half_size = radius;
 
 // need half radius of cube
 always_ff @(posedge clk) begin

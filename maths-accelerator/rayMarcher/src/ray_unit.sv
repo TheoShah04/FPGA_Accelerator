@@ -1,5 +1,5 @@
-`include "vector_pkg.svh";
-`include "common_defs.svh";
+`include "vector_pkg.svh"
+`include "common_defs.svh"
 
 module ray_unit #(
 )(
