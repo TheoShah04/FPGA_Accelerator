@@ -1,0 +1,13 @@
+# compile verilog/system verilog design source files
+sv xil_defaultlib  --include "../../../../../src" \
+"../../../../../src/getSurfaceVectors.sv" \
+"../../../../../src/inv_sqrt.sv" \
+"../../../../../src/invsqrt_bram.sv" \
+"../../../../../src/vec3Length.sv" \
+"../../../../../tb/tb_vec3Length.sv" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort
