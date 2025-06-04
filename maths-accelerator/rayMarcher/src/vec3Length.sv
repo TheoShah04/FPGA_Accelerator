@@ -20,14 +20,18 @@ module vec3Length #(
         sum_squares = vec3_dot(vec, vec);
     end
 
-    inv_sqrt getSqrt (
-        .clk(clk),
-        .valid_in(valid_in),
-        .rst(rst),
-        .x(sum_squares),
-        .inv_sqrt(inv_sqrt_out),
-        .valid_out(module_finished)
+   inv_sqrt getSqrt (
+       .clk(clk),
+       .valid_in(valid_in),
+       .rst(rst),
+       .x(sum_squares),
+       .inv_sqrt(inv_sqrt_out),
+       .valid_out(module_finished)
     );
+    
+    // always_comb begin
+    // 	inv_sqrt_out = $sqrt(sum_squares);
+    // end
 
     assign length = fp_mul(sum_squares, inv_sqrt_out);
     assign valid_out = module_finished;

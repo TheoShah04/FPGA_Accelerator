@@ -1,3 +1,7 @@
+`timescale 1ns/1ps
+`include "vector_pkg.svh"
+`include "common_defs.svh"
+
 module tb_vec3Length;
     //Parameters
     parameter N = 32;
