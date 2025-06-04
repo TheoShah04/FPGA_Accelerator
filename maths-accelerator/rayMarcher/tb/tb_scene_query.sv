@@ -19,15 +19,15 @@ module tb_scene_query;
     end
 
     initial begin
-        $dumpfile("inv_sqrt_test.vcd");
-        $dumpvars(0,tb_inv_sqrt);
+        $dumpfile("scene_query_test.vcd");
+        $dumpvars(0,tb_scene_query);
     end
 
     sceneQuery dut (
         .clk(clk),
         .valid_in(valid_in),
         .pos(pos),
-        .object_sel(1'b1), // just select cube for now
+        .obj_sel(1'b1), // just select cube for now
         .closestDistance(closestDistance),
         .valid_out(valid_out)
     );
@@ -40,7 +40,7 @@ module tb_scene_query;
         repeat(2) @(posedge clk);
         
         // at origin (should be negative)
-        test_position(32'h00000000, 32'h00000000, 32'h00000000, "Origin", 1'b1);
+        pos = make_vec3(32'h00000000, 32'h00000000, 32'h00000000);
         valid_in = 1;
         @(posedge clk);
         valid_in = 0;
@@ -49,10 +49,10 @@ module tb_scene_query;
 
         test_count++;
         if (closestDistance[31] == 1'b1) pass_count++;
-        $display("On Origin: " closestDistance[31] ? "neg" : "pos");
+        // $display("On Origin: " closestDistance[31] ? "neg" : "pos");
 
         // on edge (non-negative)
-        test_position(32'h3e4ccccd, 32'h00000000, 32'h00000000, "Edge X", 1'b0);
+        pos= make_vec3(32'h3e4ccccd, 32'h00000000, 32'h00000000);
         valid_in = 1;
         @(posedge clk);
         valid_in = 0;
@@ -60,10 +60,10 @@ module tb_scene_query;
         @(posedge clk);
         test_count++;
         if (closestDistance[31] == 1'b0) pass_count++;
-        $display("On edge: " closestDistance[31] ? "neg" : "pos");
+        // $display("On edge: " closestDistance[31] ? "neg" : "pos");
 
         // outside (always positive)
-        test_position(32'h3e800000, 32'h00000000, 32'h00000000, "Outside X", 1'b0);
+        pos = make_vec3(32'h3e800000, 32'h00000000, 32'h00000000);
         valid_in = 1;
         @(posedge clk);
         valid_in = 0;
@@ -71,7 +71,7 @@ module tb_scene_query;
         @(posedge clk);
         test_count++;
         if (closestDistance[31] == 1'b0) pass_count++;
-        $display("Outside: " closestDistance[31] ? "neg" : "pos");
+        // $display("Outside: " closestDistance[31] ? "neg" : "pos");
 
         $display("Passed: %0d/%0d", pass_count, test_count);
         
