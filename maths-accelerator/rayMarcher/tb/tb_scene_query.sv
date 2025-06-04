@@ -27,14 +27,14 @@ module tb_scene_query;
         .clk(clk),
         .valid_in(valid_in),
         .pos(pos),
-        .obj_sel(1'b1), // just select cube for now
+        .obj_sel(obj_sel), // just select cube for now
         .closestDistance(closestDistance),
         .valid_out(valid_out)
     );
 
     initial begin
         $display("Testing sdfCube & scenequery");
-        
+        obj_sel = 1'b1;
         valid_in = 0;
         pos = '0;
         repeat(2) @(posedge clk);
