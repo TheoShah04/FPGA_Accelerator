@@ -1,5 +1,7 @@
 `include "common_defs.svh"
 `include "vector_pkg.svh"
+`timescale 1ns/1ps
+
 
 module inv_sqrt#(
     parameter WIDTH = 32

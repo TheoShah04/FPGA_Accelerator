@@ -1,5 +1,6 @@
 `include "vector_pkg.svh"
 `include "common_defs.svh"
+`timescale 1ns/1ps
 
 module vec3Length #(
     parameter int DATA_WIDTH = `WORD_WIDTH,     // Total bits
@@ -13,27 +14,48 @@ module vec3Length #(
     output logic valid_out
 );
 
-    logic [DATA_WIDTH-1:0] sum_squares, inv_sqrt_out; //Sum_squares 32 bits?
-    logic module_finished;
+    logic [DATA_WIDTH-1:0] sum_squares, inv_sqrt_out;
+    logic module_finished, module_valid_in;
 
-    always_comb begin
-        sum_squares = vec3_dot(vec, vec);
+    always_ff @ (posedge clk) begin
+        if(!rst) begin
+            sum_squares <= '0;
+            module_valid_in <= '0;
+        end
+        else begin
+            if(valid_in) begin
+                sum_squares <= vec3_dot(vec, vec);
+                module_valid_in <= 1'b1;
+            end
+            else begin
+                module_valid_in <= 1'b0;
+            end
+        end
     end
 
    inv_sqrt getSqrt (
        .clk(clk),
-       .valid_in(valid_in),
+       .valid_in(module_valid_in),
        .rst(rst),
        .x(sum_squares),
        .inv_sqrt(inv_sqrt_out),
        .valid_out(module_finished)
     );
-    
-    // always_comb begin
-    // 	inv_sqrt_out = $sqrt(sum_squares);
-    // end
 
-    assign length = fp_mul(sum_squares, inv_sqrt_out);
-    assign valid_out = module_finished;
+    always_ff @ (posedge clk) begin
+        if(!rst) begin
+            sum_squares <= '0;
+            valid_out <= 1'b0;
+        end
+        else begin
+            if(module_finished) begin
+                length <= fp_mul(sum_squares, inv_sqrt_out);
+                valid_out <= 1'b1;
+            end
+            else begin
+                valid_out <= 1'b0;
+            end
+        end
+    end
 
 endmodule

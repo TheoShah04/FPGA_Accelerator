@@ -1,3 +1,5 @@
+`timescale 1ns/1ps
+
 module invsqrt_bram #(
     parameter ADDR_LENGTH = 12,
               DATA_WIDTH = 32
