@@ -27,7 +27,6 @@ module getSurfaceVectors #(
     always_ff @(posedge clk or negedge rst) begin
         if (!rst) begin
             h_xyy <= '0;    h_yxy <= '0; h_yyx <= '0; h_xxx <= '0;
-            pos_xyy <= '0; pos_yxy <= '0; pos_yyx <= '0; pos_xxx <= '0;
             stage1_valid <= 1'b0;
         end 
         else if (valid_in) begin
@@ -90,10 +89,6 @@ module getSurfaceVectors #(
     always_ff @ (posedge clk or negedge rst) begin
         if (!rst) begin
             a <= '0; b <= '0; c <= '0; d <= '0;
-            normalVec <= '0;
-            normalVec_mag_sq <= '0;
-            lightVec <= '0;
-            lightVec_mag_sq <= '0;
             normalVec_valid <= 1'b0;
             lightVec_valid <= 1'b0;
         end 
