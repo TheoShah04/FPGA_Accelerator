@@ -1,12 +1,11 @@
 `timescale 1ns/1ps
 
-
 module tb_ray_generator();
 
 
   // Parameters from your module (adjust if needed)
-  parameter SCREEN_WIDTH = 400;
-  parameter SCREEN_HEIGHT = 300;
+  parameter SCREEN_WIDTH = 640;
+  parameter SCREEN_HEIGHT = 480;
 
 
   // Clock and reset
@@ -19,20 +18,19 @@ module tb_ray_generator();
   logic [31:0] screen_y;
   logic coords_valid;
 
-
-  // Camera forward vector (fixed for test)
   typedef struct packed {
     logic [31:0] x, y, z;
   } vec3;
 
-
   vec3 camera_forward;
+  
 
 
   // Outputs from ray_generator
   vec3 ray_direction;
   logic valid;
 
+  logic [31:0] ray_dir_x, ray_dir_y, ray_dir_z;
 
   // Instantiate the ray_generator module
   ray_generator #(
@@ -61,7 +59,7 @@ module tb_ray_generator();
     coords_valid = 0;
     screen_x = 0;
     screen_y = 0;
-    camera_forward.x = 32'h00000000; // Forward vector (0, 0, 1) in fixed point format - adjust as needed
+    camera_forward.x = 32'h00000000;
     camera_forward.y = 32'h00000000;
     camera_forward.z = 32'h01000000;
 
@@ -115,7 +113,11 @@ module tb_ray_generator();
   end
 
 
-
+always @(*) begin
+  ray_dir_x = ray_direction.x;
+  ray_dir_y = ray_direction.y;
+  ray_dir_z = ray_direction.z;
+end
 
 endmodule
 
