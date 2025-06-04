@@ -8,3 +8,6 @@ maths-accelerator/overlay/base_generated.tcl
 *.dmp
 /maths-accelerator/overlay/.Xil
 *.out
+/maths-accelerator/overlay/.Xil
+/maths-accelerator/rayMarcher/VerilogVersion/stream
+
