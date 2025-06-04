@@ -1,4 +1,4 @@
-`include "vector_pkg.svh";
+`include "vector_pkg.svh"
 `include "common_defs.svh"
 
 module sceneQuery(
