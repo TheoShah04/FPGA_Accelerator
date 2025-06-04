@@ -1,4 +1,4 @@
-`include "vector_pkg.svh";
+`include "vector_pkg.svh"
 `include "common_defs.svh"
 
 module sdfSphere(
@@ -13,11 +13,11 @@ module sdfSphere(
     logic module_finished;
 
     vec3Length calcLength(
-        clk(clk),
-        vec3(p),
-        valid_in(valid_in),
-        length(vectorLength),
-        valid_out(module_finished)
+        .clk(clk),
+        .vec(p),
+        .valid_in(valid_in),
+        .length(vectorLength),
+        .valid_out(module_finished)
     );
     assign outputDistance = vectorLength - radius;
     assign valid_out = module_finished;

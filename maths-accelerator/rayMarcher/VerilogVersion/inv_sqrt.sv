@@ -2,7 +2,7 @@
 `include "vector_pkg.svh"
 
 module inv_sqrt#(
-    parameter WIDTH = 32
+    parameter WIDTH = `WORD_WIDTH
 )(
     input logic clk,
     input logic rst,
