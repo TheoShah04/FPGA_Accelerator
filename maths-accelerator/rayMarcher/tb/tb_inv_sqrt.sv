@@ -21,7 +21,6 @@ module tb_inv_sqrt;
         .inv_sqrt(inv_sqrt)
     );
 
-
     // Clk
     initial clk = 0;
     always #5 clk = ~clk;
@@ -33,7 +32,7 @@ module tb_inv_sqrt;
     end
 
     // output terminall
-    always @(posedge clk) begin
+    always_ff @(posedge clk) begin
         if (valid_out)
             $display("Time: %0t | Input x = %h | inv_sqrt = %h", $time, x, inv_sqrt);
     end
@@ -46,11 +45,11 @@ module tb_inv_sqrt;
         #20;
 
         rst = 1;
-        #15;
+        #10;
 
         // Test known input: 25 in Q8.24
         valid_in = 1;
-        x = 32'h00031825;  // 25 * 2^24
+        x = 32'h19000000;  // 25 * 2^24
         #10;
         valid_in = 0;
         #40;
