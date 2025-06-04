@@ -55,8 +55,8 @@ module tb_ray_generator();
 
   // Reset logic
   initial begin
-    rst = 1;
-    coords_valid = 0;
+    rst = 0;
+    coords_valid = 1;
     screen_x = 0;
     screen_y = 0;
     camera_forward.x = 32'h00000000;
@@ -65,7 +65,7 @@ module tb_ray_generator();
 
 
     #20;
-    rst = 0;
+    rst = 1;
     #10;
 
 

@@ -20,7 +20,7 @@ module ray_generator #(
 );
 
 // calculating camera up and right vectors internally using tan approximations
-
+localparam fp FP_HALF = 32'h00800000;
 localparam fp FP_ONE = 32'h01000000;
 localparam fp FP_TWO = 32'h02000000;
 localparam fp INV_HALF_WIDTH = 32'h00051EB8;  // 1/320
@@ -30,8 +30,8 @@ localparam fp SCALE_X = 32'h00051EB8;   // 2/SCREEN_WIDTH
 localparam fp SCALE_Y = 32'h006AAAAB;   // 2/SCREEN_HEIGHT
 
 // camera looking down z axis
-localparam vec3 CAMERA_RIGHT = make_vec3(32'h01000000, 32'h00000000, 32'h00000000); // (1,0,0)
-localparam vec3 CAMERA_UP    = make_vec3(32'h00000000, 32'h01000000, 32'h00000000); // (0,1,0)
+vec3 CAMERA_RIGHT = make_vec3(32'h01000000, 32'h00000000, 32'h00000000); // (1,0,0)
+vec3 CAMERA_UP    = make_vec3(32'h00000000, 32'h01000000, 32'h00000000); // (0,1,0)
 
 logic valid_r1, valid_r2, valid_r3;
 vec3 ray;
@@ -51,8 +51,8 @@ always_ff @(posedge clk) begin
             logic [63:0] temp_x, temp_y;
 
             // [0,2] range
-            temp_x = screen_x * SCALE_X;
-            temp_y = screen_y * SCALE_Y;
+            temp_x = (screen_x + FP_HALF) * SCALE_X;
+            temp_y = (screen_y + FP_HALF) * SCALE_Y;
 
             // [-1,1] range
             ndc_x <= temp_x[31:0] - FP_ONE;
@@ -89,7 +89,7 @@ end
 // have to transform to world space if we are rotating camera
 // skip for now since we fix camera pos
 vec3 world_ray;
-always_comb begin
+always @(*) begin
     world_ray = ray;  
     ray_mag_sq = vec3_dot(world_ray, world_ray);
 end
