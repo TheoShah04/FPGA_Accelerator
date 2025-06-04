@@ -1,5 +1,5 @@
-`include "vector_pkg.svh";
-`include "common_defs.svh";
+`include "vector_pkg.svh"
+`include "common_defs.svh"
 
 module rayMarcher #(
     int MAX_STEPS = 100,
