@@ -36,7 +36,7 @@ ray_generator ray_gen (
 
 rayMarcher ray_marcher(
     .clk(clk),
-    .start(raygen_valid),
+    .valid_in(raygen_valid),
     .rayOrigin(ray_origin),
     .rayDir(ray_direction),
     .distance(distance),
