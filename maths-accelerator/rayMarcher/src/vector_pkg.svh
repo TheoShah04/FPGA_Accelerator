@@ -82,9 +82,9 @@ endfunction
 function automatic fp fast_cd(input vec3 point, input fp half_size);
   vec3 d;
   fp max_d;
-  d.x = fp_sub(fp_abs(point.x), half_size);
-  d.y = fp_sub(fp_abs(point.y), half_size);
-  d.x = fp_sub(fp_abs(point.z), half_size);
+  d.x = fp_abs(point.x) - half_size;
+  d.y = fp_abs(point.y) - half_size;
+  d.z = fp_abs(point.z) - half_size;
   max_d = fp_max(fp_max(d.x, d.y), d.z);
   return max_d;
 endfunction
