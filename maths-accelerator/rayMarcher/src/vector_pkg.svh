@@ -80,14 +80,13 @@ function automatic vec3 vec3_scale(vec3 a, fp s);
 endfunction
 
 function automatic fp fast_cd(input vec3 point, input fp half_size);
-  fp x_abs, y_abs, z_abs, xy_max, xyz_max;
-  x_abs = fp_abs(point.x);
-  y_abs = fp_abs(point.y);
-  z_abs = fp_abs(point.z);
-  //finding face of cube which point closest to
-  xy_max = fp_max(x_abs, y_abs);
-  xyz_max = fp_max(xy_max, z_abs);
-  return xyz_max - half_size;
+  vec3 d;
+  fp max_d;
+  d.x = fp_sub(fp_abs(point.x), half_size);
+  d.y = fp_sub(fp_abs(point.y), half_size);
+  d.x = fp_sub(fp_abs(point.z), half_size);
+  max_d = fp_max(fp_max(d.x, d.y), d.z);
+  return max_d;
 endfunction
 
 `endif
