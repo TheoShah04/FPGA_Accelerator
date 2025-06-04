@@ -91,6 +91,7 @@
       <Filter Type="Srcs"/>
       <File Path="$PPRDIR/../VerilogVersion/inv_sqrt.sv">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -98,6 +99,7 @@
       </File>
       <File Path="$PPRDIR/../VerilogVersion/invsqrt_bram.sv">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -105,6 +107,7 @@
       </File>
       <File Path="$PPRDIR/../VerilogVersion/vec3Length.sv">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
@@ -126,6 +129,7 @@
       <Filter Type="Srcs"/>
       <File Path="$PPRDIR/../VerilogVersion/vector_pkg.svh">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="simulation"/>
           <Attr Name="IsVisible" Val="1"/>
@@ -133,6 +137,7 @@
       </File>
       <File Path="$PPRDIR/../VerilogVersion/Testbench/tb_vec3Length.sv">
         <FileInfo>
+          <Attr Name="AutoDisabled" Val="1"/>
           <Attr Name="UsedIn" Val="synthesis"/>
           <Attr Name="UsedIn" Val="implementation"/>
           <Attr Name="UsedIn" Val="simulation"/>
