@@ -3,8 +3,11 @@ sv xil_defaultlib  --include "../../../../../src" \
 "../../../../../src/getSurfaceVectors.sv" \
 "../../../../../src/inv_sqrt.sv" \
 "../../../../../src/invsqrt_bram.sv" \
+"../../../../../src/sceneQuery.sv" \
+"../../../../../src/sdfCube.sv" \
+"../../../../../src/sdfSphere.sv" \
 "../../../../../src/vec3Length.sv" \
-"../../../../../tb/tb_vec3Length.sv" \
+"../../../../../tb/tb_scene_query.sv" \
 
 # compile glbl module
 verilog xil_defaultlib "glbl.v"
