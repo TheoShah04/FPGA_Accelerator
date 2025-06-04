@@ -1,8 +1,8 @@
-`include "vector_pkg.svh";
-`include "common_defs.svh";
+`include "vector_pkg.svh"
+`include "common_defs.svh"
 
 module getSurfaceVectors #(
-    parameter fp eps = 32'h00004189; //eps = 0.001;
+    parameter fp eps = 32'h00004189 //eps = 0.001;
 )(
     input clk,
     input rst,
@@ -21,11 +21,12 @@ module getSurfaceVectors #(
     logic module_finished_xyy, module_finished_yxy, module_finished_yyx, module_finished_xxx, normalVec_valid, lightVec_valid, normalVec_sqrt_valid, lightVec_sqrt_valid;
     vec3 h_xyy, h_yxy, h_yyx, h_xxx, pos_xyy, pos_yxy, pos_yyx, pos_xxx;
 
+    //Stage 1
     logic stage1_valid;
 
-    always_ff @(posedge clk or posedge rst) begin
-        if (rst) begin
-            h_xyy <= '0; h_yxy <= '0; h_yyx <= '0; h_xxx <= '0;
+    always_ff @(posedge clk or negedge rst) begin
+        if (!rst) begin
+            h_xyy <= '0;    h_yxy <= '0; h_yyx <= '0; h_xxx <= '0;
             pos_xyy <= '0; pos_yxy <= '0; pos_yyx <= '0; pos_xxx <= '0;
             stage1_valid <= 1'b0;
         end 
@@ -35,16 +36,18 @@ module getSurfaceVectors #(
             h_yyx <= make_vec3(FP_NEG_ONE, FP_NEG_ONE, FP_ONE);
             h_xxx <= make_vec3(FP_ONE, FP_ONE, FP_ONE);
 
-            pos_xyy <= vec3_add(p, vec3_scale(h_xyy, eps));
-            pos_yxy <= vec3_add(p, vec3_scale(h_yxy, eps));
-            pos_yyx <= vec3_add(p, vec3_scale(h_yyx, eps));
-            pos_xxx <= vec3_add(p, vec3_scale(h_xxx, eps));
-
             stage1_valid <= 1'b1;
         end
         else begin
             stage1_valid <= 1'b0;
         end
+    end
+
+    always_comb begin
+            pos_xyy = vec3_add(p, vec3_scale(h_xyy, eps));
+            pos_yxy = vec3_add(p, vec3_scale(h_yxy, eps));
+            pos_yyx = vec3_add(p, vec3_scale(h_yyx, eps));
+            pos_xxx = vec3_add(p, vec3_scale(h_xxx, eps));
     end
 
     sceneQuery getClosestDist_xyy (
@@ -79,6 +82,7 @@ module getSurfaceVectors #(
         .valid_out(module_finished_xxx)
     );
 
+    //Stage 2 (SDF query completed for f(p + k.???  * h))
     logic stage2_valid;
     assign stage2_valid = module_finished_xyy && module_finished_yxy && module_finished_yyx && module_finished_xxx; //If all the queries dont complete at the same time this wont work. Might have to change later.
 
@@ -97,18 +101,25 @@ module getSurfaceVectors #(
             b <= vec3_scale(h_yxy, dS_yxy);
             c <= vec3_scale(h_yyx, dS_yyx);
             d <= vec3_scale(h_xxx, dS_xxx);
-            normalVec <= vec3_add(vec3_add(a, b), vec3_add(c, d));
-            normalVec_mag_sq <= vec3_dot(normalVec, normalVec);
+
             normalVec_valid <= 1'b1;
 
-            lightVec <= vec3_sub(lightPos, p);
-            lightVec_mag_sq <= vec3_dot(lightVec, lightVec);
+
             lightVec_valid <= 1'b1;
         end 
         else begin
         normalVec_valid <= 1'b0;
         lightVec_valid <= 1'b0;
         end
+    end
+
+    //Calculate normal and light vectors S = m.x^2 + m.y^2 + m.z^2
+    always_comb begin
+        normalVec = vec3_add(vec3_add(a, b), vec3_add(c, d));
+        normalVec_mag_sq = vec3_dot(normalVec, normalVec);
+
+        lightVec = vec3_sub(lightPos, p);
+        lightVec_mag_sq = vec3_dot(lightVec, lightVec);
     end
 
     inv_sqrt normalVec_getSqrt(
@@ -129,6 +140,7 @@ module getSurfaceVectors #(
             .inv_sqrt(inv_lightVec_mag)
     );
 
+    //Final Stage 3 (Calculate S * 1/sqrt(S))
     always_ff @ (posedge clk) begin 
         if (rst) begin
             surfaceNormal <= '0;
