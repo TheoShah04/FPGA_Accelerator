@@ -7,9 +7,10 @@ module rayMarcher #(
     parameter SURFACE_DIST = 32'h00028f5c //0.01 in decimal
 )(
     input logic clk,
-    input logic start, //signal to start new raymarch process
+    input logic valid_in, //signal to start new raymarch process
     input vec3 rayOrigin,
     input vec3 rayDir,
+    input logic obj_sel,
     output fp distance,
     output vec3 point, //the 3d coordinate of the end of the ray
     output logic valid_out //signal to send to higher module that raymarch process is done
@@ -17,7 +18,7 @@ module rayMarcher #(
 
     fp rayDist, dS;
     vec3 stepVec, position;
-    int stepCounter;
+    int stepCount;
     logic module_finished;
 
     typedef enum {IDLE, STEP, DONE} state;
@@ -35,16 +36,16 @@ module rayMarcher #(
         currentState = IDLE;
     end
 
-    always_ff @(posedge clk or posedge start) begin //asynchronous
-        currentState <= nextState;
-        if (currentState == IDLE) begin
+    always_ff @(posedge clk) begin
+        if (valid_in) begin
+            currentState <= STEP;
             rayDist <= 0;
-            stepCounter <= 0;
+            stepCount <= 0;
             valid_out <= 1'b0;
             point <= '0;
-        end
-        else if (currentState == STEP) begin
-            if(module_finished) begin
+        end else begin
+            currentState <= nextState;
+            if (currentState == STEP && module_finished) begin
                 rayDist <= fp_add(rayDist, dS); 
                 stepCount <= stepCount + 1;
             end
@@ -65,6 +66,7 @@ module rayMarcher #(
                 else nextState = STEP;
             end
             DONE: nextState = IDLE;
+            default: nextState = IDLE;
         endcase
     end
 
