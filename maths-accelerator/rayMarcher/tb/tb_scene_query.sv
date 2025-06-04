@@ -61,8 +61,19 @@ module tb_scene_query;
         if (closestDistance[31] == 1'b0) pass_count++;
         // $display("On edge: " closestDistance[31] ? "neg" : "pos");
 
+        // // on edge (non-negative)
+        // pos= make_vec3(32'h0099999a, 32'h00000000, 32'h00000000);
+        // valid_in = 1;
+        // @(posedge clk);
+        // valid_in = 0;
+        // wait(valid_out == 1);
+        // @(posedge clk);
+        // test_count++;
+        // if (closestDistance[31] == 1'b0) pass_count++;
+        // // $display("On edge: " closestDistance[31] ? "neg" : "pos");
+
         // outside (always positive)
-        pos = make_vec3(32'h3e800000, 32'h00000000, 32'h00000000);
+        pos = make_vec3(32'h004ccccd, 32'h00000000, 32'h00000000);
         valid_in = 1;
         @(posedge clk);
         valid_in = 0;
