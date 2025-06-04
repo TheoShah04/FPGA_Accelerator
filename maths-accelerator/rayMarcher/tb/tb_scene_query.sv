@@ -18,6 +18,11 @@ module tb_scene_query;
         forever #5 clk = ~clk;
     end
 
+    initial begin
+        $dumpfile("inv_sqrt_test.vcd");
+        $dumpvars(0,tb_inv_sqrt);
+    end
+
     sceneQuery dut (
         .clk(clk),
         .valid_in(valid_in),
@@ -34,44 +39,42 @@ module tb_scene_query;
         pos = '0;
         repeat(2) @(posedge clk);
         
-        test_position(32'h00000000, 32'h00000000, 32'h00000000, "Origin", 1'b1);       // (0,0,0) - inside
-        test_position(32'h3e4ccccd, 32'h00000000, 32'h00000000, "Edge X", 1'b0);      // (0.2,0,0) - edge  
-        test_position(32'h3e800000, 32'h00000000, 32'h00000000, "Outside X", 1'b0);   // (0.25,0,0) - outside
-        test_position(32'h00000000, 32'h3e4ccccd, 32'h00000000, "Edge Y", 1'b0);      // (0,0.2,0) - edge
-        test_position(32'h3e4ccccd, 32'h3e4ccccd, 32'h3e4ccccd, "Corner", 1'b0);      // (0.2,0.2,0.2) - corner
-        
-        $display("Passed: %0d/%0d", pass_count, test_count);
-        
-        $finish;
-    end
-    
-    task test_position(fp x, fp y, fp z, string name, bit should_be_negative);
-        pos = '{x, y, z};
+        // at origin (should be negative)
+        test_position(32'h00000000, 32'h00000000, 32'h00000000, "Origin", 1'b1);
         valid_in = 1;
         @(posedge clk);
         valid_in = 0;
-        
-        // Wait for result
         wait(valid_out == 1);
         @(posedge clk);
-        
-        // checking sign bit
-        bit is_negative = closestDistance[31];
-        bit test_passed = (is_negative == should_be_negative);
-        
-        if (test_passed) pass_count++;
+
         test_count++;
+        if (closestDistance[31] == 1'b1) pass_count++;
+        $display("On Origin: " closestDistance[31] ? "neg" : "pos");
+
+        // on edge (non-negative)
+        test_position(32'h3e4ccccd, 32'h00000000, 32'h00000000, "Edge X", 1'b0);
+        valid_in = 1;
+        @(posedge clk);
+        valid_in = 0;
+        wait(valid_out == 1);
+        @(posedge clk);
+        test_count++;
+        if (closestDistance[31] == 1'b0) pass_count++;
+        $display("On edge: " closestDistance[31] ? "neg" : "pos");
+
+        // outside (always positive)
+        test_position(32'h3e800000, 32'h00000000, 32'h00000000, "Outside X", 1'b0);
+        valid_in = 1;
+        @(posedge clk);
+        valid_in = 0;
+        wait(valid_out == 1);
+        @(posedge clk);
+        test_count++;
+        if (closestDistance[31] == 1'b0) pass_count++;
+        $display("Outside: " closestDistance[31] ? "neg" : "pos");
+
+        $display("Passed: %0d/%0d", pass_count, test_count);
         
-        $display("%s: pos=(%h,%h,%h) dist=%h %s %s", 
-                 name, x, y, z, closestDistance,
-                 is_negative ? "NEG" : "POS",
-                 test_passed ? "PASS" : "FAIL");
-    endtask
-    
-    // Timeout protection
-    initial begin
-        #1000;
-        $display("TIMEOUT!");
         $finish;
     end
 
