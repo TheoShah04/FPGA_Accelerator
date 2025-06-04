@@ -1,0 +1,12 @@
+# compile verilog/system verilog design source files
+sv xil_defaultlib  --include "../../../../../src" \
+"../../../../../src/getSurfaceVectors.sv" \
+"../../../../../src/sceneQuery.sv" \
+"../../../../../src/sdfCube.sv" \
+"../../../../../tb/tb_scene_query.sv" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort
