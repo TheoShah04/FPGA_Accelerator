@@ -43,7 +43,7 @@ module getSurfaceVectors #(
         end
     end
 
-    always @(*) begin
+    always_comb begin
             pos_xyy = vec3_add(p, vec3_scale(h_xyy, eps));
             pos_yxy = vec3_add(p, vec3_scale(h_yxy, eps));
             pos_yyx = vec3_add(p, vec3_scale(h_yyx, eps));
@@ -115,7 +115,7 @@ module getSurfaceVectors #(
     end
 
     //Calculate normal and light vectors S = m.x^2 + m.y^2 + m.z^2
-    always @(*) begin
+    always_comb begin
         normalVec = vec3_add(vec3_add(a, b), vec3_add(c, d));
         normalVec_mag_sq = vec3_dot(normalVec, normalVec);
 
