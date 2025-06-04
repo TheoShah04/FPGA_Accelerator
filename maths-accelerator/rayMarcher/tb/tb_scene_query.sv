@@ -38,7 +38,6 @@ module tb_scene_query;
         valid_in = 0;
         pos = '0;
         repeat(2) @(posedge clk);
-        
         // at origin (should be negative)
         pos = make_vec3(32'h00000000, 32'h00000000, 32'h00000000);
         valid_in = 1;
@@ -79,4 +78,3 @@ module tb_scene_query;
     end
 
 endmodule
-    

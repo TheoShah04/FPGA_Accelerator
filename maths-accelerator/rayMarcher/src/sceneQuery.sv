@@ -16,6 +16,12 @@ module sceneQuery(
     assign closestDistance = sdf_objects[obj_sel];
     assign valid_out = sdf_valid[obj_sel];
 
+    logic valid_sphere;    
+    logic valid_cube; 
+
+    assign valid_sphere = valid_in && (obj_sel == 1'b0);   
+    assign valid_cube = valid_in && (obj_sel == 1'b1);
+
     // logic [95:0] boxFrameDimensions = (1.0f, 1.0f, 1.0f);
     // logic [31:0] barThickness = 0.1f;
     // sdfBoxFrame getDistance (
@@ -28,7 +34,7 @@ module sceneQuery(
     fp s = 32'h0019999a; //s = 0.1
     sdfSphere sphere (
         .clk(clk),
-        .valid_in(valid_in),
+        .valid_in(valid_sphere),
         .p(pos),
         .radius(s),
         .outputDistance(sdf_objects[0]),
@@ -37,7 +43,7 @@ module sceneQuery(
 
     sdfCube cube (
         .clk(clk),
-        .valid_in(valid_in),
+        .valid_in(valid_cube),
         .point(pos),
         .radius(s),
         .output_sdf(sdf_objects[1]),
