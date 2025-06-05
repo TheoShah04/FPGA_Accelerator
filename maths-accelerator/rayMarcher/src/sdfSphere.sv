@@ -3,6 +3,7 @@
 
 module sdfSphere(
     input logic clk,
+    input logic rst,
     input logic valid_in,
     input vec3 p,
     input fp radius,
@@ -14,6 +15,7 @@ module sdfSphere(
 
     vec3Length calcLength(
         .clk(clk),
+        .rst(rst),
         .vec(p),
         .valid_in(valid_in),
         .length(vectorLength),
@@ -22,4 +24,4 @@ module sdfSphere(
     assign outputDistance = vectorLength - radius;
     assign valid_out = module_finished;
 
-endmodule;
+endmodule

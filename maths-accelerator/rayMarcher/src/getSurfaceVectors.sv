@@ -6,6 +6,7 @@ module getSurfaceVectors #(
 )(
     input clk,
     input rst,
+    input logic obj_sel,
     input logic valid_in,
     input vec3 p,
     input vec3 lightPos,
@@ -52,32 +53,40 @@ module getSurfaceVectors #(
     // If too expensive, we instantiate only one block and perform folding 4 times
     sceneQuery getClosestDist_xyy (
         .clk(clk),
+        .rst(rst),
         .valid_in(stage1_valid),
         .pos(pos_xyy),
+        .obj_sel(obj_sel),
         .closestDistance(dS_xyy),
         .valid_out(module_finished_xyy)
     );
 
     sceneQuery getClosestDist_yxy (
         .clk(clk),
+        .rst(rst),
         .valid_in(stage1_valid),
         .pos(pos_yxy),
+        .obj_sel(obj_sel),
         .closestDistance(dS_yxy),
         .valid_out(module_finished_yxy)
     );
 
     sceneQuery getClosestDist_yyx (
         .clk(clk),
+        .rst(rst),
         .valid_in(stage1_valid),
         .pos(pos_yyx),
+        .obj_sel(obj_sel),
         .closestDistance(dS_yyx),
         .valid_out(module_finished_yyx)
     );
 
     sceneQuery getClosestDist_xxx (
         .clk(clk),
+        .rst(rst),
         .valid_in(stage1_valid),
         .pos(pos_xxx),
+        .obj_sel(obj_sel),
         .closestDistance(dS_xxx),
         .valid_out(module_finished_xxx)
     );
@@ -153,4 +162,4 @@ module getSurfaceVectors #(
         end
     end
 
-endmodule;
+endmodule

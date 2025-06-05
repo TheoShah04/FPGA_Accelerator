@@ -14,6 +14,7 @@ module tb_getSurfaceVectors;
     vec3 surfaceNormal;
     vec3 surfaceLightVector;
     logic valid_out;
+    logic obj_sel = 1'b0;
 
     getSurfaceVectors #(
         .eps(eps)
@@ -22,6 +23,7 @@ module tb_getSurfaceVectors;
         .rst(rst),
         .valid_in(valid_in),
         .p(p),
+        .obj_sel(obj_sel),
         .lightPos(lightPos),
         .surfaceNormal(surfaceNormal),
         .surfaceLightVector(surfaceLightVector),

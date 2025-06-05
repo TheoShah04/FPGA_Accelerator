@@ -7,62 +7,72 @@ module rayMarcher #(
     parameter SURFACE_DIST = 32'h00028f5c //0.01 in decimal
 )(
     input logic clk,
+    input logic rst,
     input logic valid_in, //signal to start new raymarch process
     input vec3 rayOrigin,
     input vec3 rayDir,
     input logic obj_sel,
     output fp distance,
     output vec3 point, //the 3d coordinate of the end of the ray
-    output logic valid_out //signal to send to higher module that raymarch process is done
+    output logic valid_out, //signal to send to higher module that raymarch process is done
+    output logic hit
 );
 
     fp rayDist, dS;
     vec3 stepVec, position;
     int stepCount;
-    logic module_finished;
+    logic submodule_valid_in, submodule_finished;
 
     typedef enum {IDLE, STEP, DONE} state;
     state currentState, nextState;
 
     sceneQuery getClosestDist (
         .clk(clk),
-        .valid_in(valid_in),
+        .rst(rst),
+        .valid_in(submodule_valid_in),
         .pos(position),
+        .obj_sel(obj_sel),
         .closestDistance(dS),
-        .valid_out(module_finished)
+        .valid_out(submodule_finished)
     );
 
-    initial begin
-        currentState = IDLE;
-    end
-
     always_ff @(posedge clk) begin
-        if (valid_in) begin
-            currentState <= STEP;
+        if(!rst) begin
+            currentState <= IDLE;
             rayDist <= 0;
             stepCount <= 0;
-            valid_out <= 1'b0;
             point <= '0;
-        end else begin
-            currentState <= nextState;
-            if (currentState == STEP && module_finished) begin
-                rayDist <= fp_add(rayDist, dS); 
-                stepCount <= stepCount + 1;
-            end
         end
-        else if (currentState == DONE) begin
-            valid_out <= 1'b1;
+        else begin
+            if (valid_in) begin
+                currentState <= STEP;
+                rayDist <= 0;
+                stepCount <= 0;
+                point <= '0;
+            end else begin
+                currentState <= nextState;
+                if (currentState == STEP && submodule_finished) begin
+                    rayDist <= rayDist + dS; 
+                    stepCount <= stepCount + 1;
+                end
+            end
         end
     end
 
      always_comb begin
         case (currentState)
-            IDLE: nextState = start ? STEP : IDLE;
+            IDLE: nextState = IDLE;
             STEP: begin
                 stepVec = vec3_scale(rayDir, rayDist);
                 position = vec3_add(rayOrigin, stepVec);
-                if (rayDist > MAX_DIST || dS < SURFACE_DIST || stepCount >= MAX_STEPS)
+                if (rayDist > MAX_DIST || stepCount >= MAX_STEPS) begin
+                    hit = 1'b0;
                     nextState = DONE;
+                end
+                else if (dS < SURFACE_DIST) begin
+                    hit = 1'b1;
+                    nextState = DONE;
+                end
                 else nextState = STEP;
             end
             DONE: nextState = IDLE;
@@ -72,5 +82,6 @@ module rayMarcher #(
 
     assign distance = rayDist;
     assign point = position;
+    assign valid_out = currentState == DONE;
 
 endmodule
