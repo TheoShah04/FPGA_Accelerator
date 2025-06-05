@@ -71,7 +71,7 @@ module tb_rayMarcher;
     rst_n <= 1;
 
     apply_ray(0.0, 0.0, 1.0, 0.0, 0.0, -1.0);   // Straight ray forward
-    apply_ray(1.0, 1.0, 0.0, -1.0, -1.0, 0.0); // Diagonal toward center
+    apply_ray(1.0, 1.0, 0.0, -0.70710678, -0.70710678, 0.0); // Diagonal toward center
     apply_ray(0.0, 5.0, 0.0, 0.0, -1.0, 0.0);  // From above downward
     apply_ray(0.0, 0.0, 1.0, 0.0, 1.0, 0.0);   // Miss upward
 
