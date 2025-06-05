@@ -14,7 +14,7 @@ module tb_rayMarcher;
   vec3 point;
   logic valid_out;
   logic hit;
-  logic obj_sel = 1'b1;
+  logic obj_sel = 1'b0;
 
   // Clock generation
   always #5 clk = ~clk;
