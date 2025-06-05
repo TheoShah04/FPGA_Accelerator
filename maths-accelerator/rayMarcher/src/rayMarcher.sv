@@ -21,7 +21,7 @@ module rayMarcher #(
     fp rayDist, dS;
     vec3 stepVec, position;
     logic signed [31:0] stepCount;
-    logic hit_internal, submodule_valid_in, submodule_finished;
+    logic hit_internal, submodule_valid_in_reg, submodule_valid_in_next, submodule_finished; 
 
     typedef enum {IDLE, STEP, DONE} state;
     state currentState, nextState;
@@ -29,7 +29,7 @@ module rayMarcher #(
     sceneQuery getClosestDist (
         .clk(clk),
         .rst(rst),
-        .valid_in(submodule_valid_in),
+        .valid_in(submodule_valid_in_reg),
         .pos(position),
         .obj_sel(obj_sel),
         .closestDistance(dS),
@@ -42,6 +42,7 @@ module rayMarcher #(
             rayDist <= 0;
             stepCount <= 0;
             point <= '0;
+            submodule_valid_in_reg <= 1'b0;
         end
         else begin
             if (valid_in) begin
@@ -49,8 +50,10 @@ module rayMarcher #(
                 rayDist <= 0;
                 stepCount <= 0;
                 point <= '0;
+                submodule_valid_in_reg <= 1'b1;
             end else begin
                 currentState <= nextState;
+                submodule_valid_in_reg <= submodule_valid_in_next;
                 if (currentState == STEP && submodule_finished) begin
                     rayDist <= rayDist + dS; 
                     stepCount <= stepCount + 1'b1;
@@ -60,36 +63,42 @@ module rayMarcher #(
     end
 
      always_comb begin
+        submodule_valid_in_next = 1'b0;
         case (currentState)
             IDLE: begin 
                 nextState = IDLE;
-                submodule_valid_in = 1'b0;
                 distance = '0;
                 point = '0;
             end
             STEP: begin
-                submodule_valid_in = 1'b1;
                 stepVec = vec3_scale(rayDir, rayDist);
                 position = vec3_add(rayOrigin, stepVec);
-                if (rayDist > MAX_DIST || stepCount >= MAX_STEPS) begin
-                    hit_internal = 1'b0;
-                    nextState = DONE;
+                if(submodule_finished) begin
+                    if (rayDist > MAX_DIST || stepCount >= MAX_STEPS) begin
+                        hit_internal = 1'b0;
+                        nextState = DONE;
+                    end
+                    else if (dS < SURFACE_DIST) begin
+                        hit_internal = 1'b1;
+                        nextState = DONE;
+                    end
+                    else begin
+                        nextState = STEP;
+                        submodule_valid_in_next = 1'b1;
+                    end
                 end
-                else if (dS < SURFACE_DIST) begin
-                    hit_internal = 1'b1;
-                    nextState = DONE;
+                else begin
+                    nextState = STEP;
+                    submodule_valid_in_next = 1'b0;
                 end
-                else nextState = STEP;
             end
             DONE: begin
                 nextState = IDLE;
-                submodule_valid_in = 1'b0;
                 distance = rayDist;
                 point = position;
             end
             default: begin
                 nextState = IDLE;
-                submodule_valid_in = 1'b0;
                 distance = '0;
                 point = '0;
             end
