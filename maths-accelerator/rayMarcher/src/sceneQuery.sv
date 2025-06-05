@@ -3,6 +3,7 @@
 
 module sceneQuery(
     input logic clk,
+    input logic rst,
     input logic valid_in,
     input vec3 pos,
     input logic obj_sel,
@@ -34,6 +35,7 @@ module sceneQuery(
     fp s = 32'h0019999a; //s = 0.1
     sdfSphere sphere (
         .clk(clk),
+        .rst(rst),
         .valid_in(valid_sphere),
         .p(pos),
         .radius(s),
@@ -50,4 +52,4 @@ module sceneQuery(
         .valid_out(sdf_valid[1])
     );
 
-endmodule;
+endmodule

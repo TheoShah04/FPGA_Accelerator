@@ -25,6 +25,7 @@ module tb_scene_query;
 
     sceneQuery dut (
         .clk(clk),
+        .rst(rst),
         .valid_in(valid_in),
         .pos(pos),
         .obj_sel(obj_sel), // just select cube for now

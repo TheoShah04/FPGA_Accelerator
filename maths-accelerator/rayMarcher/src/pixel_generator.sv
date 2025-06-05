@@ -235,6 +235,7 @@ ray_unit rayunit (
 getSurfaceVectors surface_calc(
     .clk(out_stream_aclk),
     .rst(rst_gen),
+    .obj_sel(obj_sel),
     .valid_in(rayunit_valid),
     .p(surface_point),
     .lightPos(light_pos),

@@ -10,6 +10,7 @@ module ray_unit #(
     input logic coords_valid,
     input vec3 camera_forward,
     input vec3 ray_origin,
+    input logic obj_sel,
     output fp distance,
     output vec3 surface_point,  
     output logic valid
@@ -39,6 +40,7 @@ rayMarcher ray_marcher(
     .valid_in(raygen_valid),
     .rayOrigin(ray_origin),
     .rayDir(ray_direction),
+    .obj_sel(obj_sel),
     .distance(distance),
     .point(surface_point),
     .valid_out (valid)
