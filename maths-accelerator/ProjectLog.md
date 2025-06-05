@@ -49,18 +49,19 @@
 * Continued working on creating testbenches and testing modules
 * Contiued work on the top level module
 
-### 31/05/24
-* first point
-* second point
-* third point
-
-### 01/06/24
-* first point
-* second point
-* third point
-
 ## Week 3
 ### 02/06/24
-* first point
-* second point
-* third point
+* Switched the inv_sqrt module to a different logic
+* Passed testbenches for inv_sqrt and vec3length
+
+### 03/06/24
+* Switched the inv_sqrt module to a different logic
+* Passed testbenches for inv_sqrt and vec3length
+
+### 04/06/24
+* Passed testbenches for scene_query and the different sdf's
+* Discussed frame buffers and ways to parallelise the ray units
+
+### 05/06/24
+* Passed testbench for the rayMarcher module
+* Worked on the rayGen module and further discussed frame tearing/packing
