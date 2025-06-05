@@ -13,13 +13,13 @@
 `define COLOR_WIDTH     24
 
 // Fixed-Point Lists
-`define FP_NEG_ONE      32'hff000000
-`define FP_ONE          32'h01000000
-`define FP_TWO          32'h02000000
-`define FP_THREE        32'h03000000
-`define FP_FOUR         32'h04000000
-`define FP_FIVE         32'h05000000
-`define FP_SIX          32'h06000000
+`define FP_NEG_ONE      32'shff000000
+`define FP_ONE          32'sh01000000
+`define FP_TWO          32'sh02000000
+`define FP_THREE        32'sh03000000
+`define FP_FOUR         32'sh04000000
+`define FP_FIVE         32'sh05000000
+`define FP_SIX          32'sh06000000
 
 
 `endif // COMMON_DEFS_SVH
