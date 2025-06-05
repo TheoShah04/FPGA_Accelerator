@@ -13,8 +13,8 @@ module tb_rayMarcher;
   fp distance;
   vec3 point;
   logic valid_out;
+  logic hit;
   logic obj_sel = 1'b1;
-  logic done;
 
   // Clock generation
   always #5 clk = ~clk;
@@ -29,7 +29,8 @@ module tb_rayMarcher;
     .distance(distance),
     .obj_sel(obj_sel),
     .point(point),
-    .valid_out(valid_out)
+    .valid_out(valid_out),
+    .hit(hit)
   );
 
   // Fixed-point conversion
@@ -51,25 +52,28 @@ module tb_rayMarcher;
     @(negedge clk);
     valid_in <= 0;
 
-    wait(done);
+    wait(valid_out);
     @(posedge clk);
 
-    $display("Ray: ro=(%.2f,%.2f,%.2f), rd=(%.2f,%.2f,%.2f) --> Point=(%.2f,%.2f,%.2f), Dist=%.4f",
-      ox, oy, oz, dx, dy, dz, point.x, point.y, point.z, from_fixed(distance));
+    $display("Ray: ro=(%.2f,%.2f,%.2f), rd=(%.2f,%.2f,%.2f) --> Hit=%.4f, Point=(%.2f,%.2f,%.2f), Dist=%.4f",
+      ox, oy, oz, dx, dy, dz, hit, point.x, point.y, point.z, from_fixed(distance));
   endtask
 
   // Simulation
   initial begin
     $display("=== rayMarcher simulation ===");
 
+    $dumpfile("rayMarcher_test.vcd");
+    $dumpvars(0,tb_rayMarcher);
+
     rst_n <= 0;
     #20;
     rst_n <= 1;
 
-    apply_ray(0.0, 0.0, 0.0, 1.0, 0.0, 0.0);   // Straight ray forward
+    apply_ray(0.0, 0.0, 1.0, 0.0, 0.0, -1.0);   // Straight ray forward
     apply_ray(1.0, 1.0, 0.0, -1.0, -1.0, 0.0); // Diagonal toward center
     apply_ray(0.0, 5.0, 0.0, 0.0, -1.0, 0.0);  // From above downward
-    apply_ray(0.0, 0.0, 0.0, 0.0, 1.0, 0.0);   // Miss upward
+    apply_ray(0.0, 0.0, 1.0, 0.0, 1.0, 0.0);   // Miss upward
 
     #100;
     $display("=== Test Complete ===");

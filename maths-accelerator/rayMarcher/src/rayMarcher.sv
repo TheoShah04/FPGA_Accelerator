@@ -20,8 +20,8 @@ module rayMarcher #(
 
     fp rayDist, dS;
     vec3 stepVec, position;
-    int stepCount;
-    logic submodule_valid_in, submodule_finished;
+    logic signed [31:0] stepCount;
+    logic hit_internal, submodule_valid_in, submodule_finished;
 
     typedef enum {IDLE, STEP, DONE} state;
     state currentState, nextState;
@@ -53,7 +53,7 @@ module rayMarcher #(
                 currentState <= nextState;
                 if (currentState == STEP && submodule_finished) begin
                     rayDist <= rayDist + dS; 
-                    stepCount <= stepCount + 1;
+                    stepCount <= stepCount + 1'b1;
                 end
             end
         end
@@ -61,27 +61,42 @@ module rayMarcher #(
 
      always_comb begin
         case (currentState)
-            IDLE: nextState = IDLE;
+            IDLE: begin 
+                nextState = IDLE;
+                submodule_valid_in = 1'b0;
+                distance = '0;
+                point = '0;
+            end
             STEP: begin
+                submodule_valid_in = 1'b1;
                 stepVec = vec3_scale(rayDir, rayDist);
                 position = vec3_add(rayOrigin, stepVec);
                 if (rayDist > MAX_DIST || stepCount >= MAX_STEPS) begin
-                    hit = 1'b0;
+                    hit_internal = 1'b0;
                     nextState = DONE;
                 end
                 else if (dS < SURFACE_DIST) begin
-                    hit = 1'b1;
+                    hit_internal = 1'b1;
                     nextState = DONE;
                 end
                 else nextState = STEP;
             end
-            DONE: nextState = IDLE;
-            default: nextState = IDLE;
+            DONE: begin
+                nextState = IDLE;
+                submodule_valid_in = 1'b0;
+                distance = rayDist;
+                point = position;
+            end
+            default: begin
+                nextState = IDLE;
+                submodule_valid_in = 1'b0;
+                distance = '0;
+                point = '0;
+            end
         endcase
     end
 
-    assign distance = rayDist;
-    assign point = position;
     assign valid_out = currentState == DONE;
+    assign hit = (currentState == DONE) && (hit_internal);
 
 endmodule
