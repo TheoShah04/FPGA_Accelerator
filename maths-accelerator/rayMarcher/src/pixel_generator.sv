@@ -177,10 +177,15 @@ reg [8:0] y;
 wire first = (x == 0) & (y==0);
 wire lastx = (x == `SCREEN_WIDTH - 1);
 wire lasty = (y == `SCREEN_HEIGHT - 1);
-wire [31:0] lightx = regfile[0];
-wire [31:0] lighty = regfile[1];
-wire [31:0] lightz = regfile[2];
-
+// wire [31:0] lightx = regfile[0];
+// wire [31:0] lighty = regfile[1];
+// wire [31:0] lightz = regfile[2];
+wire [31:0] lightx = `FP_THREE;
+wire [31:0] lighty = `FP_FOUR;
+wire [31:0] lightz = `FP_FIVE;
+// wire [31:0] camx = regfile[0];
+// wire [31:0] camy = regfile[1];
+// wire [31:0] camz = regfile[2];
 
 wire ready;
 
@@ -212,7 +217,7 @@ end
     logic rst_gen = 1'b1;
     fp distance;
     vec3 surface_point;
-    logic rayunit_valid, surfaceVec_valid, shading_valid;
+    logic rayunit_valid, surfaceVec_valid, shading_valid, hit;
 
 ray_unit rayunit (
     .clk(out_stream_aclk),
@@ -222,9 +227,9 @@ ray_unit rayunit (
     .coords_valid(valid_coor),
     .camera_forward(camera_forward),
     .ray_origin(camera_pos),
-    .distance(distance),
     .surface_point(surface_point),
-    .valid(rayunit_valid)
+    .valid(rayunit_valid),
+    .hit(hit)
 );
 
     //Normal and Light I/O ports

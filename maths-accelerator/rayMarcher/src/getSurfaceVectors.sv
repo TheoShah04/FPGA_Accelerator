@@ -10,9 +10,11 @@ module getSurfaceVectors #(
     input logic valid_in,
     input vec3 p,
     input vec3 lightPos,
+    input logic hit_in,
     output vec3 surfaceNormal,
     output vec3 surfaceLightVector,
-    output logic valid_out
+    output logic valid_out,
+    output logic hit_out
 );
     fp FP_ONE = 32'h01000000; //1.0f;
     fp FP_NEG_ONE = 32'hff000000; //-1.0f;
@@ -21,6 +23,7 @@ module getSurfaceVectors #(
     fp normalVec_mag_sq, inv_normalVec_mag, lightVec_mag_sq, inv_lightVec_mag;
     logic module_finished_xyy, module_finished_yxy, module_finished_yyx, module_finished_xxx, normalVec_valid, lightVec_valid, normalVec_sqrt_valid, lightVec_sqrt_valid;
     vec3 h_xyy, h_yxy, h_yyx, h_xxx, pos_xyy, pos_yxy, pos_yyx, pos_xxx;
+    logic hit1, hit2, hit3;
 
     //Stage 1
     logic stage1_valid;
