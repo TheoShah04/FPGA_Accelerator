@@ -7,7 +7,8 @@ module tb_ray_generator();
   // Parameters from your module (adjust if needed)
   parameter SCREEN_WIDTH = 640;
   parameter SCREEN_HEIGHT = 480;
-
+  localparam fp SCALE_X = 32'h0000cccd;   // (2/SCREEN_WIDTH) 
+  localparam fp SCALE_Y = 32'h00011111;   // (2/SCREEN_HEIGHT)
 
   // Clock and reset
   logic clk;
@@ -48,6 +49,10 @@ module tb_ray_generator();
       return $itor($signed(val)) / 16777216.0; // 2^24 = 16777216
   endfunction
 
+  function automatic real from_fixed_Q11_21(fp val);
+      return $itor($signed(val)) / 2097152.0; // 2^21
+  endfunction
+
   // Clock generation: 10ns period = 100MHz
   initial clk = 0;
   always #5 clk = ~clk;
@@ -75,33 +80,41 @@ module tb_ray_generator();
     coords_valid = 0;
     #90;
 
-    // Feed pixel (9, 0) max fp
-    screen_x = 32'h09000000;
+    // Feed pixel (640, 0) top right
+    screen_x = 32'h50000000;
     screen_y = 32'h00000000;
     coords_valid = 1;
     #10;
     coords_valid = 0;
     #90;
 
-    // Feed pixel (126, 0) max fp
-    screen_x = 32'h7e000000;
-    screen_y = 32'h00000000;
+    // Feed pixel (640, 480) //Bottom right
+    screen_x = 32'h50000000;
+    screen_y = 32'h3c000000;
     coords_valid = 1;
     #10;
     coords_valid = 0;
     #90;
 
-    // Feed pixel (127, 127)
-    screen_x = 32'h7e000000;
-    screen_y = 32'h7e000000;
-    coords_valid = 1;
-    #10;
-    coords_valid = 0;
-    #90;
-
-    // Feed pixel (0, 127)
+    // Feed pixel (0, 480) //Bottom left
     screen_x = 32'h00000000;
-    screen_y = 32'h7e000000;
+    screen_y = 32'h3c000000;
+    coords_valid = 1;
+    #10;
+    coords_valid = 0;
+    #90;
+
+    // Feed pixel (320, 0) //Middle top
+    screen_x = 32'h28000000;
+    screen_y = 32'h00000000;
+    coords_valid = 1;
+    #10;
+    coords_valid = 0;
+    #90;
+
+    // Feed pixel (320, 240) Middle
+    screen_x = 32'h28000000;
+    screen_y = 32'h1e000000;
     coords_valid = 1;
     #10;
     coords_valid = 0;
@@ -122,12 +135,16 @@ module tb_ray_generator();
 
   always @(posedge clk) begin
     if (valid) begin
-      $display("Time %0t | screen_x = %0d, screen_y = %0d | ray_direction = (%.12f, %.12f, %.12f)",
+      $display("Time %0t | screen_x = %0d, screen_y = %0d | ray_direction = (%.12f, %.12f, %.12f) | Magnitude = (%.12f)",
         $time,
-        from_fixed(screen_x), from_fixed(screen_y),
+        from_fixed_Q11_21(screen_x), from_fixed_Q11_21(screen_y),
         from_fixed(ray_direction.x),
         from_fixed(ray_direction.y),
-        from_fixed(ray_direction.z));
+        from_fixed(ray_direction.z),
+        $sqrt(
+        from_fixed(ray_direction.x) * from_fixed(ray_direction.x) +
+        from_fixed(ray_direction.y) * from_fixed(ray_direction.y) +
+        from_fixed(ray_direction.z) * from_fixed(ray_direction.z)));
       end
     end
 

@@ -21,6 +21,14 @@ function automatic fp fp_mul(input fp a, input fp b);
   return result[31:0];
 endfunction
 
+// normal fixed point arithmetic
+function automatic fp fp_mul_Q11_21(input fp a, input fp b);
+  logic signed [63:0] result;
+  result = $signed(a) * $signed(b);
+  result = result >>> 21;
+  return result[31:0];
+endfunction
+
 function automatic fp fp_neg(input fp a);
   return -a;
 endfunction

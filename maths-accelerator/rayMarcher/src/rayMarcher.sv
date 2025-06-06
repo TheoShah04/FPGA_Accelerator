@@ -18,7 +18,7 @@ module rayMarcher #(
     output logic hit
 );
 
-    fp rayDist, dS;
+    fp distance, rayDist, dS;
     vec3 stepVec, position;
     logic signed [31:0] stepCount;
     logic hit_internal, submodule_valid_in_reg, submodule_valid_in_next, submodule_finished; 
