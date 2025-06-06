@@ -1,5 +1,6 @@
 `timescale 1ns/1ps
-
+`include "vector_pkg.svh"
+`include "common_defs.svh"
 module tb_ray_generator();
 
 
@@ -17,10 +18,6 @@ module tb_ray_generator();
   logic [31:0] screen_x;
   logic [31:0] screen_y;
   logic coords_valid;
-
-  typedef struct packed {
-    logic [31:0] x, y, z;
-  } vec3;
 
   vec3 camera_forward;
   
@@ -73,21 +70,21 @@ module tb_ray_generator();
     coords_valid = 1;
     screen_x = 32'h00000000;  // pixel x = 0
     screen_y = 32'h00000000;  // pixel y = 0
-    #10;
+    #100;
 
 
     screen_x = 32'h00000010;  // pixel x = 16 (example)
     screen_y = 32'h00000010;  // pixel y = 16
-    #10;
+    #100;
 
 
     screen_x = 32'h00000020;  // pixel x = 32
     screen_y = 32'h00000020;  // pixel y = 32
-    #10;
+    #100;
 
 
     coords_valid = 0;
-
+  //-0.613 
 
     // Wait and finish
     #100;
@@ -97,7 +94,7 @@ module tb_ray_generator();
 
   // Waveform dumping for GTKWave
   initial begin
-    $dumpfile("waveform.vcd");
+    $dumpfile("ray_generator_test.vcd");
     $dumpvars(0, tb_ray_generator);
   end
 
