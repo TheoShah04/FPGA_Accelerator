@@ -38,53 +38,74 @@ module tb_ray_generator();
     .rst(rst),
     .screen_x(screen_x),
     .screen_y(screen_y),
-    .coords_valid(coords_valid),
+    .valid_in(coords_valid),
     .camera_forward(camera_forward),
     .ray_direction(ray_direction),
-    .valid(valid)
+    .valid_out(valid)
   );
 
+  function automatic real from_fixed(fp val);
+      return $itor($signed(val)) / 16777216.0; // 2^24 = 16777216
+  endfunction
 
   // Clock generation: 10ns period = 100MHz
   initial clk = 0;
   always #5 clk = ~clk;
 
 
-  // Reset logic
+   // Reset logic
   initial begin
     rst = 0;
-    coords_valid = 1;
+    coords_valid = 0;
     screen_x = 0;
     screen_y = 0;
     camera_forward.x = 32'h00000000;
     camera_forward.y = 32'h00000000;
     camera_forward.z = 32'h01000000;
 
-
     #20;
     rst = 1;
     #10;
 
-
-    // Start feeding some pixel coordinates
+    // Feed pixel (0, 0) top left
+    screen_x = 32'h00000000;
+    screen_y = 32'h00000000;
     coords_valid = 1;
-    screen_x = 32'h00000000;  // pixel x = 0
-    screen_y = 32'h00000000;  // pixel y = 0
-    #100;
-
-
-    screen_x = 32'h00000010;  // pixel x = 16 (example)
-    screen_y = 32'h00000010;  // pixel y = 16
-    #100;
-
-
-    screen_x = 32'h00000020;  // pixel x = 32
-    screen_y = 32'h00000020;  // pixel y = 32
-    #100;
-
-
+    #10;  // one clock cycle
     coords_valid = 0;
-  //-0.613 
+    #90;
+
+    // Feed pixel (9, 0) max fp
+    screen_x = 32'h09000000;
+    screen_y = 32'h00000000;
+    coords_valid = 1;
+    #10;
+    coords_valid = 0;
+    #90;
+
+    // Feed pixel (126, 0) max fp
+    screen_x = 32'h7e000000;
+    screen_y = 32'h00000000;
+    coords_valid = 1;
+    #10;
+    coords_valid = 0;
+    #90;
+
+    // Feed pixel (127, 127)
+    screen_x = 32'h7e000000;
+    screen_y = 32'h7e000000;
+    coords_valid = 1;
+    #10;
+    coords_valid = 0;
+    #90;
+
+    // Feed pixel (0, 127)
+    screen_x = 32'h00000000;
+    screen_y = 32'h7e000000;
+    coords_valid = 1;
+    #10;
+    coords_valid = 0;
+    #90;
 
     // Wait and finish
     #100;
@@ -99,16 +120,16 @@ module tb_ray_generator();
   end
 
 
-  // Print ray_direction when it's valid
   always @(posedge clk) begin
     if (valid) begin
-      $display("Time %0t | screen_x = %0d, screen_y = %0d | ray_direction = (%h, %h, %h)",
-               $time,
-               screen_x, screen_y,
-               ray_direction.x, ray_direction.y, ray_direction.z);
+      $display("Time %0t | screen_x = %0d, screen_y = %0d | ray_direction = (%.12f, %.12f, %.12f)",
+        $time,
+        from_fixed(screen_x), from_fixed(screen_y),
+        from_fixed(ray_direction.x),
+        from_fixed(ray_direction.y),
+        from_fixed(ray_direction.z));
+      end
     end
-  end
-
 
 always @(*) begin
   ray_dir_x = ray_direction.x;
