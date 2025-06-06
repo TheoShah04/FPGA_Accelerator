@@ -8,8 +8,10 @@ module shading #(
     //all Q8.24
     input  vec3 normal_vec,
     input  vec3 light_vec,
-    output logic [OUT_WIDTH-1:0]       shade_out,
-    output logic [DATA_WIDTH-1:0] dot_out
+    input  logic valid_in,
+    output logic [OUT_WIDTH-1:0]    shade_out,
+    output logic [DATA_WIDTH-1:0]   dot_out,
+    output logic                    valid_out
 
 
 );
@@ -138,7 +140,8 @@ module shading #(
         shade_out = {r_out, g_out, b_out};
     end
 
-
+    always_comb 
+        valid_out = valid_in;
 endmodule
 
 
