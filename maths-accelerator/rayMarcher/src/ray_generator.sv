@@ -20,9 +20,6 @@ module ray_generator #(
 );
 
 // calculating camera up and right vectors internally using tan approximations
-localparam fp FP_HALF = 32'h00800000;
-localparam fp FP_ONE = 32'h01000000;
-localparam fp FP_TWO = 32'h02000000;
 localparam fp INV_HALF_WIDTH = 32'h00051EB8;  // 1/320
 localparam fp INV_HALF_HEIGHT = 32'h006AAAAB; // 1/240 precomputed recipricol for now
 localparam fp ASPECT_RATIO_640_480 = 32'h01555555;
@@ -48,15 +45,12 @@ always_ff @(posedge clk) begin
     end else begin
         valid_r1 <= coords_valid;
         if(coords_valid) begin
-            logic [63:0] temp_x, temp_y;
 
             // [0,2] range
-            temp_x = (screen_x + FP_HALF) * SCALE_X;
-            temp_y = (screen_y + FP_HALF) * SCALE_Y;
+            ndc_x <= fp_mul((screen_x + `FP_HALF), SCALE_X) - `FP_ONE;
+            ndc_y <= `FP_ONE - fp_mul((screen_y + `FP_HALF), SCALE_Y);
 
             // [-1,1] range
-            ndc_x <= temp_x[31:0] - FP_ONE;
-            ndc_y <= FP_ONE - temp_y[31:0];
         end
     end
 end
@@ -79,10 +73,12 @@ always_ff @(posedge clk) begin
         ray <= 0;
         valid_r3 <= 0;
     end else begin
-        ray.x <= fp_mul(ndc_x, CAMERA_RIGHT.x) + fp_mul(ndc_y, CAMERA_UP.x) + fp_mul(-FP_ONE, camera_forward.x);
-        ray.y <= fp_mul(ndc_x, CAMERA_RIGHT.y) + fp_mul(ndc_y, CAMERA_UP.y) + fp_mul(-FP_ONE, camera_forward.y);
-        ray.z <= fp_mul(ndc_x, CAMERA_RIGHT.z) + fp_mul(ndc_y, CAMERA_UP.z) + fp_mul(-FP_ONE, camera_forward.z);
-        valid_r3 <= valid_r1;
+        if (valid_r1) begin
+            ray.x <= fp_mul(ndc_x, CAMERA_RIGHT.x) + fp_mul(ndc_y, CAMERA_UP.x) + fp_mul(-`FP_ONE, camera_forward.x);
+            ray.y <= fp_mul(ndc_x, CAMERA_RIGHT.y) + fp_mul(ndc_y, CAMERA_UP.y) + fp_mul(-`FP_ONE, camera_forward.y);
+            ray.z <= fp_mul(ndc_x, CAMERA_RIGHT.z) + fp_mul(ndc_y, CAMERA_UP.z) + fp_mul(-`FP_ONE, camera_forward.z);
+            valid_r3 <= valid_r1;
+        end
     end
 end
 
