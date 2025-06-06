@@ -97,7 +97,7 @@ module tb_ray_generator();
 
   // Waveform dumping for GTKWave
   initial begin
-    $dumpfile("waveform.vcd");
+    $dumpfile("test_ray_generator.vcd");
     $dumpvars(0, tb_ray_generator);
   end
 
