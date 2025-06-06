@@ -7,8 +7,8 @@ module ray_generator #(
 )(
     input logic clk,
     input logic rst,
-    input fp screen_x,  
-    input fp screen_y,
+    input fp screen_x, //in Q11.21
+    input fp screen_y, //in Q11.21
     input logic valid_in,
 
     input vec3 camera_forward,
@@ -21,8 +21,8 @@ module ray_generator #(
 
 // calculating camera up and right vectors internally using tan approximations
 localparam fp ASPECT_RATIO_640_480 = 32'h01555555;
-localparam fp SCALE_X = 32'h0000cccd;   // 2/SCREEN_WIDTH
-localparam fp SCALE_Y = 32'h00011111;   // 2/SCREEN_HEIGHT
+localparam fp SCALE_X = 32'h0000199a;   // 2/SCREEN_WIDTH in Q11.21
+localparam fp SCALE_Y = 32'h00002222;   // 2/SCREEN_HEIGHT in Q11.21
 
 // camera looking down z axis
 vec3 CAMERA_RIGHT = make_vec3(32'h01000000, 32'h00000000, 32'h00000000); // (1,0,0)
@@ -45,8 +45,8 @@ always_ff @(posedge clk) begin
         if(valid_in) begin
 
             // [-1,1] range
-            ndc_x <= fp_mul((screen_x + `FP_HALF), SCALE_X) - `FP_ONE;
-            ndc_y <= `FP_ONE - fp_mul((screen_y + `FP_HALF), SCALE_Y);
+            ndc_x <= (fp_mul_Q11_21((screen_x + `FP_HALF_Q11_21), SCALE_X) - `FP_ONE_Q11_21) << 3;
+            ndc_y <= (`FP_ONE_Q11_21 - fp_mul_Q11_21((screen_y + `FP_HALF_Q11_21), SCALE_Y)) << 3;
         end
     end
 end

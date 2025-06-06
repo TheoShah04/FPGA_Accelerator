@@ -21,5 +21,7 @@
 `define FP_FIVE         32'sh05000000
 `define FP_SIX          32'sh06000000
 
+`define FP_ONE_Q11_21   32'sh00200000
+`define FP_HALF_Q11_21  32'sh00100000
 
 `endif // COMMON_DEFS_SVH
