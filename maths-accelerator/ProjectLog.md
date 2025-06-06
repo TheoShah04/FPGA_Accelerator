@@ -65,3 +65,15 @@
 ### 05/06/24
 * Passed testbench for the rayMarcher module
 * Worked on the rayGen module and further discussed frame tearing/packing
+
+### 06/06/24
+* Passed testbench for the rayMarcher module
+* Worked on the rayGen module and further discussed frame tearing/packing
+
+### 07/06/24
+* Passed testbench for the rayMarcher module
+* Worked on the rayGen module and further discussed frame tearing/packing
+
+### 08/06/24
+* Passed testbench for the rayMarcher module
+* Worked on the rayGen module and further discussed frame tearing/packing
