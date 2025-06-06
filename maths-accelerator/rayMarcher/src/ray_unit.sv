@@ -11,9 +11,9 @@ module ray_unit #(
     input vec3 camera_forward,
     input vec3 ray_origin,
     input logic obj_sel,
-    output fp distance,
     output vec3 surface_point,  
-    output logic valid
+    output logic valid,
+    output logic hit
 );
 
     logic raygen_valid, q_raygen_valid;
@@ -41,9 +41,9 @@ rayMarcher ray_marcher(
     .rayOrigin(ray_origin),
     .rayDir(ray_direction),
     .obj_sel(obj_sel),
-    .distance(distance),
     .point(surface_point),
-    .valid_out (valid)
+    .valid_out (valid),
+    .hit(hit)
 );
 
 endmodule
