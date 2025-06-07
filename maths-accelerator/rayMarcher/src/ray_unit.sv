@@ -7,12 +7,12 @@ module ray_unit #(
     input logic rst_gen,
     input fp screen_x,  
     input fp screen_y,
-    input logic coords_valid,
+    input logic valid_in,
     input vec3 camera_forward,
     input vec3 ray_origin,
-    input logic obj_sel,
+    input logic sdf_sel,
     output vec3 surface_point,  
-    output logic valid,
+    output logic valid_out,
     output logic hit
 );
 
@@ -27,22 +27,23 @@ end
 ray_generator ray_gen (
     .clk(clk),
     .rst(rst_gen),
-    .screen_x(x),
-    .screen_y(y),
-    .coords_valid(valid_coor),
+    .screen_x(screen_x),
+    .screen_y(screen_y),
+    .valid_in(valid_in),
     .camera_forward(camera_forward),
     .ray_direction(ray_direction),
-    .valid(raygen_valid)
+    .valid_out(raygen_valid)
 );
 
 rayMarcher ray_marcher(
     .clk(clk),
-    .valid_in(raygen_valid),
+    .rst(rst),
+    .valid_in(q_raygen_valid),
     .rayOrigin(ray_origin),
-    .rayDir(ray_direction),
-    .obj_sel(obj_sel),
+    .rayDir(q_ray_direction),
+    .obj_sel(sdf_sel),
     .point(surface_point),
-    .valid_out (valid),
+    .valid_out(valid_out),
     .hit(hit)
 );
 
