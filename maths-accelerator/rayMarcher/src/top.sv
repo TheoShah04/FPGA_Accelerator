@@ -252,7 +252,7 @@ getSurfaceVectors surface_calc(
 
     logic [`COLOR_WIDTH - 1:0] pixel_color;
 
-shading shading_m( //Should be clock this? Might not be feasible/glitches on FPGA
+shading shading_m( //Should we clock this? Might not be feasible/glitches on FPGA
     .valid_in(surfaceVec_valid), 
     .hit_in(hit_out)
     .normal_vec(normal_vec),
