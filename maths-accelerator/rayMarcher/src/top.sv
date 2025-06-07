@@ -232,6 +232,7 @@ ray_unit rayunit (
 
     vec3 normal_vec;
     vec3 light_vec;
+    logic hit_out;
 
 getSurfaceVectors surface_calc(
     .clk(out_stream_aclk),
@@ -243,18 +244,20 @@ getSurfaceVectors surface_calc(
     .hit_in(surface_hit),
     .surfaceNormal(normal_vec),
     .surfaceLightVector(light_vec), 
-    .valid_out(surfaceVec_valid)
+    .valid_out(surfaceVec_valid),
+    .hit_out(hit_out)
 );
 
     //Shading I/O ports
 
     logic [`COLOR_WIDTH - 1:0] pixel_color;
 
-shading shading_m(
-    .valid_in(surfaceVec_valid),
+shading shading_m( //Should be clock this? Might not be feasible/glitches on FPGA
+    .valid_in(surfaceVec_valid), 
+    .hit_in(hit_out)
     .normal_vec(normal_vec),
     .light_vec(light_vec),
-    .shade_out(pixel_color)
+    .shade_out(pixel_color),
     .valid_out(shading_valid) //Connect this to pixel packer
 );
 
@@ -265,7 +268,7 @@ assign {r,g,b} = pixel_color;
 packer pixel_packer(    .aclk(out_stream_aclk),
                         .aresetn(periph_resetn),
                         .r(r), .g(g), .b(b),
-                        .eol(lastx), .in_stream_ready(ready), .valid(!!!!!!!), .sof(first),
+                        .eol(lastx), .in_stream_ready(ready), .valid(shading_valid), .sof(first),
                         .out_stream_tdata(out_stream_tdata), .out_stream_tkeep(out_stream_tkeep),
                         .out_stream_tlast(out_stream_tlast), .out_stream_tready(out_stream_tready),
                         .out_stream_tvalid(out_stream_tvalid), .out_stream_tuser(out_stream_tuser) );

@@ -6,12 +6,12 @@ module shading #(
               OUT_WIDTH = 24
 )(  
     //all Q8.24
+    input logic valid_in,
+    input logic hit_in,
     input  vec3 normal_vec,
     input  vec3 light_vec,
-    input  logic valid_in,
-    output logic [OUT_WIDTH-1:0]    shade_out,
-    output logic [DATA_WIDTH-1:0]   dot_out,
-    output logic                    valid_out
+    output logic [OUT_WIDTH-1:0] shade_out,
+    output logic valid_out
 
 
 );
