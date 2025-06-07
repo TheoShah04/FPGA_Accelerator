@@ -224,11 +224,12 @@ ray_unit rayunit (
     .rst_gen(rst_gen),
     .screen_x(x),
     .screen_y(y),
-    .coords_valid(valid_coor),
+    .valid_in(valid_coor),
     .camera_forward(camera_forward),
     .ray_origin(camera_pos),
+    .sdf_sel(1'b1), //Add signal for this
     .surface_point(surface_point),
-    .valid(rayunit_valid),
+    .valid_out(rayunit_valid),
     .hit(hit)
 );
 

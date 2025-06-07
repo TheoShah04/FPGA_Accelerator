@@ -180,6 +180,7 @@ wire lasty = (y == `SCREEN_HEIGHT - 1);
 wire [31:0] lightx = regfile[0];
 wire [31:0] lighty = regfile[1];
 wire [31:0] lightz = regfile[2];
+wire [31:0] sdf_sel = regfile[3];
 
 
 wire ready;
@@ -210,21 +211,21 @@ end
 
     logic valid_coor = 1'b1;         //indicate
     logic rst_gen = 1'b1;
-    fp distance;
     vec3 surface_point;
-    logic rayunit_valid, surfaceVec_valid, shading_valid;
+    logic rayunit_valid, surfaceVec_valid, shading_valid, surface_hit;
 
 ray_unit rayunit (
     .clk(out_stream_aclk),
     .rst_gen(rst_gen),
     .screen_x(x),
     .screen_y(y),
-    .coords_valid(valid_coor),
+    .valid_in(valid_coor),
     .camera_forward(camera_forward),
     .ray_origin(camera_pos),
-    .distance(distance),
+    .sdf_sel(sdf_sel[0]), //0 for sphere and 1 for cube
     .surface_point(surface_point),
-    .valid(rayunit_valid)
+    .valid_out(rayunit_valid),
+    .hit(surface_hit)
 );
 
     //Normal and Light I/O ports
@@ -239,6 +240,7 @@ getSurfaceVectors surface_calc(
     .valid_in(rayunit_valid),
     .p(surface_point),
     .lightPos(light_pos),
+    .hit_in(surface_hit),
     .surfaceNormal(normal_vec),
     .surfaceLightVector(light_vec), 
     .valid_out(surfaceVec_valid)
