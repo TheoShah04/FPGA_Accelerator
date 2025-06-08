@@ -12,7 +12,7 @@ module ray_unit #(
     input vec3 ray_origin,
     input logic sdf_sel,
     output vec3 surface_point,  
-    output logic valid_out,
+    output logic valid_out, 
     output logic hit
 );
 
