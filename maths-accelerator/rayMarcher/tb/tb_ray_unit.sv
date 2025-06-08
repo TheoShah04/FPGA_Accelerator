@@ -334,8 +334,8 @@ module tb_ray_unit;
     rst = 1'b1;
     #10;
 
-    // Loop over 640x480 pixels
-    for (int y = 0; y < 480; y++) begin
+    // Loop over 640x480 pixels (300)                (230,400) for 480x480
+    for (int y = 0; y < 480; y++) begin // ASPECT_CHANGE
       for (int x = 0; x < 640; x++) begin
         #10;
         screen_x = to_fixed_Q11_21(x);

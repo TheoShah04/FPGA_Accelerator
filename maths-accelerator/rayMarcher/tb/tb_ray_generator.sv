@@ -41,6 +41,10 @@ module tb_ray_generator();
       return $itor($signed(val)) / 2097152.0; // 2^21
   endfunction
 
+  function automatic fp to_fixed_Q11_21(input real val);
+    return $rtoi(val * (2.0 ** 21));
+  endfunction
+
   // Clock generation: 10ns period = 100MHz
   initial clk = 0;
   always #5 clk = ~clk;
@@ -61,48 +65,76 @@ module tb_ray_generator();
     #10;
 
     // Feed pixel (0, 0) top left
-    screen_x = 32'h00000000;
-    screen_y = 32'h00000000;
+    screen_x = to_fixed_Q11_21(0.0);
+    screen_y = to_fixed_Q11_21(0.0);
     coords_valid = 1;
     #10;  // one clock cycle
     coords_valid = 0;
     #90;
 
     // Feed pixel (640, 0) top right
-    screen_x = 32'h50000000;
-    screen_y = 32'h00000000;
+    screen_x = to_fixed_Q11_21(640.0);
+    screen_y = to_fixed_Q11_21(0.0);
     coords_valid = 1;
     #10;
     coords_valid = 0;
     #90;
 
     // Feed pixel (640, 480) //Bottom right
-    screen_x = 32'h50000000;
-    screen_y = 32'h3c000000;
+    screen_x = to_fixed_Q11_21(640.0);
+    screen_y = to_fixed_Q11_21(480.0);
     coords_valid = 1;
     #10;
     coords_valid = 0;
     #90;
 
     // Feed pixel (0, 480) //Bottom left
-    screen_x = 32'h00000000;
-    screen_y = 32'h3c000000;
+    screen_x = to_fixed_Q11_21(0.0);
+    screen_y = to_fixed_Q11_21(480.0);
     coords_valid = 1;
     #10;
     coords_valid = 0;
     #90;
 
     // Feed pixel (320, 0) //Middle top
-    screen_x = 32'h28000000;
-    screen_y = 32'h00000000;
+    screen_x = to_fixed_Q11_21(320.0);
+    screen_y = to_fixed_Q11_21(0.0);
     coords_valid = 1;
     #10;
     coords_valid = 0;
     #90;
 
     // Feed pixel (320, 240) Middle
-    screen_x = 32'h28000000;
-    screen_y = 32'h1e000000;
+    screen_x = to_fixed_Q11_21(320.0);
+    screen_y = to_fixed_Q11_21(240.0);
+    coords_valid = 1;
+    #10;
+    coords_valid = 0;
+    #90;
+
+    screen_x = to_fixed_Q11_21(360.0);
+    screen_y = to_fixed_Q11_21(240.0);
+    coords_valid = 1;
+    #10;
+    coords_valid = 0;
+    #90;
+
+    screen_x = to_fixed_Q11_21(280.0);
+    screen_y = to_fixed_Q11_21(240.0);
+    coords_valid = 1;
+    #10;
+    coords_valid = 0;
+    #90;
+
+    screen_x = to_fixed_Q11_21(320.0);
+    screen_y = to_fixed_Q11_21(280.0);
+    coords_valid = 1;
+    #10;
+    coords_valid = 0;
+    #90;
+
+    screen_x = to_fixed_Q11_21(320.0);
+    screen_y = to_fixed_Q11_21(200.0);
     coords_valid = 1;
     #10;
     coords_valid = 0;
