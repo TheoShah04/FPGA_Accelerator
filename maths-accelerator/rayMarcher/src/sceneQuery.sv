@@ -32,12 +32,13 @@ module sceneQuery(
     //     .outputDistance(closestDistance)
     // );
 
-    fp s = 32'h0019999a; //s = 0.1
+    //fp s = 32'h0019999a; //s = 0.1
+    fp s = 32'h01000000; //s = 1.0
     sdfSphere sphere (
         .clk(clk),
         .rst(rst),
         .valid_in(valid_sphere),
-        .p(pos),
+        .p(pos), 
         .radius(s),
         .outputDistance(sdf_objects[0]),
         .valid_out(sdf_valid[0])

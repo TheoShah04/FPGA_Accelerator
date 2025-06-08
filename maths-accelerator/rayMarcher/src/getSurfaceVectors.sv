@@ -23,7 +23,7 @@ module getSurfaceVectors #(
     fp normalVec_mag_sq, inv_normalVec_mag, lightVec_mag_sq, inv_lightVec_mag;
     logic module_finished_xyy, module_finished_yxy, module_finished_yyx, module_finished_xxx, normalVec_valid, lightVec_valid, normalVec_sqrt_valid, lightVec_sqrt_valid;
     vec3 h_xyy, h_yxy, h_yyx, h_xxx, pos_xyy, pos_yxy, pos_yyx, pos_xxx;
-    logic hit1, hit2, hit3;
+    logic hit_in_2, hit_in_3, hit_in_4, reg_hit_in_1, reg_hit_in_2;
 
     //Stage 1
     logic stage1_valid;
@@ -32,25 +32,34 @@ module getSurfaceVectors #(
         if (!rst) begin
             h_xyy <= '0;    h_yxy <= '0; h_yyx <= '0; h_xxx <= '0;
             stage1_valid <= 1'b0;
+            hit_in_2 <= 1'b0;
         end 
         else if (valid_in) begin
-            h_xyy <= make_vec3(FP_ONE, FP_NEG_ONE, FP_NEG_ONE); //See tetrahedron technique: https://iquilezles.org/articles/normalsSDF/
-            h_yxy <= make_vec3(FP_NEG_ONE, FP_ONE, FP_NEG_ONE);
-            h_yyx <= make_vec3(FP_NEG_ONE, FP_NEG_ONE, FP_ONE);
-            h_xxx <= make_vec3(FP_ONE, FP_ONE, FP_ONE);
-
+            if (hit_in) begin
+                h_xyy <= make_vec3(FP_ONE, FP_NEG_ONE, FP_NEG_ONE); //See tetrahedron technique: https://iquilezles.org/articles/normalsSDF/
+                h_yxy <= make_vec3(FP_NEG_ONE, FP_ONE, FP_NEG_ONE);
+                h_yyx <= make_vec3(FP_NEG_ONE, FP_NEG_ONE, FP_ONE);
+                h_xxx <= make_vec3(FP_ONE, FP_ONE, FP_ONE);
+            end
             stage1_valid <= 1'b1;
+            hit_in_2 <= hit_in;
         end
         else begin
             stage1_valid <= 1'b0;
+            hit_in_2 <= 1'b0;
         end
     end
 
     always_comb begin
-            pos_xyy = vec3_add(p, vec3_scale(h_xyy, eps));
-            pos_yxy = vec3_add(p, vec3_scale(h_yxy, eps));
-            pos_yyx = vec3_add(p, vec3_scale(h_yyx, eps));
-            pos_xxx = vec3_add(p, vec3_scale(h_xxx, eps));
+        if (stage1_valid) begin
+            if (hit_in_2) begin
+                pos_xyy = vec3_add(p, vec3_scale(h_xyy, eps));
+                pos_yxy = vec3_add(p, vec3_scale(h_yxy, eps));
+                pos_yyx = vec3_add(p, vec3_scale(h_yyx, eps));
+                pos_xxx = vec3_add(p, vec3_scale(h_xxx, eps));
+            end
+            reg_hit_in_1 = hit_in_2; //Change this when pipelining
+        end
     end
 
     // If too expensive, we instantiate only one block and perform folding 4 times
@@ -97,37 +106,45 @@ module getSurfaceVectors #(
     //Stage 2 (SDF query completed for f(p + k.???  * h))
     logic stage2_valid;
     assign stage2_valid = module_finished_xyy && module_finished_yxy && module_finished_yyx && module_finished_xxx; //If all the queries dont complete at the same time this wont work. Might have to change later.
+    //maybe create FSM to wait for all modules to finish instead?
 
     always_ff @ (posedge clk or negedge rst) begin
         if (!rst) begin
             a <= '0; b <= '0; c <= '0; d <= '0;
             normalVec_valid <= 1'b0;
             lightVec_valid <= 1'b0;
+            hit_in_3 <= 1'b0;
         end 
         else if(stage2_valid) begin
-            a <= vec3_scale(h_xyy, dS_xyy);
-            b <= vec3_scale(h_yxy, dS_yxy);
-            c <= vec3_scale(h_yyx, dS_yyx);
-            d <= vec3_scale(h_xxx, dS_xxx);
-
+            if (reg_hit_in_1) begin
+                a <= vec3_scale(h_xyy, dS_xyy);
+                b <= vec3_scale(h_yxy, dS_yxy);
+                c <= vec3_scale(h_yyx, dS_yyx);
+                d <= vec3_scale(h_xxx, dS_xxx);
+            end
             normalVec_valid <= 1'b1;
-
-
             lightVec_valid <= 1'b1;
+            hit_in_3 <= reg_hit_in_1;
         end 
         else begin
-        normalVec_valid <= 1'b0;
-        lightVec_valid <= 1'b0;
+            normalVec_valid <= 1'b0;
+            lightVec_valid <= 1'b0;
+            hit_in_3 <= 1'b0;
         end
     end
 
     //Calculate normal and light vectors S = m.x^2 + m.y^2 + m.z^2
     always_comb begin
-        normalVec = vec3_add(vec3_add(a, b), vec3_add(c, d));
-        normalVec_mag_sq = vec3_dot(normalVec, normalVec);
+        if (normalVec_valid && lightVec_valid) begin
+            if(hit_in_3) begin
+                normalVec = vec3_add(vec3_add(a, b), vec3_add(c, d));
+                normalVec_mag_sq = vec3_dot(normalVec, normalVec);
 
-        lightVec = vec3_sub(lightPos, p);
-        lightVec_mag_sq = vec3_dot(lightVec, lightVec);
+                lightVec = vec3_sub(lightPos, p);
+                lightVec_mag_sq = vec3_dot(lightVec, lightVec);
+            end
+            reg_hit_in_2 = hit_in_3; //Change this when pipelining
+        end
     end
 
     inv_sqrt normalVec_getSqrt(
@@ -154,14 +171,19 @@ module getSurfaceVectors #(
             surfaceNormal <= '0;
             surfaceLightVector <= '0;
             valid_out <= 1'b0;
+            hit_out <= 1'b0;
         end 
         else if (normalVec_sqrt_valid && lightVec_sqrt_valid) begin
-            surfaceNormal <= vec3_scale(normalVec, inv_normalVec_mag);
-            surfaceLightVector <= vec3_scale(lightVec, inv_lightVec_mag);
+            if (reg_hit_in_2) begin
+                surfaceNormal <= vec3_scale(normalVec, inv_normalVec_mag);
+                surfaceLightVector <= vec3_scale(lightVec, inv_lightVec_mag);
+            end
             valid_out <= 1'b1;
+            hit_out <= reg_hit_in_2;
         end
         else begin
             valid_out <= 1'b0;
+            hit_out <= 1'b0;
         end
     end
 
