@@ -1,23 +1,16 @@
 `timescale 1ns/1ps
-
+`include "common_defs.svh"
+`include "vector_pkg.svh"
 
 module tb_shading;
-
-
-
-
     localparam int DATA_WIDTH = 32;
     localparam int OUT_WIDTH = 24;
-
-
  
-    logic signed [DATA_WIDTH-1:0] nx, ny, nz;
-    logic signed [DATA_WIDTH-1:0] lx, ly, lz;
-
-
-   
+    vec3 normal_vec, light_vec;
     logic [OUT_WIDTH-1:0] shade_out;
-    logic [31:0] dot_out;
+    logic valid_in = 1'b1; 
+    logic hit_in = 1'b1;
+    logic valid_out;
 
 
     // Instantiate your shading module
@@ -25,16 +18,21 @@ module tb_shading;
         .DATA_WIDTH(DATA_WIDTH),
         .OUT_WIDTH(OUT_WIDTH)
     ) dut (
-        .nx(nx),
-        .ny(ny),
-        .nz(nz),
-        .lx(lx),
-        .ly(ly),
-        .lz(lz),
+        .valid_in(valid_in),
+        .hit_in(hit_in),
+        .normal_vec(normal_vec),
+        .light_vec(light_vec),
         .shade_out(shade_out),
-        .dot_out(dot_out)
+        .valid_out(valid_out)
     );
 
+    function automatic fp to_fixed(input real val);
+        return $rtoi(val * (2.0 ** 24));
+    endfunction
+
+    function automatic real from_fixed(fp val);
+        return $itor($signed(val)) / 16777216.0; // 2^24 = 16777216
+    endfunction
 
     // Helper task to apply inputs and print RGB results
     task automatic run_test_case(
@@ -47,20 +45,18 @@ module tb_shading;
         input string label
     );
         begin
-            nx = in_nx; ny = in_ny; nz = in_nz;
-            lx = in_lx; ly = in_ly; lz = in_lz;
-
+            normal_vec = make_vec3(in_nx, in_ny, in_nz);
+            light_vec = make_vec3(in_lx, in_ly, in_lz);
 
             #1; // wait for combinational logic to settle
 
 
-            $display("%s -> R: %h, G: %h, B: %h (hex: %h),Dot: %0d" ,
+            $display("%s -> R: %0d, G: %0d, B: %0d (hex: %h)" ,
                 label,
                 shade_out[23:16],
                 shade_out[15:8],
                 shade_out[7:0],
                 shade_out,
-                dot_out
             );
         end
     endtask
@@ -74,15 +70,11 @@ module tb_shading;
 
     initial begin
         $display("=== Shading Module Testbench ===");
-        $display("to_q824(1.0) = %h", to_q824(1.0));
 
-
-
-
-        run_test_case(to_q824(0.0), to_q824(0.0), to_q824(1.0),   to_q824(0.0), to_q824(0.0), to_q824(1.0),   "Aligned: Max brightness");
+        //run_test_case(to_q824(0.0), to_q824(0.0), to_q824(1.0),   to_q824(0.0), to_q824(0.0), to_q824(1.0),   "Aligned: Max brightness");
         //run_test_case(to_q824(0.0), to_q824(0.0), to_q824(1.0),   to_q824(0.0), to_q824(0.0), to_q824(-1.0),  "Backlight: No diffuse");
         //run_test_case(to_q824(0.0), to_q824(1.0), to_q824(0.0),   to_q824(0.0), to_q824(0.0), to_q824(1.0),   "Upward normal: Max ambient boost");
-        //run_test_case(to_q824(0.0), to_q824(0.707), to_q824(0.707), to_q824(0.0), to_q824(0.707), to_q824(0.707), "Diagonal light");
+        run_test_case(to_q824(0.0), to_q824(0.707), to_q824(0.707), to_q824(0.0), to_q824(0.707), to_q824(0.707), "Diagonal light");
         //run_test_case(to_q824(1.0), to_q824(0.0), to_q824(0.0),   to_q824(0.0), to_q824(1.0), to_q824(0.0),   "Perpendicular: ambient only");
 
 
