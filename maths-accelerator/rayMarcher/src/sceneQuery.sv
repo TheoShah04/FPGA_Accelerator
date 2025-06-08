@@ -38,7 +38,7 @@ module sceneQuery(
         .clk(clk),
         .rst(rst),
         .valid_in(valid_sphere),
-        .p(pos),
+        .p(pos), 
         .radius(s),
         .outputDistance(sdf_objects[0]),
         .valid_out(sdf_valid[0])

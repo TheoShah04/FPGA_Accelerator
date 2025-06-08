@@ -22,6 +22,14 @@ localparam fp ASPECT_RATIO_640_480 = 32'h01555555;
 localparam fp SCALE_X = 32'h0000199a;   // 2/SCREEN_WIDTH(640) in Q11.21
 localparam fp SCALE_Y = 32'h00002222;   // 2/SCREEN_HEIGHT(480) in Q11.21
 
+// localparam fp ASPECT_RATIO_640_480 = 32'h01000000; // ASPECT_CHANGE (480X480)
+// localparam fp SCALE_X = 32'h00002222;   // 2/SCREEN_WIDTH(640) in Q11.21 
+// localparam fp SCALE_Y = 32'h00002222;   // 2/SCREEN_HEIGHT(480) in Q11.21
+
+// localparam fp ASPECT_RATIO_640_480 = 32'h01000000; // ASPECT_CHANGE (120X120)
+// localparam fp SCALE_X = 32'h00044444;   // 2/SCREEN_WIDTH(640) in Q11.21 
+// localparam fp SCALE_Y = 32'h00044444;   // 2/SCREEN_HEIGHT(480) in Q11.21
+
 // camera looking down z axis
 vec3 CAMERA_RIGHT = make_vec3(32'h01000000, 32'h00000000, 32'h00000000); // (1,0,0)
 vec3 CAMERA_UP    = make_vec3(32'h00000000, 32'h01000000, 32'h00000000); // (0,1,0)
@@ -43,7 +51,7 @@ always_ff @(posedge clk) begin
         if(valid_in) begin
 
             // [-1,1] range
-            ndc_x <= (fp_mul_Q11_21((screen_x + `FP_HALF_Q11_21), SCALE_X) - `FP_ONE_Q11_21) << 3;
+            ndc_x <= fp_mul(((fp_mul_Q11_21((screen_x + `FP_HALF_Q11_21), SCALE_X) - `FP_ONE_Q11_21) << 3), ASPECT_RATIO_640_480);
             ndc_y <= (`FP_ONE_Q11_21 - fp_mul_Q11_21((screen_y + `FP_HALF_Q11_21), SCALE_Y)) << 3;
         end
     end
