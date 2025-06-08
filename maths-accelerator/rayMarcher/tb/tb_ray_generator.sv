@@ -3,13 +3,6 @@
 `include "common_defs.svh"
 module tb_ray_generator();
 
-
-  // Parameters from your module (adjust if needed)
-  parameter SCREEN_WIDTH = 640;
-  parameter SCREEN_HEIGHT = 480;
-  localparam fp SCALE_X = 32'h0000cccd;   // (2/SCREEN_WIDTH) 
-  localparam fp SCALE_Y = 32'h00011111;   // (2/SCREEN_HEIGHT)
-
   // Clock and reset
   logic clk;
   logic rst;
@@ -28,13 +21,8 @@ module tb_ray_generator();
   vec3 ray_direction;
   logic valid;
 
-  logic [31:0] ray_dir_x, ray_dir_y, ray_dir_z;
-
   // Instantiate the ray_generator module
-  ray_generator #(
-    .SCREEN_WIDTH(SCREEN_WIDTH),
-    .SCREEN_HEIGHT(SCREEN_HEIGHT)
-  ) uut (
+  ray_generator uut (
     .clk(clk),
     .rst(rst),
     .screen_x(screen_x),
@@ -51,6 +39,10 @@ module tb_ray_generator();
 
   function automatic real from_fixed_Q11_21(fp val);
       return $itor($signed(val)) / 2097152.0; // 2^21
+  endfunction
+
+  function automatic fp to_fixed_Q11_21(input real val);
+    return $rtoi(val * (2.0 ** 21));
   endfunction
 
   // Clock generation: 10ns period = 100MHz
@@ -73,48 +65,76 @@ module tb_ray_generator();
     #10;
 
     // Feed pixel (0, 0) top left
-    screen_x = 32'h00000000;
-    screen_y = 32'h00000000;
+    screen_x = to_fixed_Q11_21(0.0);
+    screen_y = to_fixed_Q11_21(0.0);
     coords_valid = 1;
     #10;  // one clock cycle
     coords_valid = 0;
     #90;
 
     // Feed pixel (640, 0) top right
-    screen_x = 32'h50000000;
-    screen_y = 32'h00000000;
+    screen_x = to_fixed_Q11_21(640.0);
+    screen_y = to_fixed_Q11_21(0.0);
     coords_valid = 1;
     #10;
     coords_valid = 0;
     #90;
 
     // Feed pixel (640, 480) //Bottom right
-    screen_x = 32'h50000000;
-    screen_y = 32'h3c000000;
+    screen_x = to_fixed_Q11_21(640.0);
+    screen_y = to_fixed_Q11_21(480.0);
     coords_valid = 1;
     #10;
     coords_valid = 0;
     #90;
 
     // Feed pixel (0, 480) //Bottom left
-    screen_x = 32'h00000000;
-    screen_y = 32'h3c000000;
+    screen_x = to_fixed_Q11_21(0.0);
+    screen_y = to_fixed_Q11_21(480.0);
     coords_valid = 1;
     #10;
     coords_valid = 0;
     #90;
 
     // Feed pixel (320, 0) //Middle top
-    screen_x = 32'h28000000;
-    screen_y = 32'h00000000;
+    screen_x = to_fixed_Q11_21(320.0);
+    screen_y = to_fixed_Q11_21(0.0);
     coords_valid = 1;
     #10;
     coords_valid = 0;
     #90;
 
     // Feed pixel (320, 240) Middle
-    screen_x = 32'h28000000;
-    screen_y = 32'h1e000000;
+    screen_x = to_fixed_Q11_21(320.0);
+    screen_y = to_fixed_Q11_21(240.0);
+    coords_valid = 1;
+    #10;
+    coords_valid = 0;
+    #90;
+
+    screen_x = to_fixed_Q11_21(360.0);
+    screen_y = to_fixed_Q11_21(240.0);
+    coords_valid = 1;
+    #10;
+    coords_valid = 0;
+    #90;
+
+    screen_x = to_fixed_Q11_21(280.0);
+    screen_y = to_fixed_Q11_21(240.0);
+    coords_valid = 1;
+    #10;
+    coords_valid = 0;
+    #90;
+
+    screen_x = to_fixed_Q11_21(320.0);
+    screen_y = to_fixed_Q11_21(280.0);
+    coords_valid = 1;
+    #10;
+    coords_valid = 0;
+    #90;
+
+    screen_x = to_fixed_Q11_21(320.0);
+    screen_y = to_fixed_Q11_21(200.0);
     coords_valid = 1;
     #10;
     coords_valid = 0;
@@ -148,13 +168,4 @@ module tb_ray_generator();
       end
     end
 
-always @(*) begin
-  ray_dir_x = ray_direction.x;
-  ray_dir_y = ray_direction.y;
-  ray_dir_z = ray_direction.z;
-end
-
 endmodule
-
-
-
