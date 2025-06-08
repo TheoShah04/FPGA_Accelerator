@@ -3,13 +3,6 @@
 `include "common_defs.svh"
 module tb_ray_generator();
 
-
-  // Parameters from your module (adjust if needed)
-  parameter SCREEN_WIDTH = 640;
-  parameter SCREEN_HEIGHT = 480;
-  localparam fp SCALE_X = 32'h0000cccd;   // (2/SCREEN_WIDTH) 
-  localparam fp SCALE_Y = 32'h00011111;   // (2/SCREEN_HEIGHT)
-
   // Clock and reset
   logic clk;
   logic rst;
@@ -28,13 +21,8 @@ module tb_ray_generator();
   vec3 ray_direction;
   logic valid;
 
-  logic [31:0] ray_dir_x, ray_dir_y, ray_dir_z;
-
   // Instantiate the ray_generator module
-  ray_generator #(
-    .SCREEN_WIDTH(SCREEN_WIDTH),
-    .SCREEN_HEIGHT(SCREEN_HEIGHT)
-  ) uut (
+  ray_generator uut (
     .clk(clk),
     .rst(rst),
     .screen_x(screen_x),
@@ -148,13 +136,4 @@ module tb_ray_generator();
       end
     end
 
-always @(*) begin
-  ray_dir_x = ray_direction.x;
-  ray_dir_y = ray_direction.y;
-  ray_dir_z = ray_direction.z;
-end
-
 endmodule
-
-
-

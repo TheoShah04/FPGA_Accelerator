@@ -2,8 +2,6 @@
 `include "common_defs.svh"
 
 module ray_generator #(
-    parameter SCREEN_WIDTH = `SCREEN_WIDTH,
-    parameter SCREEN_HEIGHT = `SCREEN_HEIGHT
 )(
     input logic clk,
     input logic rst,
@@ -21,8 +19,8 @@ module ray_generator #(
 
 // calculating camera up and right vectors internally using tan approximations
 localparam fp ASPECT_RATIO_640_480 = 32'h01555555;
-localparam fp SCALE_X = 32'h0000199a;   // 2/SCREEN_WIDTH in Q11.21
-localparam fp SCALE_Y = 32'h00002222;   // 2/SCREEN_HEIGHT in Q11.21
+localparam fp SCALE_X = 32'h0000199a;   // 2/SCREEN_WIDTH(640) in Q11.21
+localparam fp SCALE_Y = 32'h00002222;   // 2/SCREEN_HEIGHT(480) in Q11.21
 
 // camera looking down z axis
 vec3 CAMERA_RIGHT = make_vec3(32'h01000000, 32'h00000000, 32'h00000000); // (1,0,0)
