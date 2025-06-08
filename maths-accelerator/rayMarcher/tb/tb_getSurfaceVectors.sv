@@ -53,7 +53,7 @@ module tb_getSurfaceVectors;
         rst = 1'b1;
         //Set input params - surface point and light position
         #10;
-        p = make_vec3(0, 0, 32'h0019999a);
+        p = make_vec3(0, 0, 32'h01000000);
         lightPos = make_vec3 (`FP_FOUR, `FP_FIVE, `FP_THREE);
         #5;
         valid_in = 1'b1;
