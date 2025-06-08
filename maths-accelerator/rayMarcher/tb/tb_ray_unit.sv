@@ -335,8 +335,8 @@ module tb_ray_unit;
     #10;
 
     // Loop over 640x480 pixels
-    for (int y = 0; y <= 480; y++) begin
-      for (int x = 0; x <= 640; x++) begin
+    for (int y = 0; y < 480; y++) begin
+      for (int x = 0; x < 640; x++) begin
         #10;
         screen_x = to_fixed_Q11_21(x);
         screen_y = to_fixed_Q11_21(y);
@@ -354,6 +354,7 @@ module tb_ray_unit;
       end
     end
 
+    $display("Finished generating %0d pixels...", pixel_count);
     #100;
     $finish;
   end
