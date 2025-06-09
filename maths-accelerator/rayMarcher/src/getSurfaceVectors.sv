@@ -137,7 +137,7 @@ module getSurfaceVectors #(
     //Calculate normal and light vectors S = m.x^2 + m.y^2 + m.z^2
     localparam fp MIN_SQ_INPUT = 32'h00000410; // 1/16 in Q8.24 (minimum element in vec to meet inv_sqrt range i think)
     vec3 normalVec_clamped;
-    logic limit_clamp_1,limit_clamp_2,limit_clamp_3, limit_clamp_4;
+    logic limit_clamp_1,limit_clamp_2,limit_clamp_3, limit_clamp_4,limit_clamp_5;
     always_comb begin
         if (normalVec_valid && lightVec_valid) begin
             if(hit_in_3) begin
@@ -165,6 +165,7 @@ module getSurfaceVectors #(
         limit_clamp_2 <= limit_clamp_1;
         limit_clamp_3 <= limit_clamp_2;
         limit_clamp_4 <= limit_clamp_3;
+        limit_clamp_5 <= limit_clamp_4;
     end
 
     // fp normalVec_clamped;
@@ -221,7 +222,7 @@ module getSurfaceVectors #(
     end
 
     always_comb begin
-        if (limit_clamp_4)         //Change to always_comb block
+        if (limit_clamp_5)         //Change to always_comb block
             surfaceNormal = pre_surface_Normal << 5;
         else
             surfaceNormal = pre_surface_Normal;
