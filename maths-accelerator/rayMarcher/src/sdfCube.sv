@@ -16,7 +16,7 @@ assign half_size = radius;
 // need half radius of cube
 always_ff @(posedge clk) begin
     if(valid_in) begin
-        output_sdf <= fast_cd(point, half_size);
+        outputDistance <= fast_cd(point, half_size);
         valid_out <= 1'b1;
     end else begin
         valid_out <= 1'b0;

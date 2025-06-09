@@ -2,8 +2,8 @@ from vcdvcd import VCDVCD
 from PIL import Image
 
 # --- CONFIGURATION ---
-vcd_file = "sim_vivado/sim_vivado.sim/sim_1/behav/xsim/ray_unit_test.vcd"  # Make sure this matches your Verilog dumpfile
-signal_name = "tb_ray_unit.dut.pixel_rgb[23:0]"  # Adjust if different
+vcd_file = "sim_vivado/sim_vivado.sim/sim_1/behav/xsim/fullModule_test.vcd"  # Make sure this matches your Verilog dumpfile
+signal_name = "tb_fullModule.dut.shade_out[23:0]"  # Adjust if different
 width, height = 640, 480
 output_image = "rgb_output.png"
 
