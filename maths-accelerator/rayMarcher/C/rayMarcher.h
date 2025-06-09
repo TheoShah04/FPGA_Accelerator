@@ -13,6 +13,18 @@ public:
     vec3 abs() const;
 };
 
+class vec4 {
+public:
+    float x, y, z, t;
+    vec4(float x_, float y_, float z_, float t_);
+    vec4 addition(const vec4& other) const;
+    vec4 subtraction(const vec4& other) const;
+    vec4 scalarMul(float mul) const;
+    float length() const;
+    vec4 normalise() const;
+    vec4 abs() const;
+};
+
 class vec2 {
 public:
     float x, y;
@@ -31,6 +43,8 @@ public:
 float sdfSphere(vec3 p, float s);
 float sdfTorus(vec3 p, vec2 dimensions);
 float sdfBoxFrame(vec3 p, vec3 halfDimensions, float thickness);
+// float sdfJuliaTunnel(vec3 p);
+float sdfSierpinskiTunnel(vec3 p);
 float scene(vec3 p);
 float raymarch(vec3 ro, vec3 rd);
 float dot(vec3 v1, vec3 v2);
