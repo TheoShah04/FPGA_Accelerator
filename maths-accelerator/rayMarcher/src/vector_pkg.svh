@@ -41,6 +41,15 @@ function automatic fp fp_abs(input fp a);
   return ($signed(a) < $signed(0)) ? fp_neg(a) : a;
 endfunction
 
+function automatic fp fp_floor(input fp a);
+  return ($signed(a) >> $signed(`FRAC_BITS)) << `FRAC_BITS;
+endfunction
+
+function automatic fp fp_fract(input fp a);
+  localparam fp FP_FRAC_MASK = {{`INT_BITS{1’b0}}, {`FRAC_BITS{1’b1}}};    
+  return a & FP_FRAC_MASK;
+endfunction
+
 // vector arithmetic
 
 function automatic vec3 make_vec3(input fp x, input fp y, input fp z);
@@ -90,11 +99,17 @@ endfunction
 function automatic fp fast_cd(input vec3 point, input fp half_size);
   vec3 d;
   fp max_d;
-  d.x = fp_abs(point.x) - half_size;
-  d.y = fp_abs(point.y) - half_size;
-  d.z = fp_abs(point.z) - half_size;
+  d.x = fp_abs(point.x);
+  d.y = fp_abs(point.y);
+  d.z = fp_abs(point.z);
   max_d = fp_max(fp_max(d.x, d.y), d.z);
-  return max_d;
+  return max_d - half_size;
+endfunction
+
+function automatic vec3 vec3_fract(input vec3 a);
+  vec3_fract.x = fp_fract(a.x);
+  vec3_fract.y = fp_fract(a.y);
+  vec3_fract.z = fp_fract(a.z);
 endfunction
 
 `endif

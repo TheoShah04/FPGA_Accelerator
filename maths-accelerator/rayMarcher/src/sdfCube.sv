@@ -6,7 +6,7 @@ module sdfCube(
     input vec3 point,
     input logic valid_in,
     input fp radius,
-    output fp output_sdf,
+    output fp outputDistance,
     output logic valid_out
 );
 
