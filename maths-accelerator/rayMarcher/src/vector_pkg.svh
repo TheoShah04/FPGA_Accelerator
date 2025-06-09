@@ -45,8 +45,8 @@ function automatic fp fp_floor(input fp a);
   return ($signed(a) >> $signed(`FRAC_BITS)) << `FRAC_BITS;
 endfunction
 
-function automatic fp fp_fract(input fp a);
-  localparam fp FP_FRAC_MASK = {{`INT_BITS{1’b0}}, {`FRAC_BITS{1’b1}}};    
+localparam fp FP_FRAC_MASK = { {8'b0}, {24'hFFFFFF} }; 
+function automatic fp fp_fract(input fp a);   
   return a & FP_FRAC_MASK;
 endfunction
 
