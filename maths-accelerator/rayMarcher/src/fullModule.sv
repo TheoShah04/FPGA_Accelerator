@@ -1,3 +1,4 @@
+`timescale 1ns/1ps
 `include "vector_pkg.svh"
 `include "common_defs.svh"
 
@@ -16,7 +17,6 @@ module fullModule #(
     output logic valid_out
 );
   
-
     logic surface_hit, rayUnit_valid;
     vec3 surface_point; 
 
