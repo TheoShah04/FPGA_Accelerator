@@ -135,8 +135,9 @@ module getSurfaceVectors #(
     end
 
     //Calculate normal and light vectors S = m.x^2 + m.y^2 + m.z^2
-    localparam fp MIN_INPUT = 32'h00100000; // 1/16 in Q8.24 (minimum element in vec to meet inv_sqrt range i think)
+    localparam fp MIN_SQ_INPUT = 32'h00000410; // 1/16 in Q8.24 (minimum element in vec to meet inv_sqrt range i think)
     vec3 normalVec_clamped;
+    logic limit_clamp_1,limit_clamp_2,limit_clamp_3, limit_clamp_4;
     always_comb begin
         if (normalVec_valid && lightVec_valid) begin
             if(hit_in_3) begin
@@ -144,16 +145,26 @@ module getSurfaceVectors #(
                 lightVec_mag_sq = vec3_dot(lightVec, lightVec);
 
                 normalVec = vec3_add(vec3_add(a, b), vec3_add(c, d));
-                if((fp_abs(normalVec.x) < MIN_INPUT) || (fp_abs(normalVec.y) < MIN_INPUT) || (fp_abs(normalVec.z) < MIN_INPUT)) begin
-                    normalVec.x = normalVec.x << 8; //CHANGE THIS 
-                    normalVec.y = normalVec.y << 8;
-                    normalVec.z = normalVec.z << 8;
-                end
+                // if((fp_abs(normalVec.x) < MIN_INPUT) || (fp_abs(normalVec.y) < MIN_INPUT) || (fp_abs(normalVec.z) < MIN_INPUT)) begin
+                //     normalVec.x = normalVec.x << 8; //CHANGE THIS 
+                //     normalVec.y = normalVec.y << 8;
+                //     normalVec.z = normalVec.z << 8;
+                // end
                 normalVec_mag_sq = vec3_dot(normalVec, normalVec);
-
+                if (normalVec_mag_sq <= 32'sh00000410) begin
+                    normalVec_mag_sq = normalVec_mag_sq << 10;
+                    limit_clamp_1 = 1'b1;
+                end
+                else limit_clamp_1 = 1'b0;
             end
             reg_hit_in_2 = hit_in_3; //Change this when pipelining
         end
+    end
+
+    always_ff @(posedge clk) begin
+        limit_clamp_2 <= limit_clamp_1;
+        limit_clamp_3 <= limit_clamp_2;
+        limit_clamp_4 <= limit_clamp_3;
     end
 
     // fp normalVec_clamped;
@@ -185,17 +196,19 @@ module getSurfaceVectors #(
             .inv_sqrt(inv_lightVec_mag)
     );
 
+    vec3 pre_surface_Normal;
+
     //Final Stage 3 (Calculate S * 1/sqrt(S))
     always_ff @ (posedge clk or negedge rst) begin 
         if (!rst) begin
-            surfaceNormal <= '0;
+            pre_surface_Normal <= '0;
             surfaceLightVector <= '0;
             valid_out <= 1'b0;
             hit_out <= 1'b0;
         end 
         else if (normalVec_sqrt_valid && lightVec_sqrt_valid) begin
             if (reg_hit_in_2) begin
-                surfaceNormal <= vec3_scale(normalVec, inv_normalVec_mag);
+                pre_surface_Normal <= vec3_scale(normalVec, inv_normalVec_mag);
                 surfaceLightVector <= vec3_scale(lightVec, inv_lightVec_mag);
             end
             valid_out <= 1'b1;
@@ -206,5 +219,13 @@ module getSurfaceVectors #(
             hit_out <= 1'b0;
         end
     end
+
+    always_comb begin
+        if (limit_clamp_4)         //Change to always_comb block
+            surfaceNormal = pre_surface_Normal << 5;
+        else
+            surfaceNormal = pre_surface_Normal;
+    end 
+        
 
 endmodule
