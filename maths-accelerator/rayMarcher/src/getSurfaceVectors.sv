@@ -1,3 +1,4 @@
+`timescale 1ns/1ps
 `include "vector_pkg.svh"
 `include "common_defs.svh"
 
@@ -134,18 +135,37 @@ module getSurfaceVectors #(
     end
 
     //Calculate normal and light vectors S = m.x^2 + m.y^2 + m.z^2
+    localparam fp MIN_INPUT = 32'h00100000; // 1/16 in Q8.24 (minimum element in vec to meet inv_sqrt range i think)
+    vec3 normalVec_clamped;
     always_comb begin
         if (normalVec_valid && lightVec_valid) begin
             if(hit_in_3) begin
-                normalVec = vec3_add(vec3_add(a, b), vec3_add(c, d));
-                normalVec_mag_sq = vec3_dot(normalVec, normalVec);
-
                 lightVec = vec3_sub(lightPos, p);
                 lightVec_mag_sq = vec3_dot(lightVec, lightVec);
+
+                normalVec = vec3_add(vec3_add(a, b), vec3_add(c, d));
+                if((fp_abs(normalVec.x) < MIN_INPUT) || (fp_abs(normalVec.y) < MIN_INPUT) || (fp_abs(normalVec.z) < MIN_INPUT)) begin
+                    normalVec.x = normalVec.x << 8; //CHANGE THIS 
+                    normalVec.y = normalVec.y << 8;
+                    normalVec.z = normalVec.z << 8;
+                end
+                normalVec_mag_sq = vec3_dot(normalVec, normalVec);
+
             end
             reg_hit_in_2 = hit_in_3; //Change this when pipelining
         end
     end
+
+    // fp normalVec_clamped;
+    // always_comb begin
+    // if (normalVec_mag_sq == 0)
+    //     normalVec_mag_sq_clamped = '0;
+    // else if (normalVec_mag_sq < MIN_INPUT)
+    //     normalVec_mag_sq_clamped = MIN_INPUT; //clamp input into inv_sqrt
+    // else
+    //     normalVec_mag_sq_clamped = normalVec_mag_sq;
+    // end
+
 
     inv_sqrt normalVec_getSqrt(
             .clk(clk),

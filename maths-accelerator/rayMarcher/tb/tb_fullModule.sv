@@ -13,12 +13,12 @@ module tb_fullModule;
   logic valid_in;
   vec3 camera_forward;
   vec3 ray_origin;
+  vec3 light_pos;
   logic sdf_sel;
 
   // Outputs from DUT
-  vec3 surface_point;
   logic valid_out;
-  logic hit;
+  logic [23:0] shade_out;
   int pixel_count = 0;
 
   // Clock generation
@@ -60,6 +60,7 @@ module tb_fullModule;
     valid_in = 0;
     camera_forward = make_vec3(to_fixed(0.0), to_fixed(0.0), to_fixed(1.0));
     ray_origin     = make_vec3(to_fixed(0.0), to_fixed(0.0), to_fixed(3.0));
+    light_pos      = make_vec3(to_fixed(0.0), to_fixed(3.0), to_fixed(5.0));
     sdf_sel = 0; // Sphere
 
     // Reset sequence
@@ -67,18 +68,30 @@ module tb_fullModule;
     rst = 1'b1;
     #10;
 
-    // Loop over 640x480 pixels (300)                (230,400) for 480x480
-    for (int y = 0; y < 480; y++) begin // ASPECT_CHANGE
+    // Loop over 640x480 pixels (307,200 pixels) 
+    for (int y = 0; y < 480; y++) begin 
       for (int x = 0; x < 640; x++) begin
         #10;
         screen_x = to_fixed_Q11_21(x);
         screen_y = to_fixed_Q11_21(y);
-
         valid_in = 1;
         #10;
         valid_in = 0;
 
-        wait(valid_out);
+        // // instead of straight wait(valid_out);
+        // fork
+        //   begin
+        //     wait (valid_out);
+        //     disable timeout;
+        //   end
+        //   begin : timeout
+        //     #1000;                 // e.g. 1000 ns timeout
+        //     $fatal("Timeout waiting for valid_out at pixel %0d (x=%0d,y=%0d)", 
+        //             pixel_count, x, y);
+        //   end
+        // join
+
+        #200;
 
         //Pixel counter
         pixel_count++;
