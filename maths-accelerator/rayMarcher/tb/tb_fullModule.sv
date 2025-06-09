@@ -61,7 +61,7 @@ module tb_fullModule;
     camera_forward = make_vec3(to_fixed(0.0), to_fixed(0.0), to_fixed(1.0));
     ray_origin     = make_vec3(to_fixed(0.0), to_fixed(0.0), to_fixed(3.0));
     light_pos      = make_vec3(to_fixed(0.0), to_fixed(3.0), to_fixed(5.0));
-    sdf_sel = 0; // Sphere
+    sdf_sel = 1; // Sphere or square
 
     // Reset sequence
     #20;
