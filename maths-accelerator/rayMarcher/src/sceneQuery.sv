@@ -45,17 +45,7 @@ module sceneQuery(
     );
 
     // latency: 1 clock cycle
-    sdfCube cube (
-        .clk(clk),
-        .valid_in(valid_cube),
-        .point(pos),
-        .radius(s),
-        .outputDistance(sdf_objects[1]),
-        .valid_out(sdf_valid[1])
-    );
-
-    // latency: 1 clock cycle
-    // sdfInfiniteCube InfiniteCube (
+    // sdfCube cube (
     //     .clk(clk),
     //     .valid_in(valid_cube),
     //     .point(pos),
@@ -63,4 +53,14 @@ module sceneQuery(
     //     .outputDistance(sdf_objects[1]),
     //     .valid_out(sdf_valid[1])
     // );
+
+    // latency: 1 clock cycle
+    sdfInfiniteCube InfiniteCube (
+        .clk(clk),
+        .valid_in(valid_cube),
+        .point(pos),
+        .radius(s),
+        .outputDistance(sdf_objects[1]),
+        .valid_out(sdf_valid[1])
+    );
 endmodule
