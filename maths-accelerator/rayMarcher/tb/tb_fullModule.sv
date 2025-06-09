@@ -78,20 +78,7 @@ module tb_fullModule;
         #10;
         valid_in = 0;
 
-        // // instead of straight wait(valid_out);
-        // fork
-        //   begin
-        //     wait (valid_out);
-        //     disable timeout;
-        //   end
-        //   begin : timeout
-        //     #1000;                 // e.g. 1000 ns timeout
-        //     $fatal("Timeout waiting for valid_out at pixel %0d (x=%0d,y=%0d)", 
-        //             pixel_count, x, y);
-        //   end
-        // join
-
-        #200;
+        wait (valid_out);
 
         //Pixel counter
         pixel_count++;

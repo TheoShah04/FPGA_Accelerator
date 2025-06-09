@@ -37,7 +37,7 @@ module fullModule #(
     vec3 normal_vec;
     vec3 light_vec;
     logic hit_out, surfaceVec_valid;
-    logic obj_sel = 1'b0;
+    logic obj_sel = 1'b1;
     getSurfaceVectors surface_calc(
         .clk(clk),
         .rst(rst_gen),
