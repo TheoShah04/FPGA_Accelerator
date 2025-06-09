@@ -29,36 +29,42 @@ except KeyError as e:
     exit(1)
 
 # --- Synchronize and Filter ---
-pixels = []
+pixels    = []
 shade_idx = 0
 valid_idx = 0
 shade_len = len(shade_tv)
 valid_len = len(valid_tv)
 
-time = 0
 current_shade = '0'
 current_valid = '0'
 
-# Merge changes over time
-while len(pixels) < width * height and (shade_idx < shade_len or valid_idx < valid_len):
-    next_hit_time = shade_tv[shade_idx][0] if shade_idx < shade_len else float('inf')
+# Keep grabbing the next event (shade or valid) until we have enough pixels
+while len(pixels) < width*height and (shade_idx < shade_len or valid_idx < valid_len):
+    # peek at the time of the next shade change or valid change
+    next_shade_time = shade_tv[shade_idx][0] if shade_idx < shade_len else float('inf')
     next_valid_time = valid_tv[valid_idx][0] if valid_idx < valid_len else float('inf')
     
-    time = min(next_hit_time, next_valid_time)
-
-    if valid_idx < valid_len and valid_tv[valid_idx][0] == time:
+    # whichever happens first…
+    if next_shade_time <= next_valid_time:
+        # consume a shade change
+        current_shade = shade_tv[shade_idx][1]
+        shade_idx   += 1
+        # if we're currently valid, emit a pixel immediately
+        if current_valid == '1':
+            pixels.append(binstr_to_rgb(current_shade))
+    else:
+        # consume a valid flag change
         current_valid = valid_tv[valid_idx][1]
-        valid_idx += 1
+        valid_idx   += 1
+        # when valid just went high, emit a pixel with the latest shade
+        if current_valid == '1':
+            pixels.append(binstr_to_rgb(current_shade))
 
-    # Only store when valid_out is high and hit is known
-    if current_valid == '1':
-        pixels.append(binstr_to_rgb(current_shade))
+# pad to full image if needed
+pixels += [(0,0,0)] * (width*height - len(pixels))
 
-# Pad if needed
-pixels += [(0, 0, 0)] * (width * height - len(pixels))
-
-# --- Write image ---
+# write out the image
 img = Image.new("RGB", (width, height))
-img.putdata(pixels[:width * height])
+img.putdata(pixels)
 img.save(output_image)
 print(f"Image saved to: {output_image}")

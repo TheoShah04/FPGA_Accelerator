@@ -25,6 +25,7 @@ module getSurfaceVectors #(
     logic module_finished_xyy, module_finished_yxy, module_finished_yyx, module_finished_xxx, normalVec_valid, lightVec_valid, normalVec_sqrt_valid, lightVec_sqrt_valid;
     vec3 h_xyy, h_yxy, h_yyx, h_xxx, pos_xyy, pos_yxy, pos_yyx, pos_xxx;
     logic hit_in_2, hit_in_3, hit_in_4, reg_hit_in_1, reg_hit_in_2;
+    vec3 p_2, p_3, p_4, reg_p_1, reg_p_2;
 
     //Stage 1
     logic stage1_valid;
@@ -34,6 +35,7 @@ module getSurfaceVectors #(
             h_xyy <= '0;    h_yxy <= '0; h_yyx <= '0; h_xxx <= '0;
             stage1_valid <= 1'b0;
             hit_in_2 <= 1'b0;
+            p_2 <= '0;
         end 
         else if (valid_in) begin
             if (hit_in) begin
@@ -44,22 +46,25 @@ module getSurfaceVectors #(
             end
             stage1_valid <= 1'b1;
             hit_in_2 <= hit_in;
+            p_2 <= p;
         end
         else begin
             stage1_valid <= 1'b0;
             hit_in_2 <= 1'b0;
+            p_2 <= '0;
         end
     end
 
     always_comb begin
         if (stage1_valid) begin
             if (hit_in_2) begin
-                pos_xyy = vec3_add(p, vec3_scale(h_xyy, eps));
-                pos_yxy = vec3_add(p, vec3_scale(h_yxy, eps));
-                pos_yyx = vec3_add(p, vec3_scale(h_yyx, eps));
-                pos_xxx = vec3_add(p, vec3_scale(h_xxx, eps));
+                pos_xyy = vec3_add(p_2, vec3_scale(h_xyy, eps));
+                pos_yxy = vec3_add(p_2, vec3_scale(h_yxy, eps));
+                pos_yyx = vec3_add(p_2, vec3_scale(h_yyx, eps));
+                pos_xxx = vec3_add(p_2, vec3_scale(h_xxx, eps));
             end
             reg_hit_in_1 = hit_in_2; //Change this when pipelining
+            reg_p_1 = p_2; 
         end
     end
 
@@ -115,6 +120,7 @@ module getSurfaceVectors #(
             normalVec_valid <= 1'b0;
             lightVec_valid <= 1'b0;
             hit_in_3 <= 1'b0;
+            p_3 <= '0;
         end 
         else if(stage2_valid) begin
             if (reg_hit_in_1) begin
@@ -126,11 +132,13 @@ module getSurfaceVectors #(
             normalVec_valid <= 1'b1;
             lightVec_valid <= 1'b1;
             hit_in_3 <= reg_hit_in_1;
+            p_3 <= reg_p_1;
         end 
         else begin
             normalVec_valid <= 1'b0;
             lightVec_valid <= 1'b0;
             hit_in_3 <= 1'b0;
+            p_3 <= '0;
         end
     end
 
@@ -141,7 +149,7 @@ module getSurfaceVectors #(
     always_comb begin
         if (normalVec_valid && lightVec_valid) begin
             if(hit_in_3) begin
-                lightVec = vec3_sub(lightPos, p);
+                lightVec = vec3_sub(lightPos, p_3);
                 lightVec_mag_sq = vec3_dot(lightVec, lightVec);
 
                 normalVec = vec3_add(vec3_add(a, b), vec3_add(c, d));
@@ -158,6 +166,7 @@ module getSurfaceVectors #(
                 else limit_clamp_1 = 1'b0;
             end
             reg_hit_in_2 = hit_in_3; //Change this when pipelining
+
         end
     end
 
