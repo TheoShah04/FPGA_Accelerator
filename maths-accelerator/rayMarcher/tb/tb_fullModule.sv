@@ -20,7 +20,8 @@ module tb_fullModule;
   logic valid_out;
   logic [23:0] shade_out;
   int pixel_count = 0;
-
+  logic sof;
+  logic eol;
   // Clock generation
   always #5 clk = ~clk;
 
@@ -36,7 +37,9 @@ module tb_fullModule;
     .ray_origin(ray_origin),
     .sdf_sel(sdf_sel),
     .shade_out(shade_out),
-    .valid_out(valid_out)
+    .valid_out(valid_out),
+    .sof(sof),
+    .eol(eol)
   );
 
   // Fixed-point helpers
