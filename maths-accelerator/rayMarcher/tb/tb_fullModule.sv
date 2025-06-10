@@ -14,7 +14,6 @@ module tb_fullModule;
   vec3 camera_forward;
   vec3 camera_right;
   vec3 camera_up;
-  vec3 world_up;
   vec3 ray_origin;
   vec3 light_pos;
   logic sdf_sel;
@@ -38,7 +37,6 @@ module tb_fullModule;
     .light_pos(light_pos),
     .camera_forward(camera_forward),
     .camera_right(camera_right),  
-    .world_up(world_up),
     .ray_origin(ray_origin),
     .sdf_sel(sdf_sel),
     .shade_out(shade_out),
@@ -84,8 +82,8 @@ module tb_fullModule;
     pixel_count = 0;
     rst = 1'b0;
     valid_in = 0;
-    camera_forward = vec3_normalise(make_vec3(to_fixed(0.0), to_fixed(1.0), to_fixed(1.0))); //this in inverted direction
-    camera_up = vec3_normalise(make_vec3(to_fixed(0.0), to_fixed(1.0), to_fixed(0.0)));
+    camera_up = make_vec3(to_fixed(0.0), to_fixed(1.0), to_fixed(0.0));
+    camera_forward = make_vec3(to_fixed(0.0), to_fixed(1.0), to_fixed(1.0)); //this in inverted direction
     camera_right = vec3_normalise(vec3_cross(camera_forward, camera_up)); //normalise vector in software here maybe?
     
     ray_origin     = make_vec3(to_fixed(-2.0), to_fixed(2.0), to_fixed(3.0));

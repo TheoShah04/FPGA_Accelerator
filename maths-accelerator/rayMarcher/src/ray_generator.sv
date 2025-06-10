@@ -9,8 +9,7 @@ module ray_generator #(
     input fp screen_y, //in Q11.21
     input logic valid_in,
     input  vec3  camera_forward, 
-    input vec3 camera_right,
-    input  vec3  world_up,       
+    input vec3 camera_right,   
     //output vec3  ray_origin,    
     output vec3 ray_direction,
     output logic valid_out
@@ -28,7 +27,6 @@ localparam fp SCALE_Y = 32'h00002222;   // 2/SCREEN_HEIGHT(480) in Q11.21
 // camera looking down z axis
 //vec3 camera_right; //= make_vec3(32'h01000000, 32'h00000000, 32'h00000000); // (1,0,0)
 vec3 camera_up_ortho;   //= make_vec3(32'h00000000, 32'h01000000, 32'h00000000); // (0,1,0)
-
 
 always_comb begin
     camera_up_ortho = vec3_cross(camera_right, camera_forward);
