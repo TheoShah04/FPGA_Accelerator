@@ -85,7 +85,7 @@ module tb_fullModule;
     rst = 1'b0;
     valid_in = 0;
     camera_forward = vec3_normalise(make_vec3(to_fixed(0.0), to_fixed(1.0), to_fixed(1.0))); //this in inverted direction
-    camera_up = vec3_normalise(make_vec3(to_fixed(0.0), to_fixed(1.0), to_fixed(0.0)));
+    camera_up = make_vec3(to_fixed(0.0), to_fixed(1.0), to_fixed(0.0));
     camera_right = vec3_normalise(vec3_cross(camera_forward, camera_up)); //normalise vector in software here maybe?
     
     ray_origin     = make_vec3(to_fixed(-2.0), to_fixed(2.0), to_fixed(3.0));

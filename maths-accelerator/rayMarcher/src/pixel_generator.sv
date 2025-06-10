@@ -177,22 +177,25 @@ reg [8:0] y;
 wire first = (x == 0) & (y==0);
 wire lastx = (x == `SCREEN_WIDTH - 1);
 wire lasty = (y == `SCREEN_HEIGHT - 1);
-// wire [31:0] lightx = regfile[0];
-// wire [31:0] lighty = regfile[1];
-// wire [31:0] lightz = regfile[2];
 wire [31:0] lightx = `FP_THREE;
-wire [31:0] lighty = `FP_FOUR;
+wire [31:0] lighty = `FP_THREE;
 wire [31:0] lightz = `FP_FIVE;
-// wire [31:0] camx = regfile[0];
-// wire [31:0] camy = regfile[1];
-// wire [31:0] camz = regfile[2];
+
+// wire [31:0]    obj = regfile[0];
+// wire [31:0] light = regfile[1];
+// wire [31:0] cam_forward_x = regfile[2];
+// wire [31:0] cam_forward_y = regfile[3]
+// wire [31:0] cam_forward_z = regfile[4];
+// wire [31:0] cam_right_x = regfile[5];
+// wire [31:0] cam_right_y = regfile[6]
+// wire [31:0] cam_right_z = regfile[7];
+// logic obj_sel;
+// assign obj_sel = obj[0];
 
 wire ready;
 
-vec3 light_pos = make_vec3(lightx, lighty, lightz); //default: 32'h0093EA1C 
-vec3 camera_pos = make_vec3(32'h01000000, 32'h00800000, 32'h01000000);
-vec3 camera_target = make_vec3(0,0,0);
-vec3 camera_forward = vec3_sub(camera_target, camera_pos);
+vec3 light_pos = make_vec3(0, lighty, lightz); //default: 32'h0093EA1C 
+vec3 camera_forward = make_vec3(0,`FP_ONE,`FP_ONE);
 
 always @(posedge out_stream_aclk) begin
     if (periph_resetn) begin
