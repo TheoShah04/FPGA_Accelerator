@@ -1,0 +1,37 @@
+#-----------------------------------------------------------
+# Vivado v2024.2 (64-bit)
+# SW Build 5239630 on Fri Nov 08 22:35:27 MST 2024
+# IP Build 5239520 on Sun Nov 10 16:12:51 MST 2024
+# SharedData Build 5239561 on Fri Nov 08 14:39:27 MST 2024
+# Start of session at: Tue May 20 18:47:44 2025
+# Process ID         : 2148
+# Current directory  : C:/LUTsofLUV/maths-accelerator/overlay/base/base.runs/base_color_convert_1_synth_1
+# Command line       : vivado.exe -log base_color_convert_1.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source base_color_convert_1.tcl
+# Log file           : C:/LUTsofLUV/maths-accelerator/overlay/base/base.runs/base_color_convert_1_synth_1/base_color_convert_1.vds
+# Journal file       : C:/LUTsofLUV/maths-accelerator/overlay/base/base.runs/base_color_convert_1_synth_1\vivado.jou
+# Running On         : DESKTOP-P5G18T7
+# Platform           : Windows Server 2016 or Windows 10
+# Operating System   : 26100
+# Processor Detail   : Intel(R) Core(TM) i7-1065G7 CPU @ 1.30GHz
+# CPU Frequency      : 1498 MHz
+# CPU Physical cores : 4
+# CPU Logical cores  : 8
+# Host memory        : 16850 MB
+# Swap memory        : 6442 MB
+# Total Virtual      : 23292 MB
+# Available Virtual  : 7848 MB
+#-----------------------------------------------------------
+source base_color_convert_1.tcl -notrace
+create_project: Time (s): cpu = 00:00:04 ; elapsed = 00:00:06 . Memory (MB): peak = 367.664 ; gain = 66.375
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/LUTsofLUV/maths-accelerator/overlay/ip'.
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2024.2/data/ip'.
+INFO: [IP_Flow 19-6924] IPCACHE: Running cache check for IP inst: base_color_convert_1
+INFO: [IP_Flow 19-6922] IPCACHE: Exporting cached entry ef2d25813cb0cf14 to dir: C:/LUTsofLUV/maths-accelerator/overlay/base/base.runs/base_color_convert_1_synth_1
+INFO: [IP_Flow 19-6928] IPCACHE: copied cached file c:/LUTsofLUV/maths-accelerator/overlay/base/base.cache/ip/2024.2/e/f/ef2d25813cb0cf14/base_color_convert_1.dcp to C:/LUTsofLUV/maths-accelerator/overlay/base/base.runs/base_color_convert_1_synth_1/base_color_convert_1.dcp.
+INFO: [IP_Flow 19-6928] IPCACHE: copied cached file c:/LUTsofLUV/maths-accelerator/overlay/base/base.cache/ip/2024.2/e/f/ef2d25813cb0cf14/base_color_convert_1_sim_netlist.v to C:/LUTsofLUV/maths-accelerator/overlay/base/base.runs/base_color_convert_1_synth_1/base_color_convert_1_sim_netlist.v.
+INFO: [IP_Flow 19-6928] IPCACHE: copied cached file c:/LUTsofLUV/maths-accelerator/overlay/base/base.cache/ip/2024.2/e/f/ef2d25813cb0cf14/base_color_convert_1_sim_netlist.vhdl to C:/LUTsofLUV/maths-accelerator/overlay/base/base.runs/base_color_convert_1_synth_1/base_color_convert_1_sim_netlist.vhdl.
+INFO: [IP_Flow 19-6928] IPCACHE: copied cached file c:/LUTsofLUV/maths-accelerator/overlay/base/base.cache/ip/2024.2/e/f/ef2d25813cb0cf14/base_color_convert_1_stub.v to C:/LUTsofLUV/maths-accelerator/overlay/base/base.runs/base_color_convert_1_synth_1/base_color_convert_1_stub.v.
+INFO: [IP_Flow 19-6928] IPCACHE: copied cached file c:/LUTsofLUV/maths-accelerator/overlay/base/base.cache/ip/2024.2/e/f/ef2d25813cb0cf14/base_color_convert_1_stub.vhdl to C:/LUTsofLUV/maths-accelerator/overlay/base/base.runs/base_color_convert_1_synth_1/base_color_convert_1_stub.vhdl.
+INFO: [IP_Flow 19-4838] Using cached IP synthesis design for IP base_color_convert_1, cache-ID = ef2d25813cb0cf14.
+INFO: [Common 17-206] Exiting Vivado at Tue May 20 18:48:08 2025...

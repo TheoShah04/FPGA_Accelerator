@@ -1,0 +1,307 @@
+#-----------------------------------------------------------
+# Vivado v2024.2 (64-bit)
+# SW Build 5239630 on Fri Nov 08 22:35:27 MST 2024
+# IP Build 5239520 on Sun Nov 10 16:12:51 MST 2024
+# SharedData Build 5239561 on Fri Nov 08 14:39:27 MST 2024
+# Start of session at: Tue May 20 18:54:42 2025
+# Process ID         : 17832
+# Current directory  : C:/LUTsofLUV/maths-accelerator/overlay/base/base.runs/base_pixel_generator_0_0_synth_1
+# Command line       : vivado.exe -log base_pixel_generator_0_0.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source base_pixel_generator_0_0.tcl
+# Log file           : C:/LUTsofLUV/maths-accelerator/overlay/base/base.runs/base_pixel_generator_0_0_synth_1/base_pixel_generator_0_0.vds
+# Journal file       : C:/LUTsofLUV/maths-accelerator/overlay/base/base.runs/base_pixel_generator_0_0_synth_1\vivado.jou
+# Running On         : DESKTOP-P5G18T7
+# Platform           : Windows Server 2016 or Windows 10
+# Operating System   : 26100
+# Processor Detail   : Intel(R) Core(TM) i7-1065G7 CPU @ 1.30GHz
+# CPU Frequency      : 1498 MHz
+# CPU Physical cores : 4
+# CPU Logical cores  : 8
+# Host memory        : 16850 MB
+# Swap memory        : 6442 MB
+# Total Virtual      : 23292 MB
+# Available Virtual  : 6535 MB
+#-----------------------------------------------------------
+source base_pixel_generator_0_0.tcl -notrace
+create_project: Time (s): cpu = 00:00:04 ; elapsed = 00:00:05 . Memory (MB): peak = 367.012 ; gain = 65.359
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/LUTsofLUV/maths-accelerator/overlay/ip'.
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2024.2/data/ip'.
+INFO: [IP_Flow 19-6924] IPCACHE: Running cache check for IP inst: base_pixel_generator_0_0
+Command: synth_design -top base_pixel_generator_0_0 -part xc7z020clg400-1 -incremental_mode off -mode out_of_context
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7z020'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7z020'
+INFO: [Device 21-403] Loading part xc7z020clg400-1
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 21420
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:13 ; elapsed = 00:00:15 . Memory (MB): peak = 1082.578 ; gain = 469.629
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-6901] identifier 'AXI_LITE_ADDR_WIDTH' is used before its declaration [c:/LUTsofLUV/maths-accelerator/overlay/base/base.gen/sources_1/bd/base/ipshared/e99b/pixel_generator.v:38]
+WARNING: [Synth 8-6901] identifier 'AXI_LITE_ADDR_WIDTH' is used before its declaration [c:/LUTsofLUV/maths-accelerator/overlay/base/base.gen/sources_1/bd/base/ipshared/e99b/pixel_generator.v:42]
+WARNING: [Synth 8-6901] identifier 'valid_int' is used before its declaration [c:/LUTsofLUV/maths-accelerator/overlay/base/base.gen/sources_1/bd/base/ipshared/e99b/pixel_generator.v:205]
+INFO: [Synth 8-6157] synthesizing module 'base_pixel_generator_0_0' [c:/LUTsofLUV/maths-accelerator/overlay/base/base.gen/sources_1/bd/base/ip/base_pixel_generator_0_0/synth/base_pixel_generator_0_0.v:53]
+INFO: [Synth 8-6157] synthesizing module 'pixel_generator' [c:/LUTsofLUV/maths-accelerator/overlay/base/base.gen/sources_1/bd/base/ipshared/e99b/pixel_generator.v:23]
+INFO: [Synth 8-6157] synthesizing module 'packer' [c:/LUTsofLUV/maths-accelerator/overlay/base/base.gen/sources_1/bd/base/ipshared/e99b/packer.v:1]
+INFO: [Synth 8-226] default block is never used [c:/LUTsofLUV/maths-accelerator/overlay/base/base.gen/sources_1/bd/base/ipshared/e99b/packer.v:74]
+INFO: [Synth 8-6155] done synthesizing module 'packer' (0#1) [c:/LUTsofLUV/maths-accelerator/overlay/base/base.gen/sources_1/bd/base/ipshared/e99b/packer.v:1]
+INFO: [Synth 8-6155] done synthesizing module 'pixel_generator' (0#1) [c:/LUTsofLUV/maths-accelerator/overlay/base/base.gen/sources_1/bd/base/ipshared/e99b/pixel_generator.v:23]
+INFO: [Synth 8-6155] done synthesizing module 'base_pixel_generator_0_0' (0#1) [c:/LUTsofLUV/maths-accelerator/overlay/base/base.gen/sources_1/bd/base/ip/base_pixel_generator_0_0/synth/base_pixel_generator_0_0.v:53]
+WARNING: [Synth 8-7129] Port s_axi_lite_araddr[7] in module pixel_generator is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axi_lite_araddr[6] in module pixel_generator is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axi_lite_araddr[5] in module pixel_generator is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axi_lite_araddr[1] in module pixel_generator is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axi_lite_araddr[0] in module pixel_generator is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axi_lite_awaddr[7] in module pixel_generator is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axi_lite_awaddr[6] in module pixel_generator is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axi_lite_awaddr[5] in module pixel_generator is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axi_lite_awaddr[1] in module pixel_generator is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axi_lite_awaddr[0] in module pixel_generator is either unconnected or has no load
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:16 ; elapsed = 00:00:18 . Memory (MB): peak = 1194.445 ; gain = 581.496
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:16 ; elapsed = 00:00:18 . Memory (MB): peak = 1194.445 ; gain = 581.496
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:16 ; elapsed = 00:00:18 . Memory (MB): peak = 1194.445 ; gain = 581.496
+---------------------------------------------------------------------------------
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.012 . Memory (MB): peak = 1194.445 ; gain = 0.000
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Completed Processing XDC Constraints
+
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1282.898 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.063 . Memory (MB): peak = 1283.020 ; gain = 0.121
+INFO: [Designutils 20-5008] Incremental synthesis strategy off
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:32 ; elapsed = 00:00:36 . Memory (MB): peak = 1283.020 ; gain = 670.070
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7z020clg400-1
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:32 ; elapsed = 00:00:36 . Memory (MB): peak = 1283.020 ; gain = 670.070
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:33 ; elapsed = 00:00:36 . Memory (MB): peak = 1283.020 ; gain = 670.070
+---------------------------------------------------------------------------------
+INFO: [Synth 8-802] inferred FSM for state register 'readState_reg' in module 'pixel_generator'
+INFO: [Synth 8-802] inferred FSM for state register 'writeState_reg' in module 'pixel_generator'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+              AWAIT_RADD |                              001 |                               00
+             AWAIT_FETCH |                              010 |                               01
+              AWAIT_READ |                              100 |                               10
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'readState_reg' using encoding 'one-hot' in module 'pixel_generator'
+---------------------------------------------------------------------------------------------------
+                   State |                     New Encoding |                Previous Encoding 
+---------------------------------------------------------------------------------------------------
+     AWAIT_WADD_AND_DATA |                              000 |                              000
+             AWAIT_WDATA |                              100 |                              001
+              AWAIT_WADD |                              011 |                              010
+             AWAIT_WRITE |                              010 |                              100
+              AWAIT_RESP |                              001 |                              101
+---------------------------------------------------------------------------------------------------
+INFO: [Synth 8-3354] encoded FSM with state register 'writeState_reg' using encoding 'sequential' in module 'pixel_generator'
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:33 ; elapsed = 00:00:37 . Memory (MB): peak = 1283.020 ; gain = 670.070
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Adders : 
+	   2 Input   10 Bit       Adders := 1     
+	   2 Input    9 Bit       Adders := 1     
+	   2 Input    8 Bit       Adders := 2     
+	   3 Input    8 Bit       Adders := 1     
+	   2 Input    2 Bit       Adders := 1     
++---Registers : 
+	               32 Bit    Registers := 10    
+	               10 Bit    Registers := 1     
+	                9 Bit    Registers := 1     
+	                8 Bit    Registers := 3     
+	                3 Bit    Registers := 2     
+	                2 Bit    Registers := 1     
+	                1 Bit    Registers := 1     
++---Muxes : 
+	   4 Input   32 Bit        Muxes := 1     
+	   5 Input    3 Bit        Muxes := 1     
+	   4 Input    3 Bit        Muxes := 1     
+	   2 Input    1 Bit        Muxes := 12    
+	   4 Input    1 Bit        Muxes := 2     
+	   3 Input    1 Bit        Muxes := 2     
+	   5 Input    1 Bit        Muxes := 11    
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 220 (col length:60)
+BRAMs: 280 (col length: RAMB18 60 RAMB36 30)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
+INFO: [Synth 8-3917] design base_pixel_generator_0_0 has port out_stream_tkeep[3] driven by constant 1
+INFO: [Synth 8-3917] design base_pixel_generator_0_0 has port out_stream_tkeep[2] driven by constant 1
+INFO: [Synth 8-3917] design base_pixel_generator_0_0 has port out_stream_tkeep[1] driven by constant 1
+INFO: [Synth 8-3917] design base_pixel_generator_0_0 has port out_stream_tkeep[0] driven by constant 1
+INFO: [Synth 8-3917] design base_pixel_generator_0_0 has port s_axi_lite_bresp[1] driven by constant 0
+INFO: [Synth 8-3917] design base_pixel_generator_0_0 has port s_axi_lite_bresp[0] driven by constant 0
+INFO: [Synth 8-3917] design base_pixel_generator_0_0 has port s_axi_lite_rresp[1] driven by constant 0
+INFO: [Synth 8-3917] design base_pixel_generator_0_0 has port s_axi_lite_rresp[0] driven by constant 0
+WARNING: [Synth 8-7129] Port s_axi_lite_araddr[7] in module base_pixel_generator_0_0 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axi_lite_araddr[6] in module base_pixel_generator_0_0 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axi_lite_araddr[5] in module base_pixel_generator_0_0 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axi_lite_araddr[1] in module base_pixel_generator_0_0 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axi_lite_araddr[0] in module base_pixel_generator_0_0 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axi_lite_awaddr[7] in module base_pixel_generator_0_0 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axi_lite_awaddr[6] in module base_pixel_generator_0_0 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axi_lite_awaddr[5] in module base_pixel_generator_0_0 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axi_lite_awaddr[1] in module base_pixel_generator_0_0 is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axi_lite_awaddr[0] in module base_pixel_generator_0_0 is either unconnected or has no load
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:39 ; elapsed = 00:00:43 . Memory (MB): peak = 1283.020 ; gain = 670.070
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:53 ; elapsed = 00:00:58 . Memory (MB): peak = 1387.781 ; gain = 774.832
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:53 ; elapsed = 00:00:58 . Memory (MB): peak = 1388.082 ; gain = 775.133
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:53 ; elapsed = 00:00:58 . Memory (MB): peak = 1407.180 ; gain = 794.230
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:01:03 ; elapsed = 00:01:08 . Memory (MB): peak = 1614.035 ; gain = 1001.086
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:01:03 ; elapsed = 00:01:08 . Memory (MB): peak = 1614.035 ; gain = 1001.086
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:01:03 ; elapsed = 00:01:08 . Memory (MB): peak = 1614.035 ; gain = 1001.086
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:01:03 ; elapsed = 00:01:08 . Memory (MB): peak = 1614.035 ; gain = 1001.086
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:01:03 ; elapsed = 00:01:08 . Memory (MB): peak = 1614.035 ; gain = 1001.086
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:01:03 ; elapsed = 00:01:08 . Memory (MB): peak = 1614.035 ; gain = 1001.086
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+-------+------+
+|      |Cell   |Count |
++------+-------+------+
+|1     |CARRY4 |     6|
+|2     |LUT1   |     4|
+|3     |LUT2   |    24|
+|4     |LUT3   |    18|
+|5     |LUT4   |    20|
+|6     |LUT5   |    16|
+|7     |LUT6   |   112|
+|8     |MUXF7  |    32|
+|9     |FDRE   |   377|
+|10    |FDSE   |     1|
++------+-------+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:01:03 ; elapsed = 00:01:08 . Memory (MB): peak = 1614.035 ; gain = 1001.086
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 11 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:44 ; elapsed = 00:01:05 . Memory (MB): peak = 1614.035 ; gain = 912.512
+Synthesis Optimization Complete : Time (s): cpu = 00:01:03 ; elapsed = 00:01:09 . Memory (MB): peak = 1614.035 ; gain = 1001.086
+INFO: [Project 1-571] Translating synthesized netlist
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.012 . Memory (MB): peak = 1623.137 ; gain = 0.000
+INFO: [Netlist 29-17] Analyzing 38 Unisim elements for replacement
+INFO: [Netlist 29-28] Unisim Transformation completed in 0 CPU seconds
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1626.797 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Synth Design complete | Checksum: b216874a
+INFO: [Common 17-83] Releasing license: Synthesis
+38 Infos, 24 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:01:13 ; elapsed = 00:01:20 . Memory (MB): peak = 1626.797 ; gain = 1242.383
+Write ShapeDB Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.003 . Memory (MB): peak = 1626.797 ; gain = 0.000
+INFO: [Common 17-1381] The checkpoint 'C:/LUTsofLUV/maths-accelerator/overlay/base/base.runs/base_pixel_generator_0_0_synth_1/base_pixel_generator_0_0.dcp' has been generated.
+INFO: [Coretcl 2-1648] Added synthesis output to IP cache for IP base_pixel_generator_0_0, cache-ID = e628ec0fed4cbea7
+INFO: [Coretcl 2-1174] Renamed 2 cell refs.
+Write ShapeDB Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.005 . Memory (MB): peak = 1626.797 ; gain = 0.000
+INFO: [Common 17-1381] The checkpoint 'C:/LUTsofLUV/maths-accelerator/overlay/base/base.runs/base_pixel_generator_0_0_synth_1/base_pixel_generator_0_0.dcp' has been generated.
+INFO: [Vivado 12-24828] Executing command : report_utilization -file base_pixel_generator_0_0_utilization_synth.rpt -pb base_pixel_generator_0_0_utilization_synth.pb
+INFO: [Common 17-206] Exiting Vivado at Tue May 20 18:56:24 2025...
