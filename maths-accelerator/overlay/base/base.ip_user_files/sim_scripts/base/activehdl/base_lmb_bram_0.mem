@@ -1,0 +1,13 @@
+// Mem file initialization records.
+//
+// SW Build 5239630 on Fri Nov 08 22:35:27 MST 2024
+// Vivado v2024.2 (64-bit)
+// Copyright 1986-2022 Xilinx, Inc. All Rights Reserved.Copyright 2022-2024 Advanced Micro Devices, Inc. All Rights Reserved.
+// Created on Tuesday May 20, 2025 - 05:50:24 pm, from:
+//
+//     Map file     - c:\LUTsofLUV\maths-accelerator\overlay\base\base.gen\sources_1\bd\base\base.bmm
+//     Data file(s) - c:/LUTsofLUV/maths-accelerator/overlay/base/base.gen/sources_1/bd/base/ip/base_mb_0/data/mb_bootloop_le.elf, c:/LUTsofLUV/maths-accelerator/overlay/base/base.gen/sources_1/bd/base/ip/base_mb_1/data/mb_bootloop_le.elf, c:/LUTsofLUV/maths-accelerator/overlay/base/base.gen/sources_1/bd/base/ip/base_mb_2/data/mb_bootloop_le.elf
+//
+// Address space 'base_i_ps7_0.base_i_iop_arduino_lmb_lmb_bram_64K_3_ADDR_SPACE', bit lane [31:0].
+//
+// Bus width = 32 bits, number of bus blocks = 1.
