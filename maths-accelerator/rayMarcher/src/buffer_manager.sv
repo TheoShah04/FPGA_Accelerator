@@ -20,10 +20,10 @@ logic [31:0] pixel_assignments [RAY_UNITS-1:0];
 fp screen_x [RAY_UNITS-1:0];
 fp screen_y [RAY_UNITS-1:0];
 
-logic valid_in [RAY_UNITS-1:0]
-logic valid_out [RAY_UNITS-1:0]
-logic hits [RAY_UNITS-1:0]
-vec3 surface_points [RAY_UNITS-1:0]
+logic valid_in [RAY_UNITS-1:0];
+logic valid_out [RAY_UNITS-1:0];
+logic hits [RAY_UNITS-1:0];
+vec3 surface_points [RAY_UNITS-1:0];
 
 typedef struct packed {
     vec3 surface_point;
@@ -83,7 +83,7 @@ always_ff @(posedge clk) begin
             read_ptrs[j] <= 0;
             valid_in[j] <= 1'b0;
             for (int k = 0; k<BUFFER_DEPTH; k++) begin
-                valid_buffers[j][k] <= 1'b0;
+                buffers[j][k].valid <= 1'b0;
             end
         end
     end else begin
@@ -102,7 +102,7 @@ always_ff @(posedge clk) begin
                 buffers[j][write_ptrs[j]].valid <= 1'b1;
                 // Wrap around
                 write_ptrs[j] <= (write_ptrs[j] + 1) % BUFFER_DEPTH;
-                pixel_assignments[j] = pixel_assignments[j] + RAY_UNITS;
+                pixel_assignments[j] <= pixel_assignments[j] + RAY_UNITS;
             end
         end
     end
@@ -112,8 +112,6 @@ end
 always_ff @(posedge clk) begin
     if(rst) begin
         pixel_counter <= 0;
-        hdmi_valid <= 1'b0;
-        pixel <= 24'h0;
     end else begin
         logic [$clog2(RAY_UNITS)-1:0] next_unit;
         logic pixel_ready;
