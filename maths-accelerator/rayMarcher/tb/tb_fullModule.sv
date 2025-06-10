@@ -12,6 +12,9 @@ module tb_fullModule;
   fp screen_x, screen_y;
   logic valid_in;
   vec3 camera_forward;
+  vec3 camera_right;
+  vec3 camera_up;
+  vec3 world_up;
   vec3 ray_origin;
   vec3 light_pos;
   logic sdf_sel;
@@ -33,6 +36,8 @@ module tb_fullModule;
     .valid_in(valid_in),
     .light_pos(light_pos),
     .camera_forward(camera_forward),
+    .camera_right(camera_right),  
+    .world_up(world_up),
     .ray_origin(ray_origin),
     .sdf_sel(sdf_sel),
     .shade_out(shade_out),
@@ -48,6 +53,24 @@ module tb_fullModule;
     return $rtoi(val * (2.0 ** 21));
   endfunction
 
+  function automatic vec3 vec3_normalise(input vec3 v);
+    real xr, yr, zr, mag;
+    begin
+      // convert from raw fixed-point to real
+      xr = $itor(v.x) / (2.0**24);
+      yr = $itor(v.y) / (2.0**24);
+      zr = $itor(v.z) / (2.0**24);
+      // compute length
+      mag = $sqrt(xr*xr + yr*yr + zr*zr);
+      // divide each component and convert back to Q8.24 fixed-point
+      vec3_normalise = make_vec3(
+        to_fixed(xr/mag),
+        to_fixed(yr/mag),
+        to_fixed(zr/mag)
+      );
+    end
+  endfunction
+
   // Simulation loop
   initial begin
     $dumpfile("fullModule_test.vcd");
@@ -58,10 +81,14 @@ module tb_fullModule;
     pixel_count = 0;
     rst = 1'b0;
     valid_in = 0;
-    camera_forward = make_vec3(to_fixed(0.0), to_fixed(0.0), to_fixed(1.0));
-    ray_origin     = make_vec3(to_fixed(0.0), to_fixed(0.0), to_fixed(3.0));
+    camera_forward = vec3_normalise(make_vec3(to_fixed(0.0), to_fixed(1.0), to_fixed(1.0))); //this in inverted direction
+    camera_up = vec3_normalise(make_vec3(to_fixed(0.0), to_fixed(1.0), to_fixed(0.0)));
+    camera_right = vec3_normalise(vec3_cross(camera_forward, camera_up)); //normalise vector in software here maybe?
+    
+    ray_origin     = make_vec3(to_fixed(-2.0), to_fixed(2.0), to_fixed(3.0));
     light_pos      = make_vec3(to_fixed(0.0), to_fixed(3.0), to_fixed(5.0));
-    sdf_sel = 1; // Sphere or square
+    //world_up       = make_vec3(to_fixed(0.0), to_fixed(1.0), to_fixed(0.0));
+    sdf_sel = 0; // Sphere or square
 
     // Reset sequence
     #20;

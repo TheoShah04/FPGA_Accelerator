@@ -9,6 +9,8 @@ module ray_unit #(
     input fp screen_y,
     input logic valid_in,
     input vec3 camera_forward,
+    input vec3 camera_right,
+    input vec3 world_up,
     input vec3 ray_origin,
     input logic sdf_sel,
     output vec3 surface_point,  
@@ -31,6 +33,8 @@ ray_generator ray_gen (
     .screen_y(screen_y),
     .valid_in(valid_in),
     .camera_forward(camera_forward),
+    .camera_right(camera_right),  
+    .world_up(world_up),
     .ray_direction(ray_direction),
     .valid_out(raygen_valid)
 );

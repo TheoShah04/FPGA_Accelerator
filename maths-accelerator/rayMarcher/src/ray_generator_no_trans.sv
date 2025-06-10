@@ -8,10 +8,12 @@ module ray_generator #(
     input fp screen_x, //in Q11.21
     input fp screen_y, //in Q11.21
     input logic valid_in,
-    input  vec3  camera_forward, 
-    input vec3 camera_right,
-    input  vec3  world_up,       
-    //output vec3  ray_origin,    
+
+
+    input vec3 camera_forward,
+    //input fp tan_half_fov, // tan(fov / 2)
+    // should be taking aspect ratio as an input? Compute width/height (make division module)
+    
     output vec3 ray_direction,
     output logic valid_out
 );
@@ -26,13 +28,8 @@ localparam fp SCALE_Y = 32'h00002222;   // 2/SCREEN_HEIGHT(480) in Q11.21
 // localparam fp SCALE_Y = 32'h00002222;   // 2/SCREEN_HEIGHT(480) in Q11.21
 
 // camera looking down z axis
-//vec3 camera_right; //= make_vec3(32'h01000000, 32'h00000000, 32'h00000000); // (1,0,0)
-vec3 camera_up_ortho;   //= make_vec3(32'h00000000, 32'h01000000, 32'h00000000); // (0,1,0)
-
-
-always_comb begin
-    camera_up_ortho = vec3_cross(camera_right, camera_forward);
-end
+vec3 CAMERA_RIGHT = make_vec3(32'h01000000, 32'h00000000, 32'h00000000); // (1,0,0)
+vec3 CAMERA_UP    = make_vec3(32'h00000000, 32'h01000000, 32'h00000000); // (0,1,0)
 
 logic valid_r1, valid_r3;
 //logic valid_r2;
@@ -76,13 +73,9 @@ always_ff @(posedge clk) begin
         valid_r3 <= 0;
     end else begin
         if (valid_r1) begin
-             ray.x <= fp_mul(ndc_x, camera_right.x) + fp_mul(ndc_y, camera_up_ortho.x) - fp_mul(`FP_ONE, camera_forward.x);
-             ray.y <= fp_mul(ndc_x, camera_right.y)
-                    + fp_mul(ndc_y, camera_up_ortho.y)
-                    - fp_mul(`FP_ONE, camera_forward.y);
-             ray.z <= fp_mul(ndc_x, camera_right.z)
-                    + fp_mul(ndc_y, camera_up_ortho.z)
-                    - fp_mul(`FP_ONE, camera_forward.z);
+            ray.x <= fp_mul(ndc_x, CAMERA_RIGHT.x) + fp_mul(ndc_y, CAMERA_UP.x) + fp_mul(-`FP_ONE, camera_forward.x);
+            ray.y <= fp_mul(ndc_x, CAMERA_RIGHT.y) + fp_mul(ndc_y, CAMERA_UP.y) + fp_mul(-`FP_ONE, camera_forward.y);
+            ray.z <= fp_mul(ndc_x, CAMERA_RIGHT.z) + fp_mul(ndc_y, CAMERA_UP.z) + fp_mul(-`FP_ONE, camera_forward.z);
             valid_r3 <= valid_r1;
         end
         else begin
