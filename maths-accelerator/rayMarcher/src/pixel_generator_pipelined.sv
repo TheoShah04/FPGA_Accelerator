@@ -1,7 +1,7 @@
 `include "vector_pkg.svh"
 `include "common_defs.svh"
 
-module single_cycle_pixel_generator(
+module pixel_generator_pipelined(
     input           out_stream_aclk,
     input           s_axi_lite_aclk,
     input           axi_resetn,
@@ -171,41 +171,41 @@ assign s_axi_lite_bresp = (writeAddr < REG_FILE_SIZE) ? AXI_OK : AXI_ERR;
 
 
 
-reg [31:0] x;
-reg [31:0] y;
+reg [9:0] x;
+reg [8:0] y;
 
 wire first = (x == 0) & (y==0);
 wire lastx = (x == `SCREEN_WIDTH - 1);
 wire lasty = (y == `SCREEN_HEIGHT - 1);
+wire [31:0] lightx = `FP_THREE;
+wire [31:0] lighty = `FP_THREE;
+wire [31:0] lightz = `FP_FIVE;
 
-wire [31:0] light_objsel = regfile[0];
-wire [31:0] camera_forward_x = regfile[1];
-wire [31:0] camera_forward_y = regfile[2];
-wire [31:0] camera_forward_z = regfile[3];
-wire [31:0] camera_right_x = regfile[4];
-wire [31:0] camera_right_y = regfile[5];
-wire [31:0] camera_right_z = regfile[6];
-wire [31:0] normal_factor =  regfile[7];
-wire [31:0] lightx = {light_objsel[31:24],24'b0};
-wire [31:0] lighty = {light_objsel[23:16],24'b0};
-wire [31:0] lightz = {light_objsel[15:8],24'b0};
+// wire [31:0]    obj = regfile[0];
+// wire [31:0] light = regfile[1];
+// wire [31:0] cam_forward_x = regfile[2];
+// wire [31:0] cam_forward_y = regfile[3]
+// wire [31:0] cam_forward_z = regfile[4];
+// wire [31:0] cam_right_x = regfile[5];
+// wire [31:0] cam_right_y = regfile[6]
+// wire [31:0] cam_right_z = regfile[7];
+// logic obj_sel;
+// assign obj_sel = obj[0];
 
-vec3 light_pos = make_vec3(0, lighty, lightz); //default: 32'h0093EA1C 
-vec3 camera_forward = make_vec3(camera_forward_x, camera_forward_y, camera_forward_z);
-vec3 camera_right = make_vec3(camera_right_x, camera_right_y, camera_right_z);
 wire ready;
 
-vec3 camera_pos = vec3_scale(camera_forward,normal_factor);
+vec3 light_pos = make_vec3(0, lighty, lightz); //default: 32'h0093EA1C 
+vec3 camera_forward = make_vec3(0,`FP_ONE,`FP_ONE);
 
 always @(posedge out_stream_aclk) begin
     if (periph_resetn) begin
         if (ready & valid_coor) begin
             if (lastx) begin
-                x <= 32'h00000000;
-                if (lasty) y <= 32'h00000000;
-                else y <= y + 32'h00200000;
+                x <= 9'd0;
+                if (lasty) y <= 9'd0;
+                else y <= y + 9'd1;
             end
-            else x <= x + 32'h00200000;
+            else x <= x + 9'd1;
         end
     end
     else begin
@@ -216,42 +216,63 @@ end
 
     //Ray Unit I/O ports
 
-    logic valid_coor;         //indicate
+    logic valid_coor = 1'b1;         //indicate
     logic rst_gen = 1'b1;
-    logic sdf_sel;
-    logic valid_out;
-    logic sof, eol;   
-    logic [23:0] shade_out; 
-    
-    
-    assign valid_coor = (first) || valid_out;
-    assign sdf_sel = light_objsel[0];
+    fp distance;
+    vec3 surface_point;
+    logic rayunit_valid, surfaceVec_valid, shading_valid, hit;
 
-  fullModule dut (
+ray_unit rayunit (
     .clk(out_stream_aclk),
-    .rst_gen(periph_resetn),
+    .rst_gen(rst_gen),
     .screen_x(x),
     .screen_y(y),
     .valid_in(valid_coor),
-    .light_pos(light_pos),
     .camera_forward(camera_forward),
-    .camera_right(camera_right),  
     .ray_origin(camera_pos),
-    .sdf_sel(sdf_sel),
-    .shade_out(shade_out),
-    .valid_out(valid_out),
-    .sof(sof),
-    .eol(eol)
-  );
+    .sdf_sel(1'b1), //Add signal for this
+    .surface_point(surface_point),
+    .valid_out(rayunit_valid),
+    .hit(hit)
+);
+
+    //Normal and Light I/O ports
+
+    vec3 normal_vec;
+    vec3 light_vec;
+
+getSurfaceVectors surface_calc(
+    .clk(out_stream_aclk),
+    .rst(rst_gen),
+    .obj_sel(obj_sel),
+    .valid_in(rayunit_valid),
+    .p(surface_point),
+    .lightPos(light_pos),
+    .surfaceNormal(normal_vec),
+    .surfaceLightVector(light_vec), 
+    .valid_out(surfaceVec_valid)
+);
+
+    //Shading I/O ports
+
+    logic [`COLOR_WIDTH - 1:0] pixel_color;
+
+shading shading_m(
+    .valid_in(surfaceVec_valid),
+    .normal_vec(normal_vec),
+    .light_vec(light_vec),
+    .shade_out(pixel_color)
+    .valid_out(shading_valid) //Connect this to pixel packer
+);
 
 logic [`COLOR_WIDTH-1:0] r, g, b;
 
-assign {r,g,b} = shade_out;
+assign {r,g,b} = pixel_color;
 
 packer pixel_packer(    .aclk(out_stream_aclk),
                         .aresetn(periph_resetn),
                         .r(r), .g(g), .b(b),
-                        .eol(eol), .in_stream_ready(ready), .valid(valid_out), .sof(sof),
+                        .eol(lastx), .in_stream_ready(ready), .valid(!!!!!!!), .sof(first),
                         .out_stream_tdata(out_stream_tdata), .out_stream_tkeep(out_stream_tkeep),
                         .out_stream_tlast(out_stream_tlast), .out_stream_tready(out_stream_tready),
                         .out_stream_tvalid(out_stream_tvalid), .out_stream_tuser(out_stream_tuser) );
