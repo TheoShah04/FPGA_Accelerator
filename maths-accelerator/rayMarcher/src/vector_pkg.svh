@@ -9,6 +9,11 @@ typedef struct packed {
     fp y;
     fp z;
 } vec3;
+typedef struct packed {
+    logic valid;
+    logic sof;
+    logic eol;
+}  stat;
 
 // parameterize your element width
 parameter DATA_WIDTH = 32;
