@@ -11,12 +11,12 @@ module tb_buffer_manager;
 
     vec3 camera_forward;
     vec3 ray_origin;
-    vec3 sdf_sel;
+    logic sdf_sel;
 
     // outputs
     vec3 surface_point_out;
-    vec3 hit_out;
-    vec3 pixeL_valid_out;
+    logic hit_out;
+    logic pixel_valid_out;
 
     int pixel_count;
     int expected_pixel_order[$];
@@ -62,8 +62,11 @@ module tb_buffer_manager;
 
 
     initial begin
-        int received_pixels = 0;
-        int max_pixels = 32;
+        int received_pixels;
+        int max_pixels;
+
+        received_pixels = 0;
+        max_pixels = 32;
         
         @(negedge rst);
         
@@ -72,13 +75,66 @@ module tb_buffer_manager;
             
             if (pixel_valid_out) begin
                 if (received_pixels < expected_pixel_order.size()) begin
-                    // can't directly verify pixels numbers
+                    $display("Time %0t: Pixel %0d received - Surface Point: {%h, %h, %h}, Hit: %b", 
+                         $time, received_pixels, 
+                         surface_point_out.x, surface_point_out.y, surface_point_out.z, 
+                         hit_out);
+    
+                    received_pixels = received_pixels + 1;
                 end
-                
-                received_pixels++;
-                // shows how many pixels recieved in raster order
             end
         end
         
     end
+
+endmodule
+
+// mock ray unit
+module ray_unit (
+    input logic clk,
+    input logic rst_gen,
+    input fp screen_x,
+    input fp screen_y,
+    input logic valid_in,
+    input vec3 camera_forward,
+    input vec3 ray_origin,
+    input logic sdf_sel,
+    output vec3 surface_point,
+    output logic valid_out,
+    output logic hit
+);
+    
+    logic [2:0] delay_counter;
+    logic processing;
+    
+    always_ff @(posedge clk) begin
+        if (rst_gen) begin
+            delay_counter <= 0;
+            processing <= 1'b0;
+            valid_out <= 1'b0;
+            surface_point <= make_vec3(32'h0, 32'h0, 32'h0);
+            hit <= 1'b0;
+        end else begin
+            if (valid_in && !processing) begin
+                processing <= 1'b1;
+                delay_counter <= 0;
+                valid_out <= 1'b0;
+            end else if (processing) begin
+                delay_counter <= delay_counter + 1;
+                if (delay_counter == 3'd3) begin
+                    valid_out <= 1'b1;
+                    processing <= 1'b0;
+                    surface_point.x <= screen_x + 32'h0000_1000;
+                    surface_point.y <= screen_y + 32'h0000_2000;
+                    surface_point.z <= 32'h0000_5000;
+                    hit <= (screen_x[7:0] + screen_y[7:0]) < 8'h80;
+                end else begin
+                    valid_out <= 1'b0;
+                end
+            end else begin
+                valid_out <= 1'b0;
+            end
+        end
+    end
+    
 endmodule

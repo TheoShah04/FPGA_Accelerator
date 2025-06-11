@@ -1,8 +1,8 @@
 `include "vector_pkg.svh"
 `include "common_defs.svh"
 
-module ray_generator #(
-)(
+module ray_generator
+(
     input logic clk,
     input logic rst,
     input fp screen_x, //in Q11.21
