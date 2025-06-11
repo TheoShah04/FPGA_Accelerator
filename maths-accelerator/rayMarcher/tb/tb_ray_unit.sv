@@ -327,7 +327,7 @@ module tb_ray_unit;
     valid_in = 0;
     camera_forward = make_vec3(to_fixed(0.0), to_fixed(0.0), to_fixed(1.0));
     ray_origin     = make_vec3(to_fixed(0.0), to_fixed(0.0), to_fixed(3.0));
-    sdf_sel = 0; // Sphere
+    sdf_sel = 1; // Sphere
 
     // Reset sequence
     #20;

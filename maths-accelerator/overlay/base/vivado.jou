@@ -1,0 +1,30 @@
+#-----------------------------------------------------------
+# Vivado v2024.2 (64-bit)
+# SW Build 5239630 on Fri Nov 08 22:35:27 MST 2024
+# IP Build 5239520 on Sun Nov 10 16:12:51 MST 2024
+# SharedData Build 5239561 on Fri Nov 08 14:39:27 MST 2024
+# Start of session at: Tue Jun 10 17:23:15 2025
+# Process ID         : 632
+# Current directory  : C:/Projects/FPGA_Accelerator/maths-accelerator/overlay/base
+# Command line       : vivado.exe -gui_launcher_event rodinguilauncherevent29500 C:\Projects\FPGA_Accelerator\maths-accelerator\overlay\base\base.xpr
+# Log file           : C:/Projects/FPGA_Accelerator/maths-accelerator/overlay/base/vivado.log
+# Journal file       : C:/Projects/FPGA_Accelerator/maths-accelerator/overlay/base\vivado.jou
+# Running On         : DESKTOP-P5G18T7
+# Platform           : Windows Server 2016 or Windows 10
+# Operating System   : 26100
+# Processor Detail   : Intel(R) Core(TM) i7-1065G7 CPU @ 1.30GHz
+# CPU Frequency      : 1498 MHz
+# CPU Physical cores : 4
+# CPU Logical cores  : 8
+# Host memory        : 16850 MB
+# Swap memory        : 5637 MB
+# Total Virtual      : 22487 MB
+# Available Virtual  : 3309 MB
+#-----------------------------------------------------------
+start_gui
+open_project C:/Projects/FPGA_Accelerator/maths-accelerator/overlay/base/base.xpr
+open_bd_design {C:/Projects/FPGA_Accelerator/maths-accelerator/overlay/base/base.srcs/sources_1/bd/base/base.bd}
+update_compile_order -fileset sources_1
+ipx::edit_ip_in_project -upgrade true -name pixel_generator_v1_0_project -directory C:/Projects/FPGA_Accelerator/maths-accelerator/overlay/pixel_generator_v1_0_project c:/Projects/FPGA_Accelerator/maths-accelerator/overlay/ip/pixel_generator_1.0/component.xml
+update_compile_order -fileset sources_1
+close_project
