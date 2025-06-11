@@ -57,6 +57,8 @@ module fullModule #(
 
 
     shading shading_m( 
+        .clk(clk),
+        .rst(rst_gen),
         .valid_in(surfaceVec_valid), 
         .hit_in(hit_out),
         .normal_vec(normal_vec),
