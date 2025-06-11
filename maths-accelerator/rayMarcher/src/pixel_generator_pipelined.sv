@@ -196,6 +196,7 @@ wire ready;
 
 vec3 light_pos = make_vec3(0, lighty, lightz); //default: 32'h0093EA1C 
 vec3 camera_forward = make_vec3(0,`FP_ONE,`FP_ONE);
+vec3 camera_pos = make_vec3(0,0,0);
 
 always @(posedge out_stream_aclk) begin
     if (periph_resetn) begin
@@ -220,32 +221,29 @@ end
     logic rst_gen = 1'b1;
     fp distance;
     vec3 surface_point;
-    logic rayunit_valid, surfaceVec_valid, shading_valid, hit;
+    logic pixel_buffer_valid, shading_valid, hit;
 
-ray_unit rayunit (
+buffer_manager buffer (
     .clk(out_stream_aclk),
-    .rst_gen(rst_gen),
-    .screen_x(x),
-    .screen_y(y),
-    .valid_in(valid_coor),
+    .rst(rst),
     .camera_forward(camera_forward),
     .ray_origin(camera_pos),
-    .sdf_sel(1'b1), //Add signal for this
-    .surface_point(surface_point),
-    .valid_out(rayunit_valid),
-    .hit(hit)
+    .sdf_sel(1'b1),
+    .surface_point_out(surface_point),
+    .hit_out(hit),
+    .pixel_valid_out(pixel_buffer_valid)
 );
-
     //Normal and Light I/O ports
 
     vec3 normal_vec;
     vec3 light_vec;
+    logic surfaceVec_valid;
 
 getSurfaceVectors surface_calc(
     .clk(out_stream_aclk),
     .rst(rst_gen),
     .obj_sel(obj_sel),
-    .valid_in(rayunit_valid),
+    .valid_in(pixel_buffer_valid),
     .p(surface_point),
     .lightPos(light_pos),
     .surfaceNormal(normal_vec),
@@ -272,7 +270,7 @@ assign {r,g,b} = pixel_color;
 packer pixel_packer(    .aclk(out_stream_aclk),
                         .aresetn(periph_resetn),
                         .r(r), .g(g), .b(b),
-                        .eol(lastx), .in_stream_ready(ready), .valid(!!!!!!!), .sof(first),
+                        .eol(lastx), .in_stream_ready(ready), .valid(shading_valid), .sof(first),
                         .out_stream_tdata(out_stream_tdata), .out_stream_tkeep(out_stream_tkeep),
                         .out_stream_tlast(out_stream_tlast), .out_stream_tready(out_stream_tready),
                         .out_stream_tvalid(out_stream_tvalid), .out_stream_tuser(out_stream_tuser) );
