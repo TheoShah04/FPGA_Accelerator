@@ -49,8 +49,8 @@ generate
             logic [10:0] pixel_x, pixel_y;
             pixel_x = pixel_assignments[i] % `SCREEN_WIDTH;
             pixel_y = pixel_assignments[i] / `SCREEN_WIDTH;
-            screen_x[i] = fp(pixel_x) << `FRAC_BITS;
-            screen_y[i] = fp(pixel_y) << `FRAC_BITS;
+            screen_x[i] = ({{(`WORD_WIDTH-11){1'b0}}, pixel_x}) << `FRAC_BITS;
+            screen_y[i] = ({{(`WORD_WIDTH-11){1'b0}}, pixel_y}) << `FRAC_BITS;
         end
     end
 endgenerate
