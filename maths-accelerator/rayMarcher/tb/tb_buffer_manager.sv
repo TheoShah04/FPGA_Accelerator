@@ -86,4 +86,55 @@ module tb_buffer_manager;
         end
         
     end
+
+endmodule
+
+// mock ray unit
+module ray_unit (
+    input logic clk,
+    input logic rst_gen,
+    input fp screen_x,
+    input fp screen_y,
+    input logic valid_in,
+    input vec3 camera_forward,
+    input vec3 ray_origin,
+    input logic sdf_sel,
+    output vec3 surface_point,
+    output logic valid_out,
+    output logic hit
+);
+    
+    logic [2:0] delay_counter;
+    logic processing;
+    
+    always_ff @(posedge clk) begin
+        if (rst_gen) begin
+            delay_counter <= 0;
+            processing <= 1'b0;
+            valid_out <= 1'b0;
+            surface_point <= make_vec3(32'h0, 32'h0, 32'h0);
+            hit <= 1'b0;
+        end else begin
+            if (valid_in && !processing) begin
+                processing <= 1'b1;
+                delay_counter <= 0;
+                valid_out <= 1'b0;
+            end else if (processing) begin
+                delay_counter <= delay_counter + 1;
+                if (delay_counter == 3'd3) begin
+                    valid_out <= 1'b1;
+                    processing <= 1'b0;
+                    surface_point.x <= screen_x + 32'h0000_1000;
+                    surface_point.y <= screen_y + 32'h0000_2000;
+                    surface_point.z <= 32'h0000_5000;
+                    hit <= (screen_x[7:0] + screen_y[7:0]) < 8'h80;
+                end else begin
+                    valid_out <= 1'b0;
+                end
+            end else begin
+                valid_out <= 1'b0;
+            end
+        end
+    end
+    
 endmodule
