@@ -96,8 +96,11 @@ while running:
                     z = map_normalised_to_real(sliders["Camera Z Depth"]["value"])
                     shape = shapes[current_shape_index]
                     command = f"X={x:.2f},Y={y:.2f},Z={z:.2f},OBJ={shape}\r\n"
-                    ser.write(command.encode())
+                    #command = "X=1.23,Y=2.34,Z=3.45,OBJ=sphere\r\n"
+                    
+                    print("About to send serial command")
                     print("Sent:", command.strip())
+                    ser.write(command.encode('ascii'))
 
             if reset_button.collidepoint(mx, my):
                 for label in sliders:
