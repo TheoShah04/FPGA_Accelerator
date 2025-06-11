@@ -1,8 +1,8 @@
 `include "vector_pkg.svh"
 `include "common_defs.svh"
 
-module ray_generator #(
-)(
+module ray_generator
+(
     input logic clk,
     input logic rst,
     input fp screen_x, //in Q11.21
@@ -33,27 +33,75 @@ always_comb begin
 end
 
 logic valid_r1, valid_r3;
-//logic valid_r2;
+logic valid_r2;
+
 vec3 ray;
 fp ray_mag_sq, inv_ray_mag;
 fp ndc_x, ndc_y;
 
+logic signed [31:0] x_add_half_scale;
+
+logic signed [31:0] x_shifted;
+logic signed [31:0] x_ndc_pre;
+
+
+logic signed [31:0] y_add_half_scale;
+logic signed [31:0] y_scaled;
+logic signed [31:0] y_shifted;
+
+
+
+
+
 // 1: normalizing pixel coords to [-1,1]
 always_ff @(posedge clk) begin
     if (!rst) begin
-        ndc_x <= '0;
-        ndc_y <= '0;
-        valid_r1 <= 0;
+        x_add_half_scale <= '0;
+        y_add_half_scale <= '0;
+        valid_r1 <= 1'b0;
     end else begin
         valid_r1 <= valid_in;
         if(valid_in) begin
 
             // [-1,1] range
-            ndc_x <= fp_mul(((fp_mul_Q11_21((screen_x + `FP_HALF_Q11_21), SCALE_X) - `FP_ONE_Q11_21) << 3), ASPECT_RATIO_640_480);
-            ndc_y <= (`FP_ONE_Q11_21 - fp_mul_Q11_21((screen_y + `FP_HALF_Q11_21), SCALE_Y)) << 3;
+            x_add_half_scale <= fp_mul_Q11_21((screen_x + `FP_HALF_Q11_21), SCALE_X);
+
+            y_add_half_scale <= fp_mul_Q11_21((screen_y + `FP_HALF_Q11_21),SCALE_Y);
+
+        end
+        else begin
+            x_add_half_scale <= 32'b0;
+            y_add_half_scale <= 32'b0;
         end
     end
 end
+
+always_ff @(posedge clk) begin
+    if (!rst) begin
+        ndc_x <= '0;
+        ndc_y <= '0;
+        valid_r2 <= '0;
+    end else begin
+        valid_r2 <= valid_r1;
+        if(valid_r1) begin
+
+            // [-1,1] range
+
+            x_ndc_pre = fp_mul(((x_add_half_scale - `FP_ONE_Q11_21) << 3),ASPECT_RATIO_640_480);
+            ndc_x <= x_ndc_pre;
+
+            y_shifted = (`FP_ONE_Q11_21 - y_add_half_scale) << 3;
+            ndc_y <= y_shifted;
+          
+        end
+        else begin
+            ndc_x <= 32'b0;
+            ndc_y <= 32'b0;
+        end 
+    end
+end
+
+
 
 // 2: FOV and aspect ratio to calculate camera up and camera right
 
@@ -73,7 +121,7 @@ always_ff @(posedge clk) begin
         ray <= 0;
         valid_r3 <= 0;
     end else begin
-        if (valid_r1) begin
+        if (valid_r2) begin
              ray.x <= fp_mul(ndc_x, camera_right.x) + fp_mul(ndc_y, camera_up_ortho.x) - fp_mul(`FP_ONE, camera_forward.x);
              ray.y <= fp_mul(ndc_x, camera_right.y)
                     + fp_mul(ndc_y, camera_up_ortho.y)
@@ -81,7 +129,7 @@ always_ff @(posedge clk) begin
              ray.z <= fp_mul(ndc_x, camera_right.z)
                     + fp_mul(ndc_y, camera_up_ortho.z)
                     - fp_mul(`FP_ONE, camera_forward.z);
-            valid_r3 <= valid_r1;
+            valid_r3 <= valid_r2;
         end
         else begin
             valid_r3 <= 1'b0;
@@ -135,3 +183,4 @@ always_ff @(posedge clk) begin
 end
 
 endmodule
+
