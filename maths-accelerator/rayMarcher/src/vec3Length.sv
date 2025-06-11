@@ -44,7 +44,6 @@ module vec3Length #(
 
     always_ff @ (posedge clk) begin
         if(!rst) begin
-            sum_squares <= '0;
             valid_out <= 1'b0;
         end
         else begin

@@ -10,5 +10,5 @@ maths-accelerator/overlay/base_generated.tcl
 /maths-accelerator/rayMarcher/stream
 /maths-accelerator/rayMarcher/sim_vivado
 /maths-accelerator/rayMarcher/ProjectSim
-
+/maths-accelerator/leo_copy_proj
 
