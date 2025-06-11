@@ -190,11 +190,19 @@ wire [31:0] lighty = {light_objsel[23:16],24'b0};
 wire [31:0] lightz = {light_objsel[15:8],24'b0};
 
 vec3 light_pos = make_vec3(0, lighty, lightz); //default: 32'h0093EA1C 
-vec3 camera_forward = make_vec3(camera_forward_x, camera_forward_y, camera_forward_z);
-vec3 camera_right = make_vec3(camera_right_x, camera_right_y, camera_right_z);
+vec3 camera_forward;
+vec3 camera_right; 
+fp normal_factor_q;
 wire ready;
 
-vec3 camera_pos = vec3_scale(camera_forward,normal_factor);
+always_ff @ (posedge out_stream_aclk) begin
+    camera_forward <= make_vec3(camera_forward_x, camera_forward_y, camera_forward_z);
+    camera_right <= make_vec3(camera_right_x, camera_right_y, camera_right_z);
+    normal_factor_q <= normal_factor;
+end
+
+    vec3 camera_pos = vec3_scale(camera_forward, normal_factor_q);
+
 
 always @(posedge out_stream_aclk) begin
     if (periph_resetn) begin
