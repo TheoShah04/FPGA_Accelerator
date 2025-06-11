@@ -55,6 +55,8 @@ module fullModule #(
         .hit_out(hit_out)
     );
 
+    logic [`COLOR_WIDTH-1:0] shade_rgb;
+    logic shading_valid;
 
     shading shading_m( 
         .clk(clk),
@@ -66,9 +68,6 @@ module fullModule #(
         .shade_out(shade_rgb),
         .valid_out(shading_valid) //Connect this to pixel packer
     );
-
-    logic [`COLOR_WIDTH-1:0] shade_rgb;
-    logic shading_valid;
 
     coord_counter counter(
         .clk(clk),

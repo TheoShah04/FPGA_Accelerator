@@ -20,16 +20,24 @@ module vec3Length #(
     always_ff @ (posedge clk) begin
         if(!rst) begin
             sum_squares <= '0;
-            module_valid_in <= '0;
+            length <= '0;
+            module_valid_in <= 1'b0;
+            valid_out <= 1'b0;
+        end
+        else if(valid_in) begin
+            sum_squares <= vec3_dot(vec, vec);
+            module_valid_in <= 1'b1;
+            valid_out <= 1'b0;
+        end
+        else if(module_finished) begin
+            length <= fp_mul(sum_squares, inv_sqrt_out);
+            valid_out <= 1'b1;
+            module_valid_in <= 1'b0;
         end
         else begin
-            if(valid_in) begin
-                sum_squares <= vec3_dot(vec, vec);
-                module_valid_in <= 1'b1;
-            end
-            else begin
-                module_valid_in <= 1'b0;
-            end
+            length <= '0;
+            module_valid_in <= 1'b0;
+            valid_out <= 1'b0;
         end
     end
 
@@ -41,21 +49,5 @@ module vec3Length #(
        .inv_sqrt(inv_sqrt_out),
        .valid_out(module_finished)
     );
-
-    always_ff @ (posedge clk) begin
-        if(!rst) begin
-            sum_squares <= '0;
-            valid_out <= 1'b0;
-        end
-        else begin
-            if(module_finished) begin
-                length <= fp_mul(sum_squares, inv_sqrt_out);
-                valid_out <= 1'b1;
-            end
-            else begin
-                valid_out <= 1'b0;
-            end
-        end
-    end
 
 endmodule
