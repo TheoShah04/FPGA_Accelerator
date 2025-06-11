@@ -13,17 +13,16 @@ module rayMarcher #(
     input vec3 rayOrigin,
     input vec3 rayDir,
     input logic obj_sel,
-    //output fp distance,
     output vec3 point, //the 3d coordinate of the end of the ray
     output logic valid_out, //signal to send to higher module that raymarch process is done
     output logic hit
 );
 
-    fp distance, rayDist, dS;
+    fp rayDist, dS;
     vec3 stepVec, position;
     logic signed [31:0] stepCount;
     logic hit_internal, submodule_valid_in_reg, submodule_valid_in_next, submodule_finished; 
-
+    vec3 point_reg, point_next;
     typedef enum {IDLE, STEP, DONE} state;
     state currentState, nextState;
 
@@ -42,7 +41,7 @@ module rayMarcher #(
             currentState <= IDLE;
             rayDist <= 0;
             stepCount <= 0;
-            point <= '0;
+            point_reg <= '0;
             submodule_valid_in_reg <= 1'b0;
         end
         else begin
@@ -50,7 +49,7 @@ module rayMarcher #(
                 currentState <= STEP;
                 rayDist <= 0;
                 stepCount <= 0;
-                point <= '0;
+                point_reg <= '0;
                 submodule_valid_in_reg <= 1'b1;
             end else begin
                 currentState <= nextState;
@@ -59,6 +58,7 @@ module rayMarcher #(
                     rayDist <= rayDist + dS; 
                     stepCount <= stepCount + 1'b1;
                 end
+                point_reg <= point_next;
             end
         end
     end
@@ -68,8 +68,7 @@ module rayMarcher #(
         case (currentState)
             IDLE: begin 
                 nextState = IDLE;
-                distance = '0;
-                point = '0;
+                point_next = '0;
             end
             STEP: begin
                 stepVec = vec3_scale(rayDir, rayDist);
@@ -92,21 +91,21 @@ module rayMarcher #(
                     nextState = STEP;
                     submodule_valid_in_next = 1'b0;
                 end
+                point_next = position;
             end
             DONE: begin
                 nextState = IDLE;
-                distance = rayDist;
-                point = position;
+                point_next = '0;
             end
             default: begin
                 nextState = IDLE;
-                distance = '0;
-                point = '0;
+                point_next = '0;
             end
         endcase
     end
 
     assign valid_out = currentState == DONE;
     assign hit = (currentState == DONE) && (hit_internal);
+    assign point = point_reg;
 
 endmodule
