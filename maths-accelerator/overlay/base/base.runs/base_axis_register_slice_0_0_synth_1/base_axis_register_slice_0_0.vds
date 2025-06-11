@@ -1,0 +1,255 @@
+#-----------------------------------------------------------
+# Vivado v2024.2 (64-bit)
+# SW Build 5239630 on Fri Nov 08 22:35:27 MST 2024
+# IP Build 5239520 on Sun Nov 10 16:12:51 MST 2024
+# SharedData Build 5239561 on Fri Nov 08 14:39:27 MST 2024
+# Start of session at: Tue May 20 18:10:39 2025
+# Process ID         : 25404
+# Current directory  : C:/LUTsofLUV/maths-accelerator/overlay/base/base.runs/base_axis_register_slice_0_0_synth_1
+# Command line       : vivado.exe -log base_axis_register_slice_0_0.vds -product Vivado -mode batch -messageDb vivado.pb -notrace -source base_axis_register_slice_0_0.tcl
+# Log file           : C:/LUTsofLUV/maths-accelerator/overlay/base/base.runs/base_axis_register_slice_0_0_synth_1/base_axis_register_slice_0_0.vds
+# Journal file       : C:/LUTsofLUV/maths-accelerator/overlay/base/base.runs/base_axis_register_slice_0_0_synth_1\vivado.jou
+# Running On         : DESKTOP-P5G18T7
+# Platform           : Windows Server 2016 or Windows 10
+# Operating System   : 26100
+# Processor Detail   : Intel(R) Core(TM) i7-1065G7 CPU @ 1.30GHz
+# CPU Frequency      : 1498 MHz
+# CPU Physical cores : 4
+# CPU Logical cores  : 8
+# Host memory        : 16850 MB
+# Swap memory        : 6442 MB
+# Total Virtual      : 23292 MB
+# Available Virtual  : 7783 MB
+#-----------------------------------------------------------
+source base_axis_register_slice_0_0.tcl -notrace
+create_project: Time (s): cpu = 00:00:05 ; elapsed = 00:00:07 . Memory (MB): peak = 366.156 ; gain = 65.531
+INFO: [IP_Flow 19-234] Refreshing IP repositories
+INFO: [IP_Flow 19-1700] Loaded user IP repository 'c:/LUTsofLUV/maths-accelerator/overlay/ip'.
+INFO: [IP_Flow 19-2313] Loaded Vivado IP repository 'C:/Xilinx/Vivado/2024.2/data/ip'.
+INFO: [IP_Flow 19-6924] IPCACHE: Running cache check for IP inst: base_axis_register_slice_0_0
+Command: synth_design -top base_axis_register_slice_0_0 -part xc7z020clg400-1 -incremental_mode off -mode out_of_context
+Starting synth_design
+Attempting to get a license for feature 'Synthesis' and/or device 'xc7z020'
+INFO: [Common 17-349] Got license for feature 'Synthesis' and/or device 'xc7z020'
+INFO: [Device 21-403] Loading part xc7z020clg400-1
+INFO: [Synth 8-7079] Multithreading enabled for synth_design using a maximum of 2 processes.
+INFO: [Synth 8-7078] Launching helper process for spawning children vivado processes
+INFO: [Synth 8-7075] Helper process launched with PID 25584
+---------------------------------------------------------------------------------
+Starting RTL Elaboration : Time (s): cpu = 00:00:12 ; elapsed = 00:00:13 . Memory (MB): peak = 1081.367 ; gain = 465.949
+---------------------------------------------------------------------------------
+INFO: [Synth 8-6157] synthesizing module 'base_axis_register_slice_0_0' [c:/LUTsofLUV/maths-accelerator/overlay/base/base.gen/sources_1/bd/base/ip/base_axis_register_slice_0_0/synth/base_axis_register_slice_0_0.v:53]
+INFO: [Synth 8-6157] synthesizing module 'axis_register_slice_v1_1_33_axis_register_slice' [c:/LUTsofLUV/maths-accelerator/overlay/base/base.gen/sources_1/bd/base/ipshared/259d/hdl/axis_register_slice_v1_1_vl_rfs.v:2830]
+INFO: [Synth 8-6157] synthesizing module 'axis_infrastructure_v1_1_1_util_axis2vector' [c:/LUTsofLUV/maths-accelerator/overlay/base/base.gen/sources_1/bd/base/ipshared/434f/hdl/axis_infrastructure_v1_1_vl_rfs.v:805]
+INFO: [Synth 8-6155] done synthesizing module 'axis_infrastructure_v1_1_1_util_axis2vector' (0#1) [c:/LUTsofLUV/maths-accelerator/overlay/base/base.gen/sources_1/bd/base/ipshared/434f/hdl/axis_infrastructure_v1_1_vl_rfs.v:805]
+INFO: [Synth 8-6157] synthesizing module 'axis_register_slice_v1_1_33_axisc_register_slice' [c:/LUTsofLUV/maths-accelerator/overlay/base/base.gen/sources_1/bd/base/ipshared/259d/hdl/axis_register_slice_v1_1_vl_rfs.v:1929]
+INFO: [Synth 8-6155] done synthesizing module 'axis_register_slice_v1_1_33_axisc_register_slice' (0#1) [c:/LUTsofLUV/maths-accelerator/overlay/base/base.gen/sources_1/bd/base/ipshared/259d/hdl/axis_register_slice_v1_1_vl_rfs.v:1929]
+INFO: [Synth 8-6157] synthesizing module 'axis_infrastructure_v1_1_1_util_vector2axis' [c:/LUTsofLUV/maths-accelerator/overlay/base/base.gen/sources_1/bd/base/ipshared/434f/hdl/axis_infrastructure_v1_1_vl_rfs.v:986]
+INFO: [Synth 8-6155] done synthesizing module 'axis_infrastructure_v1_1_1_util_vector2axis' (0#1) [c:/LUTsofLUV/maths-accelerator/overlay/base/base.gen/sources_1/bd/base/ipshared/434f/hdl/axis_infrastructure_v1_1_vl_rfs.v:986]
+INFO: [Synth 8-6155] done synthesizing module 'axis_register_slice_v1_1_33_axis_register_slice' (0#1) [c:/LUTsofLUV/maths-accelerator/overlay/base/base.gen/sources_1/bd/base/ipshared/259d/hdl/axis_register_slice_v1_1_vl_rfs.v:2830]
+INFO: [Synth 8-6155] done synthesizing module 'base_axis_register_slice_0_0' (0#1) [c:/LUTsofLUV/maths-accelerator/overlay/base/base.gen/sources_1/bd/base/ip/base_axis_register_slice_0_0/synth/base_axis_register_slice_0_0.v:53]
+INFO: [Synth 8-4490] FSM extraction disabled for register 'gen_AB_reg_slice.state_reg' through user attribute
+WARNING: [Synth 8-7129] Port ACLK2X in module axis_register_slice_v1_1_33_axisc_register_slice is either unconnected or has no load
+WARNING: [Synth 8-7129] Port TID[0] in module axis_infrastructure_v1_1_1_util_axis2vector is either unconnected or has no load
+WARNING: [Synth 8-7129] Port TDEST[0] in module axis_infrastructure_v1_1_1_util_axis2vector is either unconnected or has no load
+---------------------------------------------------------------------------------
+Finished RTL Elaboration : Time (s): cpu = 00:00:15 ; elapsed = 00:00:17 . Memory (MB): peak = 1193.957 ; gain = 578.539
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:00:15 ; elapsed = 00:00:17 . Memory (MB): peak = 1193.957 ; gain = 578.539
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 1 : Time (s): cpu = 00:00:15 ; elapsed = 00:00:17 . Memory (MB): peak = 1193.957 ; gain = 578.539
+---------------------------------------------------------------------------------
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.003 . Memory (MB): peak = 1193.957 ; gain = 0.000
+INFO: [Project 1-570] Preparing netlist for logic optimization
+
+Processing XDC Constraints
+Initializing timing engine
+Parsing XDC File [c:/LUTsofLUV/maths-accelerator/overlay/base/base.gen/sources_1/bd/base/ip/base_axis_register_slice_0_0/base_axis_register_slice_0_0_ooc.xdc] for cell 'inst'
+Finished Parsing XDC File [c:/LUTsofLUV/maths-accelerator/overlay/base/base.gen/sources_1/bd/base/ip/base_axis_register_slice_0_0/base_axis_register_slice_0_0_ooc.xdc] for cell 'inst'
+Parsing XDC File [C:/LUTsofLUV/maths-accelerator/overlay/base/base.runs/base_axis_register_slice_0_0_synth_1/dont_touch.xdc]
+Finished Parsing XDC File [C:/LUTsofLUV/maths-accelerator/overlay/base/base.runs/base_axis_register_slice_0_0_synth_1/dont_touch.xdc]
+Parsing XDC File [c:/LUTsofLUV/maths-accelerator/overlay/base/base.gen/sources_1/bd/base/ip/base_axis_register_slice_0_0/base_axis_register_slice_0_0_clocks.xdc] for cell 'inst'
+Finished Parsing XDC File [c:/LUTsofLUV/maths-accelerator/overlay/base/base.gen/sources_1/bd/base/ip/base_axis_register_slice_0_0/base_axis_register_slice_0_0_clocks.xdc] for cell 'inst'
+Completed Processing XDC Constraints
+
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1245.801 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Constraint Validation Runtime : Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.047 . Memory (MB): peak = 1246.711 ; gain = 0.910
+INFO: [Designutils 20-5008] Incremental synthesis strategy off
+---------------------------------------------------------------------------------
+Finished Constraint Validation : Time (s): cpu = 00:00:31 ; elapsed = 00:00:34 . Memory (MB): peak = 1246.711 ; gain = 631.293
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Loading Part and Timing Information
+---------------------------------------------------------------------------------
+Loading part: xc7z020clg400-1
+---------------------------------------------------------------------------------
+Finished Loading Part and Timing Information : Time (s): cpu = 00:00:31 ; elapsed = 00:00:34 . Memory (MB): peak = 1246.711 ; gain = 631.293
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying 'set_property' XDC Constraints
+---------------------------------------------------------------------------------
+Applied set_property KEEP_HIERARCHY = SOFT for inst. (constraint file  C:/LUTsofLUV/maths-accelerator/overlay/base/base.runs/base_axis_register_slice_0_0_synth_1/dont_touch.xdc, line 9).
+---------------------------------------------------------------------------------
+Finished applying 'set_property' XDC Constraints : Time (s): cpu = 00:00:31 ; elapsed = 00:00:34 . Memory (MB): peak = 1246.711 ; gain = 631.293
+---------------------------------------------------------------------------------
+INFO: [Synth 8-4490] FSM extraction disabled for register 'gen_AB_reg_slice.state_reg' through user attribute
+INFO: [Synth 8-4490] FSM extraction disabled for register 'gen_AB_reg_slice.state_reg' through user attribute
+---------------------------------------------------------------------------------
+Finished RTL Optimization Phase 2 : Time (s): cpu = 00:00:31 ; elapsed = 00:00:34 . Memory (MB): peak = 1246.711 ; gain = 631.293
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start RTL Component Statistics 
+---------------------------------------------------------------------------------
+Detailed RTL Component Info : 
++---Registers : 
+	               32 Bit    Registers := 2     
+	                2 Bit    Registers := 1     
+	                1 Bit    Registers := 3     
++---Muxes : 
+	   2 Input   32 Bit        Muxes := 1     
+	   5 Input    2 Bit        Muxes := 1     
+	   2 Input    1 Bit        Muxes := 1     
+	   4 Input    1 Bit        Muxes := 1     
+---------------------------------------------------------------------------------
+Finished RTL Component Statistics 
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Part Resource Summary
+---------------------------------------------------------------------------------
+Part Resources:
+DSPs: 220 (col length:60)
+BRAMs: 280 (col length: RAMB18 60 RAMB36 30)
+---------------------------------------------------------------------------------
+Finished Part Resource Summary
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Cross Boundary and Area Optimization
+---------------------------------------------------------------------------------
+WARNING: [Synth 8-7080] Parallel synthesis criteria is not met
+WARNING: [Synth 8-7129] Port aclk2x in module axis_register_slice_v1_1_33_axis_register_slice is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axis_tid[0] in module axis_register_slice_v1_1_33_axis_register_slice is either unconnected or has no load
+WARNING: [Synth 8-7129] Port s_axis_tdest[0] in module axis_register_slice_v1_1_33_axis_register_slice is either unconnected or has no load
+---------------------------------------------------------------------------------
+Finished Cross Boundary and Area Optimization : Time (s): cpu = 00:00:36 ; elapsed = 00:00:39 . Memory (MB): peak = 1246.711 ; gain = 631.293
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Applying XDC Timing Constraints
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Applying XDC Timing Constraints : Time (s): cpu = 00:00:51 ; elapsed = 00:00:54 . Memory (MB): peak = 1383.117 ; gain = 767.699
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Timing Optimization
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Timing Optimization : Time (s): cpu = 00:00:51 ; elapsed = 00:00:54 . Memory (MB): peak = 1392.855 ; gain = 777.438
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Technology Mapping
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Technology Mapping : Time (s): cpu = 00:00:51 ; elapsed = 00:00:54 . Memory (MB): peak = 1393.359 ; gain = 777.941
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Flattening Before IO Insertion
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Final Netlist Cleanup
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished IO Insertion : Time (s): cpu = 00:00:59 ; elapsed = 00:01:03 . Memory (MB): peak = 1609.863 ; gain = 994.445
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Instances
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Instances : Time (s): cpu = 00:00:59 ; elapsed = 00:01:03 . Memory (MB): peak = 1609.863 ; gain = 994.445
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Rebuilding User Hierarchy
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Rebuilding User Hierarchy : Time (s): cpu = 00:01:00 ; elapsed = 00:01:03 . Memory (MB): peak = 1609.863 ; gain = 994.445
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Ports
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Ports : Time (s): cpu = 00:01:00 ; elapsed = 00:01:03 . Memory (MB): peak = 1609.863 ; gain = 994.445
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Handling Custom Attributes
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Handling Custom Attributes : Time (s): cpu = 00:01:00 ; elapsed = 00:01:03 . Memory (MB): peak = 1609.863 ; gain = 994.445
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Renaming Generated Nets
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Finished Renaming Generated Nets : Time (s): cpu = 00:01:00 ; elapsed = 00:01:03 . Memory (MB): peak = 1609.863 ; gain = 994.445
+---------------------------------------------------------------------------------
+---------------------------------------------------------------------------------
+Start Writing Synthesis Report
+---------------------------------------------------------------------------------
+
+Report BlackBoxes: 
++-+--------------+----------+
+| |BlackBox name |Instances |
++-+--------------+----------+
++-+--------------+----------+
+
+Report Cell Usage: 
++------+-----+------+
+|      |Cell |Count |
++------+-----+------+
+|1     |LUT1 |     1|
+|2     |LUT3 |    34|
+|3     |LUT4 |     2|
+|4     |LUT5 |     2|
+|5     |FDRE |    69|
++------+-----+------+
+---------------------------------------------------------------------------------
+Finished Writing Synthesis Report : Time (s): cpu = 00:01:00 ; elapsed = 00:01:03 . Memory (MB): peak = 1609.863 ; gain = 994.445
+---------------------------------------------------------------------------------
+Synthesis finished with 0 errors, 0 critical warnings and 4 warnings.
+Synthesis Optimization Runtime : Time (s): cpu = 00:00:41 ; elapsed = 00:00:59 . Memory (MB): peak = 1609.863 ; gain = 941.691
+Synthesis Optimization Complete : Time (s): cpu = 00:01:00 ; elapsed = 00:01:04 . Memory (MB): peak = 1609.863 ; gain = 994.445
+INFO: [Project 1-571] Translating synthesized netlist
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.003 . Memory (MB): peak = 1618.965 ; gain = 0.000
+INFO: [Project 1-570] Preparing netlist for logic optimization
+INFO: [Opt 31-138] Pushed 0 inverter(s) to 0 load pin(s).
+Netlist sorting complete. Time (s): cpu = 00:00:00 ; elapsed = 00:00:00 . Memory (MB): peak = 1622.672 ; gain = 0.000
+INFO: [Project 1-111] Unisim Transformation Summary:
+No Unisim elements were transformed.
+
+Synth Design complete | Checksum: d3a327c
+INFO: [Common 17-83] Releasing license: Synthesis
+30 Infos, 7 Warnings, 0 Critical Warnings and 0 Errors encountered.
+synth_design completed successfully
+synth_design: Time (s): cpu = 00:01:10 ; elapsed = 00:01:17 . Memory (MB): peak = 1622.672 ; gain = 1237.730
+Write ShapeDB Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.004 . Memory (MB): peak = 1622.672 ; gain = 0.000
+INFO: [Common 17-1381] The checkpoint 'C:/LUTsofLUV/maths-accelerator/overlay/base/base.runs/base_axis_register_slice_0_0_synth_1/base_axis_register_slice_0_0.dcp' has been generated.
+INFO: [Coretcl 2-1648] Added synthesis output to IP cache for IP base_axis_register_slice_0_0, cache-ID = d9a4bd0e0f56f820
+INFO: [Coretcl 2-1174] Renamed 2 cell refs.
+Write ShapeDB Complete: Time (s): cpu = 00:00:00 ; elapsed = 00:00:00.009 . Memory (MB): peak = 1622.672 ; gain = 0.000
+INFO: [Common 17-1381] The checkpoint 'C:/LUTsofLUV/maths-accelerator/overlay/base/base.runs/base_axis_register_slice_0_0_synth_1/base_axis_register_slice_0_0.dcp' has been generated.
+INFO: [Vivado 12-24828] Executing command : report_utilization -file base_axis_register_slice_0_0_utilization_synth.rpt -pb base_axis_register_slice_0_0_utilization_synth.pb
+INFO: [Common 17-206] Exiting Vivado at Tue May 20 18:12:20 2025...

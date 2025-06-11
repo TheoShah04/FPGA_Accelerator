@@ -3,9 +3,9 @@ import random
 import serial
 import time
 
-# Serial setup (adjust 'COM3' if needed)
+# Serial setup (adjust 'COM3' if needed) -- COM7
 try:
-    ser = serial.Serial('COM3', 115200, timeout=1)
+    ser = serial.Serial('COM7', 115200, timeout=1)
     time.sleep(2)
 except Exception as e:
     print("Serial connection failed:", e)
@@ -95,7 +95,7 @@ while running:
                     y = map_normalised_to_real(sliders["Camera Y Height"]["value"])
                     z = map_normalised_to_real(sliders["Camera Z Depth"]["value"])
                     shape = shapes[current_shape_index]
-                    command = f"X={x:.2f},Y={y:.2f},Z={z:.2f},OBJ={shape}\n"
+                    command = f"X={x:.2f},Y={y:.2f},Z={z:.2f},OBJ={shape}\r\n"
                     ser.write(command.encode())
                     print("Sent:", command.strip())
 

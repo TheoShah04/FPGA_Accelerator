@@ -11,10 +11,13 @@ module fullModule #(
     input logic valid_in,
     input vec3 light_pos,
     input vec3 camera_forward,
+    input vec3 camera_right,
     input vec3 ray_origin,
     input logic sdf_sel,
     output logic [`COLOR_WIDTH-1:0] shade_out,
-    output logic valid_out
+    output logic valid_out,
+    output logic sof,
+    output logic eol
 );
   
     logic surface_hit, rayUnit_valid;
@@ -27,6 +30,7 @@ module fullModule #(
     .screen_y(screen_y),
     .valid_in(valid_in),
     .camera_forward(camera_forward),
+    .camera_right(camera_right),  
     .ray_origin(ray_origin),
     .sdf_sel(sdf_sel),
     .surface_point(surface_point),
@@ -37,11 +41,10 @@ module fullModule #(
     vec3 normal_vec;
     vec3 light_vec;
     logic hit_out, surfaceVec_valid;
-    logic obj_sel = 1'b1;
     getSurfaceVectors surface_calc(
         .clk(clk),
         .rst(rst_gen),
-        .obj_sel(obj_sel),
+        .obj_sel(sdf_sel),
         .valid_in(rayUnit_valid),
         .p(surface_point),
         .lightPos(light_pos),
@@ -52,13 +55,28 @@ module fullModule #(
         .hit_out(hit_out)
     );
 
+
     shading shading_m( 
         .valid_in(surfaceVec_valid), 
         .hit_in(hit_out),
         .normal_vec(normal_vec),
         .light_vec(light_vec),
+        .shade_out(shade_rgb),
+        .valid_out(shading_valid) //Connect this to pixel packer
+    );
+
+    logic [`COLOR_WIDTH-1:0] shade_rgb;
+    logic shading_valid;
+
+    coord_counter counter(
+        .clk(clk),
+        .rst(rst_gen),
+        .shade_in(shade_rgb),
+        .valid_in(shading_valid),
         .shade_out(shade_out),
-        .valid_out(valid_out) //Connect this to pixel packer
+        .sof(sof),
+        .eol(eol),
+        .valid_out(valid_out)
     );
 
 
