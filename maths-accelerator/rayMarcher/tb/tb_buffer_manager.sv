@@ -11,12 +11,12 @@ module tb_buffer_manager;
 
     vec3 camera_forward;
     vec3 ray_origin;
-    vec3 sdf_sel;
+    logic sdf_sel;
 
     // outputs
     vec3 surface_point_out;
-    vec3 hit_out;
-    vec3 pixeL_valid_out;
+    logic hit_out;
+    logic pixel_valid_out;
 
     int pixel_count;
     int expected_pixel_order[$];
@@ -62,8 +62,11 @@ module tb_buffer_manager;
 
 
     initial begin
-        int received_pixels = 0;
-        int max_pixels = 32;
+        int received_pixels;
+        int max_pixels;
+
+        received_pixels = 0;
+        max_pixels = 32;
         
         @(negedge rst);
         
@@ -72,11 +75,13 @@ module tb_buffer_manager;
             
             if (pixel_valid_out) begin
                 if (received_pixels < expected_pixel_order.size()) begin
-                    // can't directly verify pixels numbers
+                    $display("Time %0t: Pixel %0d received - Surface Point: {%h, %h, %h}, Hit: %b", 
+                         $time, received_pixels, 
+                         surface_point_out.x, surface_point_out.y, surface_point_out.z, 
+                         hit_out);
+    
+                    received_pixels = received_pixels + 1;
                 end
-                
-                received_pixels++;
-                // shows how many pixels recieved in raster order
             end
         end
         
