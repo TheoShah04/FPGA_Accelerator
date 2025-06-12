@@ -174,22 +174,22 @@ reg [31:0] x;
 reg [31:0] y;
 
 wire first = (x == 0) & (y==0);
-wire lastx = (x == `SCREEN_WIDTH - 1);
-wire lasty = (y == `SCREEN_HEIGHT - 1);
+wire lastx = (x == 32'h4fe00000);
+wire lasty = (y == 32'h3be00000);
 
-wire [31:0] light_objsel = regfile[0];
-wire [31:0] camera_forward_x = regfile[1];
-wire [31:0] camera_forward_y = regfile[2];
-wire [31:0] camera_forward_z = regfile[3];
-wire [31:0] camera_right_x = regfile[4];
-wire [31:0] camera_right_y = regfile[5];
-wire [31:0] camera_right_z = regfile[6];
-wire [31:0] normal_factor =  regfile[7];
+wire [31:0] light_objsel = 32'h00030500;    //regfile[0];
+wire [31:0] camera_forward_x = 32'h00000000; //regfile[1];
+wire [31:0] camera_forward_y = 32'h00000000; //regfile[2];
+wire [31:0] camera_forward_z = 32'h01000000; //regfile[3];
+wire [31:0] camera_right_x = 32'h00000000; //regfile[4];
+wire [31:0] camera_right_y = 32'h01000000; //regfile[5];
+wire [31:0] camera_right_z = 32'h00000000; //regfile[6];
+wire [31:0] normal_factor =  32'h03000000; //regfile[7];
 wire [31:0] lightx = {light_objsel[31:24],24'b0};
 wire [31:0] lighty = {light_objsel[23:16],24'b0};
 wire [31:0] lightz = {light_objsel[15:8],24'b0};
 
-vec3 light_pos = make_vec3(0, lighty, lightz); //default: 32'h0093EA1C 
+vec3 light_pos = make_vec3(lightx, lighty, lightz); //default: 32'h0093EA1C 
 vec3 camera_forward;
 vec3 camera_right; 
 fp normal_factor_q;
@@ -201,12 +201,14 @@ always_ff @ (posedge out_stream_aclk) begin
     normal_factor_q <= normal_factor;
 end
 
-    vec3 camera_pos = vec3_scale(camera_forward, normal_factor_q);
+    vec3 ray_origin = vec3_scale(camera_forward, normal_factor_q);
+    logic valid_in;
+    assign valid_in = valid_coor & ready;
 
 
 always @(posedge out_stream_aclk) begin
     if (periph_resetn) begin
-        if (ready & valid_coor) begin
+        if (valid_in) begin
             if (lastx) begin
                 x <= 32'h00000000;
                 if (lasty) y <= 32'h00000000;
@@ -243,7 +245,7 @@ end
     .light_pos(light_pos),
     .camera_forward(camera_forward),
     .camera_right(camera_right),  
-    .ray_origin(camera_pos),
+    .ray_origin(ray_origin),
     .sdf_sel(sdf_sel),
     .shade_out(shade_out),
     .valid_out(valid_out),
@@ -251,7 +253,7 @@ end
     .eol(eol)
   );
 
-logic [`COLOR_WIDTH-1:0] r, g, b;
+logic [7:0] r, g, b;
 
 assign {r,g,b} = shade_out;
 
@@ -265,3 +267,18 @@ packer pixel_packer(    .aclk(out_stream_aclk),
 
  
 endmodule
+
+
+
+// logic out_stream_tready_q;
+// always_ff @ (posedge out_stream_aclk) begin
+//     if(!periph_resetn) begin
+//         out_stream_tready_q <= 1'b0;
+//     end
+//     else begin
+//         if(out_stream_tready)
+//             out_stream_tready_q <= 1'b1;
+//         else if (out_stream_tvalid)
+//             out_stream_tready_q <= 1'b0;
+//     end
+// end
