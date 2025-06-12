@@ -257,6 +257,20 @@ logic [7:0] r, g, b;
 
 assign {r,g,b} = shade_out;
 
+
+logic out_stream_tready_q;
+always_ff @ (posedge out_stream_aclk) begin
+    if(!periph_resetn) begin
+        out_stream_tready_q <= 1'b0;
+    end
+    else begin
+        if(out_stream_tready)
+            out_stream_tready_q <= 1'b1;
+        else if (out_stream_tvalid)
+            out_stream_tready_q <= 1'b0;
+    end
+end
+
 packer pixel_packer(    .aclk(out_stream_aclk),
                         .aresetn(periph_resetn),
                         .r(r), .g(g), .b(b),
@@ -267,18 +281,3 @@ packer pixel_packer(    .aclk(out_stream_aclk),
 
  
 endmodule
-
-
-
-// logic out_stream_tready_q;
-// always_ff @ (posedge out_stream_aclk) begin
-//     if(!periph_resetn) begin
-//         out_stream_tready_q <= 1'b0;
-//     end
-//     else begin
-//         if(out_stream_tready)
-//             out_stream_tready_q <= 1'b1;
-//         else if (out_stream_tvalid)
-//             out_stream_tready_q <= 1'b0;
-//     end
-// end
