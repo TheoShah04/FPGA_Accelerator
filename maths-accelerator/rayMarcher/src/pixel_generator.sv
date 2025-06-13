@@ -175,23 +175,23 @@ assign s_axi_lite_bresp = (writeAddr < REG_FILE_SIZE) ? AXI_OK : AXI_ERR;
 reg [31:0] x;
 reg [31:0] y;
 
-wire first = (x == 32'b0) & (y == 32'b0);
+wire first = (x == 0) & (y==0);
 wire lastx = (x == 32'h4fe00000);
 wire lasty = (y == 32'h3be00000);
 
-wire [31:0] light_objsel = regfile[0];
-wire [31:0] camera_forward_x = regfile[1];
-wire [31:0] camera_forward_y = regfile[2];
-wire [31:0] camera_forward_z = regfile[3];
-wire [31:0] camera_right_x = regfile[4];
-wire [31:0] camera_right_y = regfile[5];
-wire [31:0] camera_right_z = regfile[6];
-wire [31:0] normal_factor =  regfile[7];
+wire [31:0] light_objsel = 32'h00030500;    //regfile[0];
+wire [31:0] camera_forward_x = 32'h00000000; //regfile[1];
+wire [31:0] camera_forward_y = 32'h00000000; //regfile[2];
+wire [31:0] camera_forward_z = 32'h01000000; //regfile[3];
+wire [31:0] camera_right_x = 32'h00000000; //regfile[4];
+wire [31:0] camera_right_y = 32'h01000000; //regfile[5];
+wire [31:0] camera_right_z = 32'h00000000; //regfile[6];
+wire [31:0] normal_factor =  32'h03000000; //regfile[7];
 wire [31:0] lightx = {light_objsel[31:24],24'b0};
 wire [31:0] lighty = {light_objsel[23:16],24'b0};
 wire [31:0] lightz = {light_objsel[15:8],24'b0};
 
-vec3 light_pos; //= make_vec3(0, 32'h03000000,32'h05000000); //default: 32'h0093EA1C 
+vec3 light_pos = make_vec3(lightx, lighty, lightz); //default: 32'h0093EA1C 
 vec3 camera_forward;
 vec3 camera_right; 
 fp normal_factor_q;
@@ -201,14 +201,14 @@ reg [31:0] light_objsel_q;
 vec3 ray_origin;
 
 always_ff @ (posedge out_stream_aclk) begin
-    camera_forward <= make_vec3('0, '0, 32'h01000000);
-    camera_right <= make_vec3('0, 32'h01000000, '0);
-    normal_factor_q <= 32'h03000000;
-    light_objsel_q <= light_objsel;
-    ray_origin = make_vec3('0, '0, 32'h03000000);
-    light_pos = make_vec3(0, 32'h03000000,32'h05000000);
+    camera_forward <= make_vec3(camera_forward_x, camera_forward_y, camera_forward_z);
+    camera_right <= make_vec3(camera_right_x, camera_right_y, camera_right_z);
+    normal_factor_q <= normal_factor;
 end
 
+    vec3 ray_origin = vec3_scale(camera_forward, normal_factor_q);
+    logic valid_in;
+    assign valid_in = valid_coor & ready;
 
 
 always @(posedge out_stream_aclk) begin
@@ -265,6 +265,20 @@ end
 logic [7:0] r, g, b;
 
 assign {r,g,b} = shade_out;
+
+
+logic out_stream_tready_q;
+always_ff @ (posedge out_stream_aclk) begin
+    if(!periph_resetn) begin
+        out_stream_tready_q <= 1'b0;
+    end
+    else begin
+        if(out_stream_tready)
+            out_stream_tready_q <= 1'b1;
+        else if (out_stream_tvalid)
+            out_stream_tready_q <= 1'b0;
+    end
+end
 
 packer pixel_packer(    .aclk(out_stream_aclk),
                         .aresetn(periph_resetn),
