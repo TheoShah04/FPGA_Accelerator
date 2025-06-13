@@ -256,6 +256,7 @@ end
     .camera_right(camera_right),  
     .ray_origin(ray_origin),
     .sdf_sel(sdf_sel),
+    .ready_in(ready),
     .shade_out(shade_out),
     .valid_out(valid_out),
     .sof(sof),
