@@ -23,7 +23,6 @@ module shading #(
     logic [DATA_WIDTH-1:0] amb_comp;
     logic [DATA_WIDTH-1:0] ambient;
 
-    logic [DATA_WIDTH-1:0] ambient_half;
     logic [DATA_WIDTH-1:0] amb_r, amb_g, amb_b;
 
     logic [DATA_WIDTH-1:0] shade_r, shade_g, shade_b;
@@ -74,7 +73,6 @@ module shading #(
     always_ff @ (posedge clk) begin
         if (!rst) begin
             diffuse <= 32'b0;
-            ambient_half <= 32'b0;
             ambient <= 32'b0;
             valid_2 <= 1'b0;
             hit_2 <= 1'b0;
@@ -83,14 +81,12 @@ module shading #(
             if (valid_1) begin
                 if (hit_1) begin
                     diffuse <= (dot_nl < 0) ? 0 : $unsigned(dot_nl);
-                    ambient_half <= fp_mul(`FP_HALF, amb_comp);
-                    ambient <= `FP_HALF + ambient_half;
+                    ambient <= `FP_HALF + fp_mul(`FP_HALF, amb_comp);
                     valid_2 <= valid_1;
                     hit_2 <= hit_1;
                 end
                 else begin
                     diffuse <= 32'b0;
-                    ambient_half <= 32'b0;
                     ambient <= 32'b0;
                     valid_2 <= valid_1;
                     hit_2 <= 1'b0;
@@ -98,7 +94,6 @@ module shading #(
             end
             else begin 
                 diffuse <= 32'b0;
-                ambient_half <= 32'b0;
                 ambient <= 32'b0;
                 valid_2 <= 1'b0;
                 hit_2 <= 1'b0;
