@@ -172,7 +172,7 @@ module shading #(
                 else begin
                     shade_r = '0;
                     shade_g = '0;
-                    shade_b = '0;
+                    shade_b = 32'hFFFFFFFF;
                     valid_out <= valid_3;
                 end
             end

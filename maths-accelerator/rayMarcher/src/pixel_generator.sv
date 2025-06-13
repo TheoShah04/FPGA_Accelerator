@@ -181,21 +181,22 @@ wire [31:0] light_objsel = 32'h00030500;    //regfile[0];
 wire [31:0] camera_forward_x = 32'h00000000; //regfile[1];
 wire [31:0] camera_forward_y = 32'h00000000; //regfile[2];
 wire [31:0] camera_forward_z = 32'h01000000; //regfile[3];
-wire [31:0] camera_right_x = 32'h00000000; //regfile[4];
-wire [31:0] camera_right_y = 32'h01000000; //regfile[5];
+wire [31:0] camera_right_x = 32'hFF000000; //regfile[4];
+wire [31:0] camera_right_y = 32'h00000000; //regfile[5];
 wire [31:0] camera_right_z = 32'h00000000; //regfile[6];
 wire [31:0] normal_factor =  32'h03000000; //regfile[7];
 wire [31:0] lightx = {light_objsel[31:24],24'b0};
 wire [31:0] lighty = {light_objsel[23:16],24'b0};
 wire [31:0] lightz = {light_objsel[15:8],24'b0};
 
-vec3 light_pos = make_vec3(lightx, lighty, lightz); //default: 32'h0093EA1C 
+vec3 light_pos;
 vec3 camera_forward;
 vec3 camera_right; 
 fp normal_factor_q;
 wire ready;
 
 always_ff @ (posedge out_stream_aclk) begin
+    light_pos = make_vec3(lightx, lighty, lightz); 
     camera_forward <= make_vec3(camera_forward_x, camera_forward_y, camera_forward_z);
     camera_right <= make_vec3(camera_right_x, camera_right_y, camera_right_z);
     normal_factor_q <= normal_factor;
