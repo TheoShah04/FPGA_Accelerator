@@ -21,7 +21,7 @@ module coord_counter #(
     logic [$clog2(SCREEN_HEIGHT)-1:0]   y, y_temp;
     logic [OUT_WIDTH-1:0]               shade_temp;
 
-    typedef enum { WAIT, PUSH } state_t;
+    typedef enum { IDLE, PUSH } state_t;
     state_t current_state, next_state;
 
     always_ff @ (posedge clk or negedge rst) begin
@@ -32,7 +32,7 @@ module coord_counter #(
         end
         else begin
             current_state <= next_state;
-            if (current_state == WAIT && valid_in) begin 
+            if (current_state == IDLE && valid_in) begin 
                 shade_temp <= shade_in;
                 x_temp <= x;
                 y_temp <= y;
@@ -51,7 +51,7 @@ module coord_counter #(
 
     always_comb begin
         case(current_state)
-            WAIT: begin
+            IDLE: begin
                 valid_out = 0;
                 shade_out = shade_temp;
                 if (valid_in)
@@ -59,7 +59,7 @@ module coord_counter #(
             end
             PUSH: begin
                 if (ready) begin
-                    next_state = WAIT;
+                    next_state = IDLE;
                     valid_out = 1'b1;
                 end else begin
                     shade_out = shade_out;
@@ -69,7 +69,7 @@ module coord_counter #(
             end
             default: begin
                 valid_out = 0;
-                next_state = WAIT;
+                next_state = IDLE;
             end
         endcase
     end
