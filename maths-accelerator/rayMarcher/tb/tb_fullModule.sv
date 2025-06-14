@@ -17,7 +17,7 @@ module tb_fullModule;
   vec3 ray_origin;
   vec3 light_pos;
   logic sdf_sel;
-
+  logic ready_in;
   // Outputs from DUT
   logic valid_out;
   logic [23:0] shade_out;
@@ -39,6 +39,7 @@ module tb_fullModule;
     .camera_right(camera_right),  
     .ray_origin(ray_origin),
     .sdf_sel(sdf_sel),
+    .ready_in(ready_in),
     .shade_out(shade_out),
     .valid_out(valid_out),
     .sof(sof),
@@ -77,7 +78,7 @@ module tb_fullModule;
     $dumpfile("fullModule_test.vcd");
     $dumpvars(0, tb_fullModule.valid_out);
     $dumpvars(0, tb_fullModule.shade_out);
-
+    ready_in = 1'b1;
     // Initial values
     pixel_count = 0;
     rst = 1'b0;
