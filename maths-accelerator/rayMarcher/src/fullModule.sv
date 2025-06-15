@@ -18,11 +18,14 @@ module fullModule #(
     output logic [`COLOR_WIDTH-1:0] shade_out,
     output logic valid_out,
     output logic sof,
-    output logic eol
+    output logic eol,
+    output logic ray_unit_valid_out
 );
   
     logic surface_hit, rayUnit_valid;
     vec3 surface_point; 
+
+    assign ray_unit_valid_out = rayUnit_valid;
 
     ray_unit dut (
     .clk(clk),
@@ -51,8 +54,6 @@ module fullModule #(
     vec3 normal_vec;
     vec3 light_vec;
     logic hit_out, surfaceVec_valid;
-
-
 
     getSurfaceVectors surface_calc(
         .clk(clk),

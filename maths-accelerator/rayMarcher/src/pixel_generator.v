@@ -196,6 +196,7 @@ wire ready;
 //wire [31:0] light_objsel_q;
 wire valid_coor;         //indicate
 reg [95:0] ray_origin;
+wire ray_unit_valid_out;
 
 always @ (posedge out_stream_aclk) begin
     light_pos <= {lightx, lighty, lightz};
@@ -208,8 +209,8 @@ end
 
     wire valid_in;
     wire valid_out;
-    assign valid_coor = (first) || valid_out;
-    assign valid_in = valid_coor && ready;
+    assign valid_coor = (first) || ray_unit_valid_out;
+    assign valid_in = valid_coor && 1'b1;
 
 always @(posedge out_stream_aclk) begin
     if (periph_resetn) begin
@@ -256,7 +257,8 @@ end
     .shade_out(shade_out),
     .valid_out(valid_out),
     .sof(sof),
-    .eol(eol)
+    .eol(eol),
+    .ray_unit_valid_out(ray_unit_valid_out)
   );
 
 wire [7:0] r, g, b;
