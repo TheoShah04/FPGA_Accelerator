@@ -13,11 +13,19 @@ module sdfSphere(
     fp vectorLength; 
     logic module_finished;
 
+    logic q_valid_in;
+    vec3  q_p;
+
+    always_ff @ (posedge clk) begin
+        q_valid_in <= valid_in;
+        q_p <= p;
+    end
+
     vec3Length calcLength(
         .clk(clk),
         .rst(rst),
-        .vec(p),
-        .valid_in(valid_in),
+        .vec(q_p),
+        .valid_in(q_valid_in),
         .length(vectorLength),
         .valid_out(module_finished)
     );
