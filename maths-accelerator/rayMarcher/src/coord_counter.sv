@@ -28,7 +28,10 @@ module coord_counter #(
         if (!rst) begin
             x <= 0;
             y <= 0;
-            shade_out <= 0;
+            shade_temp <= 0;
+            current_state <= IDLE;
+            x_temp <= 0;
+            y_temp <= 0;
         end
         else begin
             current_state <= next_state;
