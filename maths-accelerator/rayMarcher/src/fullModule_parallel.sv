@@ -2,7 +2,7 @@
 `include "vector_pkg.svh"
 `include "common_defs.svh"
 
-module fullModule #(
+module fullModule_parallel #(
 )(
     input logic clk,
     input logic rst,
@@ -31,8 +31,8 @@ module fullModule #(
     .camera_right(camera_right),  
     .ray_origin(ray_origin),
     .sdf_sel(sdf_sel),
-    .surface_point(surface_point),
-    .valid_out(buffer_valid),
+    .surface_point_out(surface_point),
+    .pixel_valid_out(buffer_valid),
     .hit_out(surface_hit)
     );
 
