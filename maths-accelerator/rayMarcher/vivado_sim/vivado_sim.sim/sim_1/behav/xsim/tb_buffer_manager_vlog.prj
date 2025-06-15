@@ -1,0 +1,33 @@
+# compile verilog/system verilog design source files
+sv xil_defaultlib  --include "../../../../../src" \
+"../../../../../src/ray_unit.sv" \
+"../../../../../src/buffer_manager.sv" \
+"../../../../../src/coord_counter.sv" \
+"../../../../../src/fullModule.sv" \
+"../../../../../src/getSurfaceVectors.sv" \
+"../../../../../src/inv_sqrt_dos.sv" \
+"../../../../../src/invsqrt_bram.sv" \
+"../../../../../src/pixel_generator.sv" \
+"../../../../../src/rayMarcher.sv" \
+"../../../../../src/ray_generator.sv" \
+"../../../../../src/sceneQuery.sv" \
+"../../../../../src/sdfCube.sv" \
+"../../../../../src/sdfSphere.sv" \
+"../../../../../src/shading.sv" \
+"../../../../../tb/tb_buffer_manager.sv" \
+"../../../../../tb/tb_fullModule.sv" \
+"../../../../../tb/tb_getSurfaceVectors.sv" \
+"../../../../../tb/tb_inv_sqrt.sv" \
+"../../../../../tb/tb_rayMarcher.sv" \
+"../../../../../tb/tb_ray_generator.sv" \
+"../../../../../tb/tb_ray_unit.sv" \
+"../../../../../tb/tb_scene_query.sv" \
+"../../../../../tb/tb_shading.sv" \
+"../../../../../tb/tb_vec3Length.sv" \
+"../../../../../src/vec3Length.sv" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort

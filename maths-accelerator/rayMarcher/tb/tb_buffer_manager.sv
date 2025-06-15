@@ -22,8 +22,9 @@ module tb_buffer_manager;
 
     int pixel_count;
     int expected_pixel_order[$];
+    int received_pixels;
 
-    buffer_mangager #(
+    buffer_manager #(
         .BUFFER_DEPTH(BUFFER_DEPTH),
         .RAY_UNITS(RAY_UNITS)
     ) dut (
@@ -38,17 +39,40 @@ module tb_buffer_manager;
         .pixel_valid_out(pixel_valid_out)
     );
 
+    function automatic fp to_fixed(input real val);
+        return $rtoi(val * (2.0 ** 24));
+    endfunction
+
+    function automatic vec3 vec3_normalise(input vec3 v);
+    real xr, yr, zr, mag;
+    begin
+      // convert from raw fixed-point to real
+      xr = $itor(v.x) / (2.0**24);
+      yr = $itor(v.y) / (2.0**24);
+      zr = $itor(v.z) / (2.0**24);
+      // compute length
+      mag = $sqrt(xr*xr + yr*yr + zr*zr);
+      // divide each component and convert back to Q8.24 fixed-point
+      vec3_normalise = make_vec3(
+        to_fixed(xr/mag),
+        to_fixed(yr/mag),
+        to_fixed(zr/mag)
+      );
+    end
+    endfunction
+    
+
     initial begin
         clk = 0;
         forever #(CLK_PERIOD/2) clk = ~clk;
     end
 
     initial begin        
-        rst = 1'b1;
+        rst = 1'b0;
         camera_up = make_vec3(to_fixed(0.0), to_fixed(1.0), to_fixed(0.0));
         camera_forward = vec3_normalise(make_vec3(to_fixed(0.0), to_fixed(0.0), to_fixed(1.0))); //this in inverted direction
-        camera_right = vec3_normalise(vec3_cross(camera_forward, camera_up));
-        ray_origin = make_vec3(32'h00000000, 32'h00000000, 32'h00000000);
+        camera_right = make_vec3(32'hff000000, 32'h00000000, 32'h00000000);
+        ray_origin = make_vec3(32'h00000000, 32'h00000000, 32'h03000000);
         sdf_sel = 1'b0;
         pixel_count = 0;
         
@@ -58,7 +82,7 @@ module tb_buffer_manager;
         end
         
         repeat(10) @(posedge clk);
-        rst = 1'b0;
+        rst = 1'b1;
         @(posedge clk);
                 
         #(CLK_PERIOD * 5000); //timeout
@@ -67,7 +91,6 @@ module tb_buffer_manager;
 
 
     initial begin
-        int received_pixels;
         int max_pixels;
 
         received_pixels = 0;
@@ -113,18 +136,7 @@ module tb_buffer_manager;
                              dut.hits[i]);
                 end
             end
-            
-            // Monitor buffer writes
-            for (int i = 0; i < RAY_UNITS; i++) begin
-                if (dut.valid_out[i] && !dut.buffer_full[i]) begin
-                    $display("  -> Writing pixel %0d to buffer[%0d][%0d]", 
-                             dut.pixel_assignments[i], i, dut.write_ptrs[i]);
-                end
-                if (dut.valid_out[i] && dut.buffer_full[i]) begin
-                    $warning("Ray unit %0d output ignored - buffer full", i);
-                end
-            end
-            
+                        
             // Monitor buffer reads
             if (dut.pixel_valid_out) begin
                 int next_unit = dut.pixel_counter % RAY_UNITS;
@@ -142,11 +154,11 @@ module tb_buffer_manager;
         start_time = $time;
         
         // Wait for test completion
-        wait(received_pixels >= 32);
+        wait(received_pixels >= 64);
         end_time = $time;
         
-        pixels_per_second = (32 * 1000000000) / (end_time - start_time); // Pixels per second
-        $display("PERFORMANCE: Processed 32 pixels in %0d ns", end_time - start_time);
+        pixels_per_second = (64 * 1000000000) / (end_time - start_time); // Pixels per second
+        $display("PERFORMANCE: Processed 64 pixels in %0d ns", end_time - start_time);
         $display("PERFORMANCE: Rate = %0d pixels/second", pixels_per_second);
     end
 
