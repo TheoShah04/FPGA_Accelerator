@@ -8,6 +8,7 @@ module buffer_manager #(
     input logic clk,
     input logic rst,
     input vec3 camera_forward,
+    input vec3 camera_right,
     input vec3 ray_origin,
     input logic sdf_sel,
 

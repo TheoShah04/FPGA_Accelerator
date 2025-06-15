@@ -1,4 +1,4 @@
-module pixel_generator#(
+module pixel_generator_parallel#(
 parameter  AXI_LITE_ADDR_WIDTH = 8,
 parameter  REG_FILE_SIZE = 8
 
@@ -218,7 +218,7 @@ end
     assign sdf_sel = 1'b0;
 
 
-  fullModule dut (
+  fullModule_parallel dut (
     .clk(out_stream_aclk),
     .rst(periph_resetn),
     .light_pos(light_pos),
