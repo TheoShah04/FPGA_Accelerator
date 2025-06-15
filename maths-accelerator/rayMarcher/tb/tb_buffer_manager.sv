@@ -2,7 +2,7 @@
 `include "common_defs.svh"
 
 module tb_buffer_manager;
-    parameter BUFFER_DEPTH = 8;
+    parameter BUFFER_DEPTH = 16;
     parameter RAY_UNITS = 4;
     parameter CLK_PERIOD = 10;
 
@@ -10,6 +10,8 @@ module tb_buffer_manager;
     logic rst;
 
     vec3 camera_forward;
+    vec3 camera_right;
+    vec3 camera_up;
     vec3 ray_origin;
     logic sdf_sel;
 
@@ -28,6 +30,7 @@ module tb_buffer_manager;
         .clk(clk),
         .rst(rst),
         .camera_forward(camera_forward),
+        .camera_right(camera_right),
         .ray_origin(ray_origin),
         .sdf_sel(sdf_sel),
         .surface_point_out(surface_point_out),
@@ -42,21 +45,23 @@ module tb_buffer_manager;
 
     initial begin        
         rst = 1'b1;
-        camera_forward = make_vec3(32'h00000000, 32'h00000000, 32'h00010000);
+        camera_up = make_vec3(to_fixed(0.0), to_fixed(1.0), to_fixed(0.0));
+        camera_forward = vec3_normalise(make_vec3(to_fixed(0.0), to_fixed(0.0), to_fixed(1.0))); //this in inverted direction
+        camera_right = vec3_normalise(vec3_cross(camera_forward, camera_up));
         ray_origin = make_vec3(32'h00000000, 32'h00000000, 32'h00000000);
         sdf_sel = 1'b0;
         pixel_count = 0;
         
         // expected pixel order (0, 1, 2, 3, 4, 5, 6, 7, ...)
-        for (int i = 0; i < 32; i++) begin
+        for (int i = 0; i < 64; i++) begin
             expected_pixel_order.push_back(i);
         end
         
-        repeat(5) @(posedge clk);
+        repeat(10) @(posedge clk);
         rst = 1'b0;
         @(posedge clk);
                 
-        #(CLK_PERIOD * 1000); //timeout
+        #(CLK_PERIOD * 5000); //timeout
         $finish;
     end
 
@@ -66,7 +71,7 @@ module tb_buffer_manager;
         int max_pixels;
 
         received_pixels = 0;
-        max_pixels = 32;
+        max_pixels = 64;
         
         @(negedge rst);
         
@@ -75,66 +80,74 @@ module tb_buffer_manager;
             
             if (pixel_valid_out) begin
                 if (received_pixels < expected_pixel_order.size()) begin
-                    $display("Time %0t: Pixel %0d received - Surface Point: {%h, %h, %h}, Hit: %b", 
+                    $display("Time %0t: Pixel %0d received - Surface Point: (%f, %f, %f), Hit: %b", 
                          $time, received_pixels, 
-                         surface_point_out.x, surface_point_out.y, surface_point_out.z, 
+                         $bitstoreal(surface_point_out.x), 
+                         $bitstoreal(surface_point_out.y), 
+                         $bitstoreal(surface_point_out.z), 
                          hit_out);
     
                     received_pixels = received_pixels + 1;
+                    if (received_pixels-1 != expected_pixel_order[received_pixels-1]) begin
+                        $error("PIXEL ORDER ERROR: Expected %0d, got %0d", 
+                               expected_pixel_order[received_pixels-1], received_pixels-1);
+                    end
                 end
             end
         end
         
     end
 
-endmodule
-
-// mock ray unit
-module ray_unit (
-    input logic clk,
-    input logic rst_gen,
-    input fp screen_x,
-    input fp screen_y,
-    input logic valid_in,
-    input vec3 camera_forward,
-    input vec3 ray_origin,
-    input logic sdf_sel,
-    output vec3 surface_point,
-    output logic valid_out,
-    output logic hit
-);
-    
-    logic [2:0] delay_counter;
-    logic processing;
-    
-    always_ff @(posedge clk) begin
-        if (rst_gen) begin
-            delay_counter <= 0;
-            processing <= 1'b0;
-            valid_out <= 1'b0;
-            surface_point <= make_vec3(32'h0, 32'h0, 32'h0);
-            hit <= 1'b0;
-        end else begin
-            if (valid_in && !processing) begin
-                processing <= 1'b1;
-                delay_counter <= 0;
-                valid_out <= 1'b0;
-            end else if (processing) begin
-                delay_counter <= delay_counter + 1;
-                if (delay_counter == 3'd3) begin
-                    valid_out <= 1'b1;
-                    processing <= 1'b0;
-                    surface_point.x <= screen_x + 32'h0000_1000;
-                    surface_point.y <= screen_y + 32'h0000_2000;
-                    surface_point.z <= 32'h0000_5000;
-                    hit <= (screen_x[7:0] + screen_y[7:0]) < 8'h80;
-                end else begin
-                    valid_out <= 1'b0;
+    initial begin
+        @(negedge rst);
+        forever begin
+            @(posedge clk);
+            for (int i = 0; i < RAY_UNITS; i++) begin
+                if (dut.valid_out[i]) begin
+                    $display("Ray unit %0d produced output at time %0t for pixel %0d", 
+                             i, $time, dut.pixel_assignments[i]);
+                    $display("  -> Surface point: (%f, %f, %f), Hit: %b",
+                             $bitstoreal(dut.surface_points[i].x),
+                             $bitstoreal(dut.surface_points[i].y), 
+                             $bitstoreal(dut.surface_points[i].z),
+                             dut.hits[i]);
                 end
-            end else begin
-                valid_out <= 1'b0;
+            end
+            
+            // Monitor buffer writes
+            for (int i = 0; i < RAY_UNITS; i++) begin
+                if (dut.valid_out[i] && !dut.buffer_full[i]) begin
+                    $display("  -> Writing pixel %0d to buffer[%0d][%0d]", 
+                             dut.pixel_assignments[i], i, dut.write_ptrs[i]);
+                end
+                if (dut.valid_out[i] && dut.buffer_full[i]) begin
+                    $warning("Ray unit %0d output ignored - buffer full", i);
+                end
+            end
+            
+            // Monitor buffer reads
+            if (dut.pixel_valid_out) begin
+                int next_unit = dut.pixel_counter % RAY_UNITS;
+                $display("  <- Reading from buffer[%0d][%0d] for pixel %0d", 
+                         next_unit, dut.read_ptrs[next_unit], dut.pixel_counter);
             end
         end
     end
-    
+
+    initial begin
+        int start_time, end_time;
+        int pixels_per_second;
+        
+        @(negedge rst);
+        start_time = $time;
+        
+        // Wait for test completion
+        wait(received_pixels >= 32);
+        end_time = $time;
+        
+        pixels_per_second = (32 * 1000000000) / (end_time - start_time); // Pixels per second
+        $display("PERFORMANCE: Processed 32 pixels in %0d ns", end_time - start_time);
+        $display("PERFORMANCE: Rate = %0d pixels/second", pixels_per_second);
+    end
+
 endmodule
