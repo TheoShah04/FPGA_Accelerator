@@ -1,7 +1,7 @@
 `include "vector_pkg.svh"
 `include "common_defs.svh"
 
-module buffer_mangager #(
+module buffer_manager #(
     parameter BUFFER_DEPTH = 64,
     parameter RAY_UNITS = 4
 )(
@@ -37,7 +37,24 @@ logic [$clog2(BUFFER_DEPTH)-1:0] write_ptrs [RAY_UNITS-1:0]; // points to where 
 logic [$clog2(BUFFER_DEPTH)-1:0] read_ptrs [RAY_UNITS-1:0]; // points to where we should read from
 
 logic [31:0] pixel_counter;
-logic buffer_full;
+
+typedef enum logic [1:0] {
+    RAY_IDLE,
+    RAY_BUSY,
+    RAY_WAITING
+} ray_state_t;
+
+ray_state_t ray_states [RAY_UNITS-1:0];
+logic buffer_can_accept [RAY_UNITS-1:0];
+
+// buffer full flag
+generate
+    for (genvar i = 0; i < RAY_UNITS; i++) begin : space_check
+        always_comb begin
+            buffer_can_accept[i] = ((write_ptrs[i] + 1) % BUFFER_DEPTH) != read_ptrs[i];
+        end
+    end
+endgenerate
 
 // Math for ray unit pixel assignment
 // Ray unit 0 gets pixel 0, 4, 8... (pixel_assignments[0] = 0, 4, 8)
@@ -49,8 +66,8 @@ generate
             logic [10:0] pixel_x, pixel_y;
             pixel_x = pixel_assignments[i] % `SCREEN_WIDTH;
             pixel_y = pixel_assignments[i] / `SCREEN_WIDTH;
-            screen_x[i] = ({{(`WORD_WIDTH-11){1'b0}}, pixel_x}) << `FRAC_BITS;
-            screen_y[i] = ({{(`WORD_WIDTH-11){1'b0}}, pixel_y}) << `FRAC_BITS;
+            screen_x[i] = ({{(`WORD_WIDTH-11){1'b0}}, pixel_x}) << 21;
+            screen_y[i] = ({{(`WORD_WIDTH-11){1'b0}}, pixel_y}) << 21;
         end
     end
 endgenerate
@@ -82,6 +99,7 @@ always_ff @(posedge clk) begin
             write_ptrs[j] <= 0;
             read_ptrs[j] <= 0;
             valid_in[j] <= 1'b0;
+            ray_states[j] <= RAY_IDLE;
             for (int k = 0; k<BUFFER_DEPTH; k++) begin
                 buffers[j][k].valid <= 1'b0;
             end
@@ -89,21 +107,57 @@ always_ff @(posedge clk) begin
     end else begin
         // assign pixels to ray units
         for (int j = 0; j< RAY_UNITS; j++) begin
-            if(!valid_in[j])
-                valid_in[j] <= 1'b1;
-            else
-                valid_in[j] <= 1'b0;
 
-            // buffering pixels
-            buffer_full = ((write_ptrs[j] + 1) % BUFFER_DEPTH) == read_ptrs[j];
-            if(valid_out[j] && !buffer_full) begin
-                buffers[j][write_ptrs[j]].surface_point <= surface_points[j];
-                buffers[j][write_ptrs[j]].hit <= hits[j];
-                buffers[j][write_ptrs[j]].valid <= 1'b1;
-                // Wrap around
-                write_ptrs[j] <= (write_ptrs[j] + 1) % BUFFER_DEPTH;
-                pixel_assignments[j] <= pixel_assignments[j] + RAY_UNITS;
-            end
+            case (ray_states[j])
+                RAY_IDLE: begin
+                    if(buffer_can_accept[j]) begin
+                        valid_in[j] <= 1'b1;
+                        ray_states[j] <= RAY_BUSY;
+                    end
+                end
+
+                RAY_BUSY: begin
+                    valid_in[j] <= 1'b0;
+                    if(valid_out[j]) begin
+                        if(buffer_can_accept[j]) begin
+                            buffers[j][write_ptrs[j]].surface_point <= surface_points[j];
+                            buffers[j][write_ptrs[j]].hit <= hits[j];
+                            buffers[j][write_ptrs[j]].valid <= 1'b1;
+                            write_ptrs[j] <= (write_ptrs[j] + 1) % BUFFER_DEPTH;
+
+                            pixel_assignments[j] <= pixel_assignments[j] + RAY_UNITS;
+                            ray_states[j] <= RAY_IDLE;
+                        end else begin
+                            // buffer full
+                            ray_states[j] <= RAY_WAITING;
+                        end
+                    end
+                    else begin
+                        ray_states[j] <= RAY_BUSY;
+                    end
+                end
+
+                // result ready, waiting for space in buffer
+                RAY_WAITING: begin
+                    valid_in[j] <= 1'b0;
+                    if (buffer_can_accept[j]) begin
+                        buffers[j][write_ptrs[j]].surface_point <= surface_points[j];
+                        buffers[j][write_ptrs[j]].hit <= hits[j];
+                        buffers[j][write_ptrs[j]].valid <= 1'b1;
+                        write_ptrs[j] <= (write_ptrs[j] + 1) % BUFFER_DEPTH;
+                        
+                        pixel_assignments[j] <= pixel_assignments[j] + RAY_UNITS;                        
+                        ray_states[j] <= RAY_IDLE;
+                    end else begin
+                        ray_states[j] <= RAY_WAITING;
+                    end
+                end
+                
+                default: begin
+                    ray_states[j] <= RAY_IDLE;
+                    valid_in[j] <= 1'b0;
+                end
+            endcase
         end
     end
 end
@@ -112,6 +166,7 @@ end
 always_ff @(posedge clk) begin
     if(rst) begin
         pixel_counter <= 0;
+        pixel_valid_out <= 1'b0;
     end else begin
         logic [$clog2(RAY_UNITS)-1:0] next_unit;
         logic pixel_ready;
