@@ -2,8 +2,9 @@
 `include "common_defs.svh"
 
 module buffer_manager #(
-    parameter BUFFER_DEPTH = 64,
-    parameter RAY_UNITS = 4
+    parameter BUFFER_DEPTH = 16,
+    parameter RAY_UNITS = 4,
+    parameter TOTAL_PIXELS = `SCREEN_WIDTH * `SCREEN_HEIGHT
 )(
     input logic clk,
     input logic rst,
@@ -25,6 +26,7 @@ logic valid_in [RAY_UNITS-1:0];
 logic valid_out [RAY_UNITS-1:0];
 logic hits [RAY_UNITS-1:0];
 vec3 surface_points [RAY_UNITS-1:0];
+logic assign_new_pixel [RAY_UNITS-1:0];
 
 typedef struct packed {
     vec3 surface_point;
@@ -60,22 +62,23 @@ endgenerate
 // Math for ray unit pixel assignment
 // Ray unit 0 gets pixel 0, 4, 8... (pixel_assignments[0] = 0, 4, 8)
 // Ray unit 1 gets pixel 1, 5, 9... (pixel_assignments[1] = 1, 5, 9)
-genvar i;
-generate 
-    for (i=0; i < RAY_UNITS; i++) begin : coord_calc
+generate
+    for (genvar i = 0; i<RAY_UNITS; i++) begin : coord_calc
+        logic [10:0] pixel_x, pixel_y;
+        
         always_comb begin
-            logic [10:0] pixel_x, pixel_y;
             pixel_x = pixel_assignments[i] % `SCREEN_WIDTH;
             pixel_y = pixel_assignments[i] / `SCREEN_WIDTH;
-            screen_x[i] = ({{(`WORD_WIDTH-11){1'b0}}, pixel_x}) << 21;
-            screen_y[i] = ({{(`WORD_WIDTH-11){1'b0}}, pixel_y}) << 21;
+            
+            screen_x[i] = pixel_x * 32'h00200000;  // pixel_x * 1.0
+            screen_y[i] = pixel_y * 32'h00200000;  // pixel_y * 1.0
         end
     end
 endgenerate
 
 // ray unit generate
 generate
-    for (i = 0; i< RAY_UNITS; i++) begin : ray_unit
+    for (genvar i = 0; i< RAY_UNITS; i++) begin : ray_unit
         ray_unit ray_unit_ins (
             .clk(clk),
             .rst_gen(rst),
@@ -83,6 +86,7 @@ generate
             .screen_y(screen_y[i]),
             .valid_in(valid_in[i]),
             .camera_forward(camera_forward),
+            .camera_right(camera_right),
             .ray_origin(ray_origin),
             .sdf_sel(sdf_sel),
             .surface_point(surface_points[i]),
@@ -94,7 +98,7 @@ endgenerate
 
 // buffer management
 always_ff @(posedge clk) begin
-    if(rst) begin
+    if(!rst) begin
         for (int j = 0; j < RAY_UNITS; j++) begin
             pixel_assignments[j] <= j;
             write_ptrs[j] <= 0;
@@ -165,7 +169,7 @@ end
 
 // raster order output
 always_ff @(posedge clk) begin
-    if(rst) begin
+    if(!rst) begin
         pixel_counter <= 0;
         pixel_valid_out <= 1'b0;
     end else begin
