@@ -41,13 +41,9 @@ fp ndc_x, ndc_y;
 
 logic signed [31:0] x_add_half_scale;
 
-logic signed [31:0] x_shifted;
-logic signed [31:0] x_ndc_pre;
-
 
 logic signed [31:0] y_add_half_scale;
 logic signed [31:0] y_scaled;
-logic signed [31:0] y_shifted;
 
 
 
@@ -86,12 +82,9 @@ always_ff @(posedge clk) begin
         if(valid_r1) begin
 
             // [-1,1] range
+            ndc_x <= fp_mul(((x_add_half_scale - `FP_ONE_Q11_21) << 3),ASPECT_RATIO_640_480);
 
-            x_ndc_pre = fp_mul(((x_add_half_scale - `FP_ONE_Q11_21) << 3),ASPECT_RATIO_640_480);
-            ndc_x <= x_ndc_pre;
-
-            y_shifted = (`FP_ONE_Q11_21 - y_add_half_scale) << 3;
-            ndc_y <= y_shifted;
+            ndc_y <= (`FP_ONE_Q11_21 - y_add_half_scale) << 3;
           
         end
         else begin
@@ -141,6 +134,8 @@ end
 // skip for now since we fix camera pos
 vec3 world_ray;
 logic submodule_valid_in;
+logic invsq_valid_out;
+
 always_ff @(posedge clk) begin
     if (!rst) begin
         world_ray <= '0;
