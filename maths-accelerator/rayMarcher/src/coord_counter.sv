@@ -2,8 +2,8 @@
 `include "common_defs.svh"
 
 module coord_counter #(
-    parameter SCREEN_WIDTH = `SCREEN_WIDTH,
-              SCREEN_HEIGHT = 10, //`SCREEN_HEIGHT,
+    parameter SCREEN_WIDTH = 640,
+              SCREEN_HEIGHT = 480,
               OUT_WIDTH = 24
 )(
     input logic                 clk,
@@ -28,15 +28,14 @@ module coord_counter #(
         if (!rst) begin
             x <= 0;
             y <= 0;
+            shade_temp <= 0;
+            current_state <= IDLE;
             x_temp <= 0;
             y_temp <= 0;
-            valid_out <= 1'b0;
-            shade_out <= 0;
-            current_state <= IDLE;
         end
         else begin
             current_state <= next_state;
-            if ((current_state == IDLE && valid_in)) begin 
+            if (current_state == IDLE && valid_in) begin 
                 shade_temp <= shade_in;
                 x_temp <= x;
                 y_temp <= y;
@@ -57,14 +56,18 @@ module coord_counter #(
         case(current_state)
             IDLE: begin
                 valid_out = 0;
+                shade_out = shade_temp;
                 if (valid_in)
                     next_state = PUSH;
             end
             PUSH: begin
-                shade_out = shade_temp;
                 if (ready) begin
                     next_state = IDLE;
                     valid_out = 1'b1;
+                end else begin
+                    shade_out = shade_out;
+                    valid_out = 1'b0;
+                    next_state = PUSH;
                 end
             end
             default: begin
