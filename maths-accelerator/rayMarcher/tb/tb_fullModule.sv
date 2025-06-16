@@ -94,14 +94,14 @@ module tb_fullModule;
 
   // Simulation loop
   initial begin
-    $dumpfile("fullModule_testv7.vcd");
+    $dumpfile("fullModule_test.vcd");
     $dumpvars(0, tb_fullModule.valid_out);
     $dumpvars(0, tb_fullModule.shade_out);
 
 
     // Initial values
     angle_rad  = 1.5708;
-    zoom = to_fixed(1.5);
+    zoom = to_fixed(0.5);
     
     cos_val = to_fixed($cos(angle_rad));
     sin_val = to_fixed($sin(angle_rad));
