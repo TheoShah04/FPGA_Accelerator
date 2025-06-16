@@ -1,7 +1,11 @@
 `include "vector_pkg.svh"
 `include "common_defs.svh"
 
-module pixel_generator(
+module pixel_generator#(
+parameter  AXI_LITE_ADDR_WIDTH = 8,
+parameter  REG_FILE_SIZE = 8
+
+)(
     input           out_stream_aclk,
     input           s_axi_lite_aclk,
     input           axi_resetn,
@@ -39,9 +43,7 @@ module pixel_generator(
 );
 
 
-parameter  REG_FILE_SIZE = 8;
 localparam REG_FILE_AWIDTH = $clog2(REG_FILE_SIZE);
-parameter  AXI_LITE_ADDR_WIDTH = 8;
 
 localparam AWAIT_WADD_AND_DATA = 3'b000;
 localparam AWAIT_WDATA = 3'b001;
@@ -189,22 +191,26 @@ wire [31:0] lightx = {light_objsel[31:24],24'b0};
 wire [31:0] lighty = {light_objsel[23:16],24'b0};
 wire [31:0] lightz = {light_objsel[15:8],24'b0};
 
-vec3 light_pos;
 vec3 camera_forward;
+vec3 light_pos;
 vec3 camera_right; 
 fp normal_factor_q;
 wire ready;
+reg [31:0] light_objsel_q;
+
+vec3 ray_origin;
 
 always_ff @ (posedge out_stream_aclk) begin
-    light_pos = make_vec3(lightx, lighty, lightz); 
+    light_pos = make_vec3(lightx, lighty, lightz); //default: 32'h0093EA1C 
     camera_forward <= make_vec3(camera_forward_x, camera_forward_y, camera_forward_z);
     camera_right <= make_vec3(camera_right_x, camera_right_y, camera_right_z);
     normal_factor_q <= normal_factor;
+    ray_origin <= vec3_scale(camera_forward, normal_factor_q);
+
 end
 
-    vec3 ray_origin = vec3_scale(camera_forward, normal_factor_q);
     logic valid_in;
-    assign valid_in = valid_coor & ready;
+    assign valid_in = valid_coor & 1'b1;
 
 
 always @(posedge out_stream_aclk) begin
@@ -227,27 +233,47 @@ end
     //Ray Unit I/O ports
 
     logic valid_coor;         //indicate
-    logic rst_gen = 1'b1;
     logic sdf_sel;
     logic valid_out;
     logic sof, eol;   
     logic [23:0] shade_out; 
-    
-    
+    logic valid_in;
     assign valid_coor = (first) || valid_out;
-    assign sdf_sel = light_objsel[0];
+    assign valid_in = valid_coor & 1'b1;
+    
+ 
+    //assign sdf_sel = light_objsel_q[0];
+    assign sdf_sel = 1'b0;
+    
+    
+        
+    logic out_stream_tready_q;
+    always_ff @ (posedge out_stream_aclk) begin
+        if(!periph_resetn) begin
+            out_stream_tready_q <= 1'b0;
+        end
+        else begin
+            if(out_stream_tready)
+                out_stream_tready_q <= 1'b1;
+            else if (out_stream_tvalid)
+                out_stream_tready_q <= 1'b0;
+        end
+    end
+    assign ready = out_stream_tready_q;
+
 
   fullModule dut (
     .clk(out_stream_aclk),
     .rst_gen(periph_resetn),
     .screen_x(x),
     .screen_y(y),
-    .valid_in(valid_coor),
+    .valid_in(valid_in),
     .light_pos(light_pos),
     .camera_forward(camera_forward),
     .camera_right(camera_right),  
     .ray_origin(ray_origin),
     .sdf_sel(sdf_sel),
+    .ready_in(ready),
     .shade_out(shade_out),
     .valid_out(valid_out),
     .sof(sof),
@@ -259,26 +285,11 @@ logic [7:0] r, g, b;
 assign {r,g,b} = shade_out;
 
 
-logic out_stream_tready_q;
-always_ff @ (posedge out_stream_aclk) begin
-    if(!periph_resetn) begin
-        out_stream_tready_q <= 1'b0;
-    end
-    else begin
-        if(out_stream_tready)
-            out_stream_tready_q <= 1'b1;
-        else if (out_stream_tvalid)
-            out_stream_tready_q <= 1'b0;
-    end
-end
-
 packer pixel_packer(    .aclk(out_stream_aclk),
                         .aresetn(periph_resetn),
                         .r(r), .g(g), .b(b),
                         .eol(eol), .in_stream_ready(ready), .valid(valid_out), .sof(sof),
                         .out_stream_tdata(out_stream_tdata), .out_stream_tkeep(out_stream_tkeep),
-                        .out_stream_tlast(out_stream_tlast), .out_stream_tready(out_stream_tready),
-                        .out_stream_tvalid(out_stream_tvalid), .out_stream_tuser(out_stream_tuser) );
-
- 
+                        .out_stream_tlast(out_stream_tlast), .out_stream_tready(out_stream_tready_q),
+                        .out_stream_tvalid(out_stream_tvalid), .out_stream_tuser(out_stream_tuser));
 endmodule

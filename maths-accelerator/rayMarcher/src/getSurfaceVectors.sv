@@ -63,12 +63,13 @@ module getSurfaceVectors #(
                 pos_yyx = vec3_add(p_2, vec3_scale(h_yyx, eps));
                 pos_xxx = vec3_add(p_2, vec3_scale(h_xxx, eps));
             end
-            reg_hit_in_1 = hit_in_2; //Change this when pipelining
+            reg_hit_in_1 = hit_in_2;
             reg_p_1 = p_2; 
         end
     end
 
-    // If too expensive, we instantiate only one block and perform folding 4 times
+
+    logic FSM_valid;
     sceneQuery getClosestDist_xyy (
         .clk(clk),
         .rst(rst),

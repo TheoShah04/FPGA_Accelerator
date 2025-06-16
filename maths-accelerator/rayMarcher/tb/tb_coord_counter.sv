@@ -4,80 +4,101 @@
 
 module tb_coord_counter;
 
-    parameter WIDTH = 640;
-    parameter HEIGHT = 480;
-    parameter OUT_WIDTH = 24;
+    // Parameters (match your real design)
+    parameter WIDTH      = 640;
+    parameter HEIGHT     = 480;
+    parameter OUT_WIDTH  = 24;
 
-    logic               clk;
-    logic                 rst;
-    logic [OUT_WIDTH-1:0] shade_in;
-    logic                 valid_in;
-    logic [OUT_WIDTH-1:0] shade_out;
-    logic                sof;
-    logic                eol;
-    logic                valid_out;
+    // Clock & reset
+    logic                   clk;
+    logic                   rst;
 
-    
+    // DUT I/O
+    logic [OUT_WIDTH-1:0]   shade_in;
+    logic                   valid_in;
+    logic                   ready;       // back‐pressure from packer
+    logic [OUT_WIDTH-1:0]   shade_out;
+    logic                   sof;
+    logic                   eol;
+    logic                   valid_out;
+
+    // Instantiate DUT
     coord_counter dut (
-        .clk(clk),
-        .rst(rst),
-        .shade_in(shade_in),
-        .valid_in(valid_in),
-        .shade_out(shade_out),
-        .sof(sof),
-        .eol(eol),
-        .valid_out(valid_out)
+        .clk       (clk),
+        .rst       (rst),
+        .shade_in  (shade_in),
+        .valid_in  (valid_in),
+        .ready     (ready),
+        .shade_out (shade_out),
+        .sof       (sof),
+        .eol       (eol),
+        .valid_out (valid_out)
     );
 
-    // Clk
+    // 100 MHz clock
     initial clk = 0;
     always #5 clk = ~clk;
 
-    //Simulation configuration
+    // Generate random back-pressure
+    always_ff @(posedge clk) begin
+        // 50% chance of being ready each cycle
+        ready <= $urandom_range(0,1);
+    end
+
+    // VCD dump
     initial begin
         $dumpfile("coord_counter_test.vcd");
-        $dumpvars(0,tb_coord_counter);
+        $dumpvars(0, tb_coord_counter);
     end
 
-    // output terminall
+    // Monitor outputs
     always_ff @(posedge clk) begin
-        if (valid_out)
-            $display("Time: %0t | Status = {%h,%h}", $time, sof,eol);
+        if (valid_out) begin
+            $display("%0t | OUT pix #%0d | shade_out=%h | sof=%b | eol=%b | ready(in)=%b",
+                     $time, $time/10, shade_out, sof, eol, ready);
+        end
     end
 
-    int counter;
-
+    // Main stimulus
     initial begin
-        $display("Starting coordinate counter (sof & eol) testing");
-        rst = 0;
+        integer i;
+        $display(">>> Starting coord_counter test with random back-pressure");
+
+        // Initialize
+        rst      = 0;
         valid_in = 0;
         shade_in = 0;
         #20;
 
+        // Release reset
         rst = 1;
         #15;
 
-        // Test known input: 25 in Q8.24
-        valid_in = 1;
-        shade_in = 24'h223344;  // 25 * 2^24
-        counter++;
-        #10;
-        valid_in = 0;
-        #20;
-        rst = 0;
-        #10;
-        rst = 1;
-        #10;
-        // Random inputs
-        repeat (200) begin
-            counter++;
+        // Drive a known pattern for sanity
+        @(posedge clk);
+        if (ready) begin
             valid_in = 1;
-            shade_in = $random;
-            #10;
+            shade_in = 24'hABCDEF;
+            @(posedge clk);
             valid_in = 0;
-            #10;
         end
 
+        // Wait a few cycles
+        repeat (5) @(posedge clk);
+
+        // Now drive 200 random pixels, only when ready==1
+        for (i = 0; i < 200; i = i + 1) begin
+            @(posedge clk);
+            if (ready) begin
+                valid_in <= 1;
+                shade_in <= $urandom;  // random 24-bit value
+                @(posedge clk);
+                valid_in <= 0;
+            end
+        end
+
+        #50;
+        $display(">>> Testbench complete");
         $finish;
     end
 
