@@ -83,4 +83,3 @@ module coord_counter #(
     
 
 endmodule
-    
