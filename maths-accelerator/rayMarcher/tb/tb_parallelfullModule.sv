@@ -85,6 +85,7 @@ module tb_parallelFullModule;
     $dumpfile("fullModule_test.vcd");
     $dumpvars(0, tb_fullModule.valid_out);
     $dumpvars(0, tb_fullModule.shade_out);
+    $dumpvars(0, tb_fullModule.clk);
 
     // Initial values
     angle_rad_90 = 1.5708; //90 degrees
