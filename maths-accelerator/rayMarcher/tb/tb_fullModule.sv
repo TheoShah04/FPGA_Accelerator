@@ -36,12 +36,13 @@ module tb_fullModule;
   fullModule dut (
     .clk(clk),
     .rst_gen(rst),
-    .screen_x(screen_x),
-    .screen_y(screen_y),
-    .valid_in(valid_in),
+    // .screen_x(screen_x),
+    // .screen_y(screen_y),
+    // .valid_in(valid_in),
     .light_pos(light_pos),
     .camera_forward(camera_forward),
     .camera_right(camera_right),  
+    .camera_up(camera_up),
     .ray_origin(ray_origin),
     .sdf_sel(sdf_sel),
     .shade_out(shade_out),
@@ -98,13 +99,13 @@ module tb_fullModule;
     rst = 1'b0;
     valid_in = 0;
     ready_in = 1'b1;
-    camera_up = make_vec3(to_fixed(0.0), to_fixed(1.0), to_fixed(0.0));
+    camera_up = make_vec3(to_fixed(0.0), to_fixed(-1.0), to_fixed(0.0));
     camera_forward = vec3_normalise(make_vec3(cos_scaled, to_fixed(0.0), sin_scaled)); //this in inverted direction
-    camera_right = vec3_normalise(vec3_cross(camera_forward, camera_up)); //normalise vector in software here maybe?
+    camera_right = make_vec3(to_fixed(-1.0), to_fixed(0.0), to_fixed(0.0));
    
-    ray_origin     = make_vec3(cos_scaled, to_fixed(0.0), sin_scaled);
+    ray_origin     = make_vec3(to_fixed(0.0), to_fixed(0.0), to_fixed(3.0));
     light_pos      = make_vec3(to_fixed(3.0), to_fixed(2.0), to_fixed(5.0));
-    sdf_sel = 1; // Sphere or square
+    sdf_sel = 0; // Sphere or square
 
     // Reset sequence
     #20;
@@ -115,12 +116,12 @@ module tb_fullModule;
      //valid_in = 1;
     for (int y = 0; y < 480; y++) begin
       for (int x = 0; x < 640; x++) begin
-        #10;
-        screen_x = to_fixed_Q11_21(x);
-        screen_y = to_fixed_Q11_21(y);
-        valid_in = 1; 
-        #10;
-        valid_in = 0;
+        // #10;
+        // screen_x = to_fixed_Q11_21(x);
+        // screen_y = to_fixed_Q11_21(y);
+        // valid_in = 1; 
+        // #10;
+        // valid_in = 0;
 
 
         wait (valid_out);
