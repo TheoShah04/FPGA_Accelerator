@@ -3,66 +3,90 @@
 module tb_inv_sqrt;
 
     parameter WIDTH = 32;
+    parameter N_TEST = 6;  // how many inputs to fire in a burst
 
-    logic clk;
-    logic rst;
-    logic valid_in;
-    logic [WIDTH-1:0] x;
-    logic valid_out;
-    logic [WIDTH-1:0] inv_sqrt;
+    logic                  clk;
+    logic                  rst;
+    logic                  valid_in;
+    logic  [WIDTH-1:0]     x;
+    logic                  valid_out;
+    logic  [WIDTH-1:0]     inv_sqrt;
 
-    
+    // Simple queue to echo back which 'x' corresponds to each output
+    logic [WIDTH-1:0]      x_queue [0:N_TEST-1];
+    integer                q_head, q_tail;
+
     inv_sqrt #(.WIDTH(WIDTH)) dut (
-        .clk(clk),
-        .rst(rst),
-        .valid_in(valid_in),
-        .x(x),
-        .valid_out(valid_out),
-        .inv_sqrt(inv_sqrt)
+        .clk       (clk),
+        .rst       (rst),
+        .valid_in  (valid_in),
+        .x         (x),
+        .valid_out (valid_out),
+        .inv_sqrt  (inv_sqrt)
     );
 
-    // Clk
+    // Clock generation
     initial clk = 0;
     always #5 clk = ~clk;
 
-    //Simulation configuration
+    // Dump waves
     initial begin
         $dumpfile("inv_sqrt_test.vcd");
-        $dumpvars(0,tb_inv_sqrt);
+        $dumpvars(0, tb_inv_sqrt);
     end
 
-    // output terminall
+    // Print outputs as they arrive
     always_ff @(posedge clk) begin
-        if (valid_out)
-            $display("Time: %0t | Input x = %h | inv_sqrt = %h", $time, x, inv_sqrt);
+        if (valid_out) begin
+            $display("Time %0t: x = %h → inv_sqrt = %h",
+                     $time, x_queue[q_head], inv_sqrt);
+            q_head = q_head + 1;
+        end
     end
 
     initial begin
-        $display("Starting testbench for inv_sqrt...");
-        rst = 0;
+        integer i;
+        // -------------------------------------------------------
+        // reset
+        // -------------------------------------------------------
+        rst      = 0;
         valid_in = 0;
-        x = 0;
+        x        = '0;
+        q_head   = 0;
+        q_tail   = 0;
         #20;
 
         rst = 1;
         #10;
 
-        // Test known input: 25 in Q8.24
-        valid_in = 1;
-        x = 32'h19000000;  // 25 * 2^24
-        #10;
-        valid_in = 0;
-        #40;
-
-        // Random inputs
-        repeat (5) begin
+        // -------------------------------------------------------
+        // BURST: push N_TEST inputs, one per clock
+        // -------------------------------------------------------
+        for (i = 0; i < N_TEST; i = i + 1) begin
+            @(posedge clk);
             valid_in = 1;
-            x = $random;
-            #10;
-            valid_in = 0;
-            #40;
+            // first value fixed, the rest random
+            if (i == 0)
+                x = 32'h19000000;       // 25 in Q8.24
+            else
+                x = $urandom;
+
+            // enqueue for later print
+            x_queue[q_tail] = x;
+            q_tail = q_tail + 1;
         end
 
+        // drop valid_in
+        @(posedge clk);
+        valid_in = 0;
+
+        // -------------------------------------------------------
+        // Wait for all N_TEST outputs
+        // -------------------------------------------------------
+        repeat (N_TEST) @(posedge valid_out);
+
+        #20;
+        $display("All %0d results received. Done.", N_TEST);
         $finish;
     end
 
