@@ -3,6 +3,7 @@
 #include <cmath>
 #include "rayMarcher.h"
 #include <iostream>
+#include <chrono>
 
 constexpr float PI = 3.14159265f;
 float uTime = 0.0f; //Extern variable that is accessed by the mandelbulb sdf aswell
@@ -67,6 +68,8 @@ int main() {
         //     3.0f * cosf(yaw)  // Z
         // );
 
+        auto start = std::chrono::high_resolution_clock::now();
+
         for (int y = 0; y < height; ++y) {
             for (int x = 0; x < width; ++x) { //Raster pattern
                 //Image plane height: scale * 2
@@ -103,6 +106,11 @@ int main() {
                 pixels[y * width + x] = (colorValue << 16) | (colorValue << 8) | colorValue; //Colour in pixels (I don't know how this works)
             }
         }
+
+        auto end = std::chrono::high_resolution_clock::now();
+        std::chrono::duration<double, std::micro> duration_us = end - start;
+        std::cout << "Loop took " << duration_us.count() << " microseconds." << std::endl;
+
         //DRAW FRAME
         SDL_UpdateTexture(texture, nullptr, pixels, width * sizeof(uint32_t));
         SDL_RenderClear(renderer);
