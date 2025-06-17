@@ -8,7 +8,7 @@ vcd_file      = "C:/Projects/FPGA_Accelerator/maths-accelerator/rayMarcher/sim_v
 shade_signal  = "tb_fullModule.shade_out[23:0]"
 valid_signal  = "tb_fullModule.valid_out"
 width, height = 640, 480
-output_image  = "C:/Projects/FPGA_Accelerator/maths-accelerator/VCDtoImage/OutputImages/ParallelSphere.png"
+output_image  = "C:/Projects/FPGA_Accelerator/maths-accelerator/VCDtoImage/OutputImages/q24_sphere.png"
 # output_image = "C:/Users/Leeung/Projects/LUTsofLUV/LUTsofLUV/maths-accelerator/VCDtoImage/OutputImages/leo_output.png"
 print("Parsing VCD…")
 vcd = VCDVCD(vcd_file, signals=[shade_signal, valid_signal], store_tvs=True)
