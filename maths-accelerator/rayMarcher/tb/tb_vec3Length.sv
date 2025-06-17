@@ -8,7 +8,7 @@ module tb_vec3Length;
   // Parameters
   // --------------------------------------------------
   parameter int WIDTH   = 32;
-  parameter int N_TEST  = 6;       // number of test vectors
+  parameter int N_TEST  = 7;       // number of test vectors
 
   // --------------------------------------------------
   // Clock & Reset
@@ -56,7 +56,7 @@ module tb_vec3Length;
     vec_list[3] = make_vec3(32'h06800000, 32'h07400000, 32'h01000000); // ~9.78838
     vec_list[4] = make_vec3(32'h06800000, 32'h07400000, 32'h03000000); // ~10.18888
     vec_list[5] = make_vec3(32'h01000000, 32'h00000000, 32'h01000000); // Expect 1.4
-    vec_list[5] = make_vec3(32'h01000000, 32'h01000000, 32'h01000000); // Expect root 3
+    vec_list[6] = make_vec3(32'h01000000, 32'h01000000, 32'h01000000); // Expect root 3
   end
 
   // --------------------------------------------------
