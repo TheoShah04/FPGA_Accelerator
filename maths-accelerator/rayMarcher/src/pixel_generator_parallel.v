@@ -183,6 +183,9 @@ wire [31:0] camera_forward_z = 32'h01000000; //regfile[3];
 wire [31:0] camera_right_x = 32'hff000000; //regfile[4];
 wire [31:0] camera_right_y = 32'h00000000; //regfile[5];
 wire [31:0] camera_right_z = 32'h00000000; //regfile[6];
+wire [31:0] camera_up_x = 32'h00000000;
+wire [31:0] camera_up_y = 32'hff000000;
+wire [31:0] camera_up_z = 32'h00000000; 
 wire [31:0] normal_factor =  32'h03000000; //regfile[7];
 wire [31:0] lightx = {light_objsel[31:24],24'b0};
 wire [31:0] lighty = {light_objsel[23:16],24'b0};
@@ -191,6 +194,7 @@ wire [31:0] lightz = {light_objsel[15:8],24'b0};
 reg [95:0] light_pos; //default: 32'h0093EA1C 
 reg [95:0] camera_forward;
 reg [95:0] camera_right; 
+reg [95:0] camera_up;
 reg [31:0] normal_factor_q;
 wire ready;
 //wire [31:0] light_objsel_q;
