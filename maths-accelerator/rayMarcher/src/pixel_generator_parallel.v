@@ -196,7 +196,6 @@ wire ready;
 //wire [31:0] light_objsel_q;
 wire valid_coor;         //indicate
 reg [95:0] ray_origin;
-wire ray_unit_valid_out;
 
 always @ (posedge out_stream_aclk) begin
     light_pos <= {lightx, lighty, lightz};
@@ -230,8 +229,7 @@ end
     .shade_out(shade_out),
     .valid_out(valid_out),
     .sof(sof),
-    .eol(eol),
-    .buffer_valid_out(ray_unit_valid_out)
+    .eol(eol)
   );
 
 wire [7:0] r, g, b;

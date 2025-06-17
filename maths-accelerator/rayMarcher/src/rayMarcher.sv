@@ -3,7 +3,7 @@
 
 module rayMarcher #(
     int MAX_STEPS = 100,
-    parameter MAX_DIST = 32'h06800000, //6.5 in decimal (which is the max in Q8.24 before overflow when doing magnitude of vectors)
+    parameter MAX_DIST = 32'h03800000, //6.5 in decimal (which is the max in Q8.24 before overflow when doing magnitude of vectors)
     // parameter SURFACE_DIST = 32'h00028f5c //0.01 in decimal
     parameter SURFACE_DIST = 32'h00004189 //0.001 in decimal
 )(
