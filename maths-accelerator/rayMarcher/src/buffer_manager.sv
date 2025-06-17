@@ -10,6 +10,7 @@ module buffer_manager #(
     input logic rst,
     input vec3 camera_forward,
     input vec3 camera_right,
+    input vec3 camera_up,
     input vec3 ray_origin,
     input logic sdf_sel,
 
@@ -70,8 +71,8 @@ generate
             pixel_x = pixel_assignments[i] % `SCREEN_WIDTH;
             pixel_y = pixel_assignments[i] / `SCREEN_WIDTH;
             
-            screen_x[i] = pixel_x * 32'h00200000;  // pixel_x * 1.0
-            screen_y[i] = pixel_y * 32'h00200000;  // pixel_y * 1.0
+            screen_x[i] = pixel_x * 32'h00200000;  // shift by 2^21
+            screen_y[i] = pixel_y * 32'h00200000;
             
             // screen_x[i] = {1'b0, pixel_x, 21'b0};
             // screen_y[i] = {1'b0, pixel_y, 21'b0};
@@ -90,6 +91,7 @@ generate
             .valid_in(valid_in[i]),
             .camera_forward(camera_forward),
             .camera_right(camera_right),
+            .camera_up(camera_up),
             .ray_origin(ray_origin),
             .sdf_sel(sdf_sel),
             .surface_point(surface_points[i]),
