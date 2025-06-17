@@ -82,10 +82,10 @@ module tb_parallelFullModule;
 
   // Simulation loop
   initial begin
-    $dumpfile("fullModule_test.vcd");
-    $dumpvars(0, tb_fullModule.valid_out);
-    $dumpvars(0, tb_fullModule.shade_out);
-    $dumpvars(0, tb_fullModule.clk);
+    $dumpfile("parallelFullModule_test.vcd");
+    $dumpvars(0, tb_parallelFullModule.valid_out);
+    $dumpvars(0, tb_parallelFullModule.shade_out);
+    $dumpvars(0, tb_parallelFullModule.clk);
 
     // Initial values
     angle_rad_90 = 1.5708; //90 degrees
