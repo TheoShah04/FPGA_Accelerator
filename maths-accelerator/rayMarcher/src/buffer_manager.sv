@@ -70,8 +70,8 @@ generate
             pixel_x = pixel_assignments[i] % `SCREEN_WIDTH;
             pixel_y = pixel_assignments[i] / `SCREEN_WIDTH;
             
-            screen_x[i] = pixel_x * 32'h00200000;  // pixel_x * 1.0
-            screen_y[i] = pixel_y * 32'h00200000;  // pixel_y * 1.0
+            screen_x[i] = pixel_x * 32'h00200000;  // shift by 2^21
+            screen_y[i] = pixel_y * 32'h00200000;
             
             // screen_x[i] = {1'b0, pixel_x, 21'b0};
             // screen_y[i] = {1'b0, pixel_y, 21'b0};
