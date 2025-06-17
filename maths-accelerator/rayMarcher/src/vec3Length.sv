@@ -3,131 +3,93 @@
 `timescale 1ns/1ps
 
 module vec3Length #(
-    parameter int DATA_WIDTH = `WORD_WIDTH,    // total bits
-    parameter int FRAC_BITS  = `FRAC_BITS      // fractional bits
+    parameter int DATA_WIDTH = `WORD_WIDTH,   // total bits
+    parameter int FRAC_BITS  = `FRAC_BITS     // fractional bits
 )(
     input  logic                   clk,
-    input  logic                   rst,        // active-low reset
+    input  logic                   rst,        // asserted high to reset
     input  vec3                    vec,
     input  logic                   valid_in,
     output logic [DATA_WIDTH-1:0]  length,
     output logic                   valid_out
 );
 
-    localparam int FIFO_DEPTH = 4;
-    localparam int PTR_W      = 2;
-    localparam int CNT_W      = PTR_W + 1;
+    // ----------------------------------------------------
+    // We'll use a 4-stage shift register to align
+    // the dot-product with the inv_sqrt's 4-cycle latency.
+    // sum_pipe[0] and valid_pipe[0] latch the new dot.
+    // sum_pipe[3] & valid_pipe[3] line up with sub_valid_out.
+    // ----------------------------------------------------
+    logic [DATA_WIDTH-1:0] sum_pipe   [0:3];
+    logic                  valid_pipe [0:3];
 
-    // ----------------------------------------
-    // Stage-0 pipeline regs to align vec & valid
-    // ----------------------------------------
-    logic [DATA_WIDTH-1:0]  sum_squares_d;
-    logic                   valid_d;
+    // Handshake into the pipelined submodule
+    logic                  module_valid_in;
+    wire  [DATA_WIDTH-1:0] module_x       = sum_pipe[0];
+    wire  [DATA_WIDTH-1:0] module_inv_out;
+    wire                   module_valid_out;
 
-    always_ff @(posedge clk or negedge rst) begin
+    integer i;
+
+    // ----------------------------------------------------------------
+    // 4-stage pipeline + submodule feed + output logic
+    // ----------------------------------------------------------------
+    always_ff @(posedge clk) begin
         if (!rst) begin
-            sum_squares_d <= '0;
-            valid_d       <= 1'b0;
-        end else begin
-            sum_squares_d <= vec3_dot(vec, vec);
-            valid_d       <= valid_in;
+            // reset all pipeline registers
+            for (i = 0; i < 4; i = i + 1) begin
+                sum_pipe[i]   <= '0;
+                valid_pipe[i] <= 1'b0;
+            end
+
+            module_valid_in <= 1'b0;
+            length          <= '0;
+            valid_out       <= 1'b0;
         end
-    end
+        else begin
+            // ----------------------------------------------------------------
+            // Stage 0: compute the dot-product & register valid
+            // ----------------------------------------------------------------
+            sum_pipe[0]   <= vec3_dot(vec, vec);
+            valid_pipe[0] <= valid_in;
 
-    // ----------------------------------------
-    // FIFO storage for pending sums
-    // ----------------------------------------
-    logic [DATA_WIDTH-1:0] in_fifo_mem [0:FIFO_DEPTH-1];
-    logic [PTR_W-1:0]      in_head_ptr, in_tail_ptr;
-    logic [CNT_W-1:0]      in_count;
-
-    // ----------------------------------------
-    // FIFO storage for rounding up results
-    // ----------------------------------------
-    logic [DATA_WIDTH-1:0] out_fifo_mem [0:FIFO_DEPTH-1];
-    logic [PTR_W-1:0]      out_head_ptr, out_tail_ptr;
-    logic [CNT_W-1:0]      out_count;
-
-    wire in_full   = (in_count  == FIFO_DEPTH);
-    wire in_empty  = (in_count  == 0);
-    wire out_full  = (out_count == FIFO_DEPTH);
-    wire out_empty = (out_count == 0);
-
-    // ----------------------------------------
-    // Submodule handshake
-    // ----------------------------------------
-    logic                  sub_valid_in;
-    logic [DATA_WIDTH-1:0] sub_x;
-    wire  [DATA_WIDTH-1:0] sub_inv_sqrt;
-    wire                   sub_valid_out;
-
-    // ----------------------------------------
-    // Main FSM: enqueue, feed, drain
-    // ----------------------------------------
-    always_ff @(posedge clk or negedge rst) begin
-        if (!rst) begin
-            in_head_ptr  <= '0;
-            in_tail_ptr  <= '0;
-            in_count     <= '0;
-            out_head_ptr <= '0;
-            out_tail_ptr <= '0;
-            out_count    <= '0;
-
-            sub_valid_in <= 1'b0;
-            sub_x        <= '0;
-
-            length       <= '0;
-            valid_out    <= 1'b0;
-        end else begin
-            // default
-            sub_valid_in <= 1'b0;
-            valid_out    <= 1'b0;
-
-            // ---- PUSH stage (using registered valid_d & sum_squares_d) ----
-            if (valid_d && !in_full) begin
-                in_fifo_mem[in_tail_ptr] <= sum_squares_d;
-                in_tail_ptr              <= in_tail_ptr + 1;
-                in_count                 <= in_count + 1;
+            // ----------------------------------------------------------------
+            // Shift the pipeline
+            // ----------------------------------------------------------------
+            for (i = 1; i < 4; i = i + 1) begin
+                sum_pipe[i]   <= sum_pipe[i-1];
+                valid_pipe[i] <= valid_pipe[i-1];
             end
 
-            // ---- FEED submodule when ready ----
-            if (!in_empty && !out_full) begin
-                sub_valid_in           <= 1'b1;
-                sub_x                  <= in_fifo_mem[in_head_ptr];
+            // ----------------------------------------------------------------
+            // Feed the submodule from stage-0
+            // ----------------------------------------------------------------
+            module_valid_in <= valid_pipe[0];
 
-                in_head_ptr            <= in_head_ptr + 1;
-                in_count               <= in_count - 1;
+            // ----------------------------------------------------------------
+            // Default: no output unless submodule is valid and aligned
+            // ----------------------------------------------------------------
+            valid_out <= 1'b0;
 
-                // also enqueue for matching later
-                out_fifo_mem[out_tail_ptr] <= in_fifo_mem[in_head_ptr];
-                out_tail_ptr               <= out_tail_ptr + 1;
-                out_count                  <= out_count + 1;
-            end
-
-            // ---- DRAIN on submodule output ----
-            if (sub_valid_out && !out_empty) begin
-                length       <= fp_mul(
-                                  out_fifo_mem[out_head_ptr],
-                                  sub_inv_sqrt
-                                );
-                valid_out    <= 1'b1;
-
-                out_head_ptr <= out_head_ptr + 1;
-                out_count    <= out_count - 1;
+            // When the submodule asserts valid_out _and_
+            // the aligned valid_pipe[3] is high, produce length
+            if (module_valid_out && valid_pipe[3]) begin
+                length    <= fp_mul(sum_pipe[3], module_inv_out);
+                valid_out <= 1'b1;
             end
         end
     end
 
-    // ----------------------------------------------------
-    // Pipelined inverse‐sqrt submodule
-    // ----------------------------------------------------
-    inv_sqrt u_inv_sqrt (
+    // ----------------------------------------------------------------
+    // 4-cycle-latency inverse-sqrt
+    // ----------------------------------------------------------------
+    inv_sqrt getSqrt (
         .clk       (clk),
-        .valid_in  (sub_valid_in),
+        .valid_in  (module_valid_in),
         .rst       (rst),
-        .x         (sub_x),
-        .inv_sqrt  (sub_inv_sqrt),
-        .valid_out (sub_valid_out)
+        .x         (module_x),
+        .inv_sqrt  (module_inv_out),
+        .valid_out (module_valid_out)
     );
 
 endmodule
