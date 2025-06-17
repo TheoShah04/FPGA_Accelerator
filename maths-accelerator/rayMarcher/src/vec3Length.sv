@@ -18,7 +18,8 @@ module vec3Length #(
     logic valid_pipe [0:4];
 
     logic module_valid_in;
-    assign [DATA_WIDTH-1:0] module_x = sum_pipe[0];
+    logic [DATA_WIDTH-1:0] module_x;
+    assign module_x = sum_pipe[0];
     logic [DATA_WIDTH-1:0] module_inv_out;
     logic module_valid_out;
 
