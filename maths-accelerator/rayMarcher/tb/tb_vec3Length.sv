@@ -4,85 +4,104 @@
 
 module tb_vec3Length;
 
-  parameter WIDTH = 32;
-  // Clock and active-low reset
-  logic clk;
-  logic rst_n;
+  // --------------------------------------------------
+  // Parameters
+  // --------------------------------------------------
+  parameter int WIDTH   = 32;
+  parameter int N_TEST  = 6;       // number of test vectors
 
-  // DUT interface
-  vec3 vec;
-  logic valid_in;
-  logic [WIDTH-1:0] length;
-  logic valid_out;
+  // --------------------------------------------------
+  // Clock & Reset
+  // --------------------------------------------------
+  logic clk, rst_n;
+  initial clk = 0;
+  always #5 clk = ~clk;            // 100 MHz
 
-  // DUT instantiation (note rst_n is passed to rst port)
-  vec3Length uut (
-    .clk(clk),
-    .rst(rst_n), // assuming internal logic is active-low compatible
-    .vec(vec),
-    .valid_in(valid_in),
-    .length(length),
-    .valid_out(valid_out)
+  // --------------------------------------------------
+  // DUT Interface
+  // --------------------------------------------------
+  vec3                  vec;
+  logic                 valid_in;
+  logic [WIDTH-1:0]     length;
+  logic                 valid_out;
+
+  vec3Length #(
+    .DATA_WIDTH(WIDTH),
+    .FRAC_BITS (`FRAC_BITS)
+  ) uut (
+    .clk       (clk),
+    .rst       (rst_n),       // active‐low
+    .vec       (vec),
+    .valid_in  (valid_in),
+    .length    (length),
+    .valid_out (valid_out)
   );
 
-    initial clk = 0;
-    always #5 clk = ~clk;
-
-    initial begin
-        $dumpfile("vec3Length_test.vcd");
-        $dumpvars(0,tb_vec3Length);
-    end
-
-    // output terminall
-    always @(posedge clk) begin
-        if (valid_out)
-            $display("Time: %0t | Input vec = %h | length = %h", $time, vec, length);
-    end
-
+  // --------------------------------------------------
+  // Waveform Dump
+  // --------------------------------------------------
   initial begin
-    $display("=== vec3Length simulation (active-low reset) ===");
+    $dumpfile("vec3Length_test.vcd");
+    $dumpvars(0, tb_vec3Length);
+  end
 
-    rst_n = 0;
+  // --------------------------------------------------
+  // Test vectors stored in an array
+  // --------------------------------------------------
+  vec3 vec_list [0:N_TEST-1];
+  initial begin
+    vec_list[0] = make_vec3(32'h00000000, 32'h00000000, 32'h00000000);
+    vec_list[1] = make_vec3(32'h01000000, 32'h02000000, 32'h02000000);
+    vec_list[2] = make_vec3(32'h03000000, 32'h04000000, 32'h00000000); // Expect 5.0
+    vec_list[3] = make_vec3(32'h06800000, 32'h07400000, 32'h01000000); // ~9.78838
+    vec_list[4] = make_vec3(32'h06800000, 32'h07400000, 32'h03000000); // ~10.18888
+    vec_list[5] = make_vec3(32'h01000000, 32'h00000000, 32'h01000000); // Expect 1.4
+  end
+
+  // --------------------------------------------------
+  // Drive stimulus: send all N_TEST vectors back to back
+  // --------------------------------------------------
+  integer i_in;
+  initial begin
+    // apply reset
+    rst_n    = 0;
     valid_in = 0;
-    vec = make_vec3(32'h00000000, 32'h00000000, 32'h00000000);
+    vec      = '0;
     #20;
 
     rst_n = 1;
     #15;
 
-    valid_in = 1;
-    vec = make_vec3(32'h00000000, 32'h00000000, 32'h00000000);
-    #10;
-    valid_in = 0;
-    #40;
+    // burst in all vectors, one per clock
+    for (i_in = 0; i_in < N_TEST; i_in = i_in + 1) begin
+      @(posedge clk);
+      vec      = vec_list[i_in];
+      valid_in = 1;
+      @(posedge clk);
+      valid_in = 0;
+    end
+    // no explicit $finish here
+  end
 
-
-    valid_in = 1;
-    vec = make_vec3(32'h01000000, 32'h02000000, 32'h02000000);
-    #10;
-    valid_in = 0;
-    #40;
-
-    valid_in = 1;
-    vec = make_vec3(32'h03000000, 32'h04000000, 32'h00000000); // Expect 5.0
-    #10;
-    valid_in = 0;
-    #40;
-
-    valid_in = 1;
-    vec = make_vec3(32'h14000000, 32'h12000000, 32'h03000000);  // OVERFLOW // Expect ~27.66
-    #10;
-    valid_in = 0;
-    #40;
-
-    valid_in = 1;
-    vec = make_vec3(32'h06800000, 32'h07400000, 32'h01000000);  // Expect ~9.78838
-    #10;
-    valid_in = 0;
-    #40;
-
-    $display("=== Test Complete ===");
-    $finish;
+  // --------------------------------------------------
+  // Match each output to its stored input and display
+  // Also finish cleanly once all N_TEST results have printed
+  // --------------------------------------------------
+  integer i_out;
+  always_ff @(posedge clk or negedge rst_n) begin
+    if (!rst_n) begin
+      i_out     <= 0;
+      // nothing else
+    end
+    else if (valid_out) begin
+      $display("Time: %0t | Input vec = %h | length = %h",
+               $time, vec_list[i_out], length);
+      if (i_out == N_TEST-1) begin
+        $display("=== Test Complete ===");
+        $finish;
+      end
+      i_out <= i_out + 1;
+    end
   end
 
 endmodule
