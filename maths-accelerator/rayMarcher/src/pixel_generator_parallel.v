@@ -227,6 +227,7 @@ end
     .light_pos(light_pos),
     .camera_forward(camera_forward),
     .camera_right(camera_right),  
+    .camera_up(camera_up),
     .ray_origin(ray_origin),
     .sdf_sel(sdf_sel),
     .ready_in(ready),
