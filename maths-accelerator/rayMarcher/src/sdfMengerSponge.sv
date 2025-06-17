@@ -1,87 +1,44 @@
-`include "vector_pkg.svh"
-`include "common_defs.svh"
-
-module sdfMengerCube #(parameter int LEVELS = 3) (
-    input  logic       clk,
-    input  logic       valid_in,
-    input  vec3        point,
-    output logic       valid_out,
-    output fp          outputDistance
+module sdfMengerSponge #(
+  parameter ITERATIONS = 3
+) (
+  input logic clk, rst,
+  input logic valid_in,
+  input vec3 point,
+  output logic valid_out,
+  output fp outputDistance
 );
+  fp scales [5];
+  assign scales[0] = `FP_ONE;
+  assign scales[1] = `FP_THREE;
+  assign scales[2] = `FP_NINE;
+  assign scales[3] = `FP_TWENTY_SEVEN;
+  assign scales[4] = `FP_EIGHTY_ONE;
+  fp inv_scales [5];
+  assign inv_scales[0] = `FP_ONE;
+  assign inv_scales[1] = `FP_THIRD;
+  assign inv_scales[2] = `FP_NINTH;
+  assign inv_scales[3] = `FP_TWENTY_SEVENTH;
+  assign inv_scales[4] = `FP_EIGHTY_ONETH;
 
-    // Fixed-point constants
-    localparam fp BASE_SIZE = 32'h01000000;
+  fp distances [4];
+  fp bounds;
+  assign bounds = fast_cd(point_in, `FP_ONE);
 
-    // Pipeline registers for stages 0..LEVELS
-    vec3  p_pipe     [0:LEVELS];
-    fp    d_pipe     [0:LEVELS];
-    fp    scale_pipe [0:LEVELS];
-    logic valid_pipe [0:LEVELS];
+  vec3 hhh;
+  assign hhh = make_vec3(`FP_ONE, `FP_ONE, `FP_ONE);
 
-    // Stage 0: latch inputs into the pipeline on valid_in
-    always_ff @(posedge clk) begin
-        valid_pipe[0] <= valid_in;
-        if (valid_in) begin
-            p_pipe[0]     <= point;
-            d_pipe[0]     <= fast_cd(point, BASE_SIZE);
-            scale_pipe[0] <= `FP_ONE;
-        end
-    end
-
+  generate
     genvar i;
-    generate
-      for (i = 0; i < LEVELS; i = i + 1) begin : MENGER_STAGE
-        // Wires driven by stage-i registers
-        wire vec3 p0   = p_pipe[i];
-        wire fp   d0   = d_pipe[i];
-        wire fp   s0   = scale_pipe[i];
-        wire      v0   = valid_pipe[i];
-
-        // 1) Fold into first octant
-        wire fp ax = fp_abs(p0.x);
-        wire fp ay = fp_abs(p0.y);
-        wire fp az = fp_abs(p0.z);
-
-        // 2) Symmetry ordering: x ≥ y ≥ z
-        wire fp x1 = (ax < ay) ? ay : ax;
-        wire fp y1 = (ax < ay) ? ax : ay;
-        wire fp z1 = az;
-        wire fp x2 = (x1 < z1) ? z1 : x1;
-        wire fp z2 = (x1 < z1) ? x1 : z1;
-        wire fp y2 = y1;
-
-        // 3) Scale by 3 and offset by –2
-        wire fp px = fp_mul(x2, `FP_THREE) - `FP_TWO;
-        wire fp py = fp_mul(y2, `FP_THREE) - `FP_TWO;
-        wire fp pz = fp_mul(z2, `FP_THREE) - `FP_TWO;
-        wire vec3 p_next = make_vec3(px, py, pz);
-
-        // 4) Carve out center + 6 face cubes using axis-max trick
-        wire fp mx1  = (p_next.x > p_next.y) ? p_next.x : p_next.y;
-        wire fp mx2  = (mx1     > p_next.z) ? mx1       : p_next.z;
-        wire fp hole = mx2 - `FP_ONE;             // half-size = 1.0
-        wire fp d_next = fp_max(d0, fp_neg(hole));
-
-        // 5) Track scale by left shift (×2)
-        wire fp s_next = s0 <<< 1;
-
-        // Pipeline registers for stage i+1
+    for (i = 1; i < ITERATIONS + 1; i = i + 1)
+      begin : sdf_query_sponge_loop
+        vec3 a, r;
+        assign a = vec3_sub(vec3_sl(vec3_fract(vec3_sr(vec3_scaled(point_in, scales[i - 1]), 1)), 1), hhh);
+        assign r = vec3_abs(vec3_sub(hhh, vec3_scaled_3(vec3_abs(a))));
         always_ff @(posedge clk) begin
-            valid_pipe[i+1] <= v0;
-            if (v0) begin
-                p_pipe[i+1]     <= p_next;
-                d_pipe[i+1]     <= d_next;
-                scale_pipe[i+1] <= s_next;
-            end
+          distances[i] <= fp_max(i == 1 ? bounds : distances[i - 1], fp_mul(fp_min(fp_max(r.x, r.y), fp_min(fp_max(r.y, r.z), fp_max(r.x, r.z))) - `FP_ONE), inv_scales[i]);
         end
       end
-    endgenerate
-
-    // Final stage: produce outputDistance and valid_out
-    // (division by 2^LEVELS via right shift)
-    always_ff @(posedge clk) begin
-        valid_out      <= valid_pipe[LEVELS];
-        outputDistance <= d_pipe[LEVELS] >>> LEVELS;
-    end
-
-endmodule
+  endgenerate
+  
+  assign outputDistance = distances[ITERATIONS];
+endmodule // sdf_query_sponge
