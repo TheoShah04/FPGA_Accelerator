@@ -2,7 +2,7 @@
 `include "vector_pkg.svh"
 `include "common_defs.svh"
 
-module tb_fullModule;
+module tb_parallelFullModule;
 
   // Clock and reset
   logic clk = 0;
@@ -22,20 +22,21 @@ module tb_fullModule;
   // Outputs from DUT
   logic valid_out;
   logic [23:0] shade_out;
-  int pixel_count = 0;
   logic sof;
   logic eol;
   // Clock generation
   always #5 clk = ~clk;
 
   //internal/input
+  int pixel_count = 0;
+  localparam int TOTAL_PIXELS = 640*480;
   real angle_rad_90, angle_rad_45;
   fp zoom,cos_val,cos_scaled,sin_val,sin_scaled;
 
   // DUT instantiation
-  fullModule dut (
+  fullModule_parallel dut (
     .clk(clk),
-    .rst_gen(rst),
+    .rst(rst),
     // .screen_x(screen_x),
     // .screen_y(screen_y),
     // .valid_in(valid_in),
@@ -100,7 +101,7 @@ module tb_fullModule;
     valid_in = 0;
     ready_in = 1'b1;
     camera_up = make_vec3(to_fixed(0.0), to_fixed(-1.0), to_fixed(0.0));
-    camera_forward = vec3_normalise(make_vec3(cos_scaled, to_fixed(0.0), sin_scaled)); //this in inverted direction
+    camera_forward = make_vec3(to_fixed(0.0), to_fixed(0.0), to_fixed(1.0)); //this in inverted direction
     camera_right = make_vec3(to_fixed(-1.0), to_fixed(0.0), to_fixed(0.0));
    
     ray_origin     = make_vec3(to_fixed(0.0), to_fixed(0.0), to_fixed(3.0));
@@ -111,32 +112,24 @@ module tb_fullModule;
     #20;
     rst = 1'b1;
     #10;
+end
 
     // Loop over 640x480 pixels (307,200 pixels)
      //valid_in = 1;
-    for (int y = 0; y < 480; y++) begin
-      for (int x = 0; x < 640; x++) begin
-        // #10;
-        // screen_x = to_fixed_Q11_21(x);
-        // screen_y = to_fixed_Q11_21(y);
-        // valid_in = 1; 
-        // #10;
-        // valid_in = 0;
-
-
-        wait (valid_out);
-
-
-        //Pixel counter
-        pixel_count++;
-        if (pixel_count % 10000 == 0)
-          $display("Generated %0d pixels...", pixel_count);
-      end
+    always_ff @ (posedge clk) begin
+        if(!rst) begin
+            pixel_count <= 0;
+        end else begin
+            if (valid_out) begin
+                pixel_count <= pixel_count + 1;
+                if (pixel_count % 10000 == 0)
+                    $display("Generated %0d pixels...", pixel_count);
+                if (pixel_count == TOTAL_PIXELS) begin
+                    $display("Finished generating %0d pixels.", pixel_count);
+                    $finish;
+                end
+            end
+       end
     end
-
-    $display("Finished generating %0d pixels...", pixel_count);
-    #100;
-        $finish;
-  end
 
 endmodule
