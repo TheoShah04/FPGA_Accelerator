@@ -15,14 +15,12 @@ module fullModule_parallel #(
     output logic [`COLOR_WIDTH-1:0] shade_out,
     output logic valid_out,
     output logic sof,
-    output logic eol,
-    output logic buffer_valid_out
+    output logic eol
 );
   
     logic surface_hit, buffer_valid;
     vec3 surface_point; 
 
-    assign buffer_valid_out = buffer_valid;
 
     buffer_manager buffer_mng (
     .clk(clk),
@@ -51,7 +49,7 @@ module fullModule_parallel #(
 
     getSurfaceVectors surface_calc(
         .clk(clk),
-        .rst(rst_gen),
+        .rst(rst),
         .obj_sel(sdf_sel),
         .valid_in(q_buffer_valid),
         .p(q_surface_point),
@@ -79,7 +77,7 @@ module fullModule_parallel #(
 
     shading shading_m( 
         .clk(clk),
-        .rst(rst_gen),
+        .rst(rst),
         .valid_in(q_surfaceVec_valid), 
         .hit_in(q_hit_out),
         .normal_vec(q_normal_vec),
@@ -96,9 +94,9 @@ module fullModule_parallel #(
         q_shading_valid <= shading_valid;
     end
 
-    coord_counter counter(
+    counter_buffer counter(
         .clk(clk),
-        .rst(rst_gen),
+        .rst(rst),
         .shade_in(q_shade_rgb),
         .valid_in(q_shading_valid),
         .ready(ready_in),

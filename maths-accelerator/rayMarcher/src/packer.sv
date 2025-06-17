@@ -103,7 +103,7 @@ always @* begin
                 ready = 1'b1;
             end
                 endcase
-            end
+    end
 
             assign in_stream_ready = ready;
             assign out_stream_tlast = eol;
