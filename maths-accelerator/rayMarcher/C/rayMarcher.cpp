@@ -208,7 +208,7 @@ float sdfSierpinskiTunnel(vec3 p) {
 // }
 
 float scene(vec3 p) {
-    //return sdfSphere(p, 1.0f);
+    return sdfSphere(p, 1.0f);
 
     // vec2 torusDimensions(1.5f, 0.5f);
     // return sdfTorus(p, torusDimensions);
@@ -224,7 +224,7 @@ float scene(vec3 p) {
     // float power = 6.0f + 2.0f * sin(uTime * 0.15f); //Animate the mandelbulb
     // return sdfMandelbulb(p, power);
 
-    return sdfSierpinskiTunnel(p);
+    // return sdfSierpinskiTunnel(p);
 }
 
 float raymarch(vec3 ro, vec3 rd) {
