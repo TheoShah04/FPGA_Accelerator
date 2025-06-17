@@ -63,7 +63,7 @@ always_ff @(posedge clk) begin
             // [-1,1] range
             x_add_half_scale <= fp_mul_Q11_21((screen_x + `FP_HALF_Q11_21), SCALE_X);
 
-            y_add_half_scale <= fp_mul_Q11_21((screen_y + `FP_HALF_Q11_21),SCALE_Y);
+            y_add_half_scale <= fp_mul_Q11_21((screen_y + `FP_HALF_Q11_21), SCALE_Y);
 
         end
         else begin
