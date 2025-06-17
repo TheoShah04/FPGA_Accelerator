@@ -32,9 +32,9 @@ module shading #(
     localparam logic [DATA_WIDTH-1:0] AMB_G  = 32'h004ccccd;   // 0.3 
     localparam logic [DATA_WIDTH-1:0] AMB_B  = 32'h00666666;   // 0.4 
 
-    localparam logic [DATA_WIDTH-1:0] DIFF_R = 32'h00cccccd;   // 0.8 
-    localparam logic [DATA_WIDTH-1:0] DIFF_G = 32'h00b33333;   // 0.7 
-    localparam logic [DATA_WIDTH-1:0] DIFF_B = 32'h00800000;   // 0.5 
+    localparam logic [DATA_WIDTH-1:0] DIFF_R = 32'h01000000;  
+    localparam logic [DATA_WIDTH-1:0] DIFF_G = 32'h00cccccd;    
+    localparam logic [DATA_WIDTH-1:0] DIFF_B = 32'h00e5e354;   
 
     logic valid_1, valid_2, valid_3;
     logic hit_1, hit_2, hit_3;
@@ -167,7 +167,7 @@ module shading #(
                 else begin
                     shade_r = '0;
                     shade_g = '0;
-                    shade_b = 32'hFFFFFFFF;
+                    shade_b = '0;
                     valid_out <= valid_3;
                 end
             end

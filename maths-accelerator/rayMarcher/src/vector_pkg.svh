@@ -46,6 +46,17 @@ function automatic fp fp_abs(input fp a);
   return ($signed(a) < $signed(0)) ? fp_neg(a) : a;
 endfunction
 
+function automatic logic fp_lt(input fp a, input fp b);
+  return ($signed(a) < $signed(b));
+endfunction
+
+function automatic void fp_swap(inout fp a, inout fp b);
+  fp tmp;
+  tmp = a;
+  a = b;
+  b = tmp;
+endfunction 
+
 function automatic fp fp_floor(input fp a);
   return ($signed(a) >> $signed(`FRAC_BITS)) << `FRAC_BITS;
 endfunction

@@ -54,7 +54,7 @@ module sceneQuery(
         .valid_out(sdf_valid[1])
     );
 
-    // latency: 1 clock cycle
+    // latency: 2 clock cycles
     // sdfInfiniteCube InfiniteCube (
     //     .clk(clk),
     //     .valid_in(valid_cube),
@@ -62,5 +62,14 @@ module sceneQuery(
     //     .radius(s),
     //     .outputDistance(sdf_objects[1]),
     //     .valid_out(sdf_valid[1])
+    // );
+
+    // latency: ? clock cycles
+    // sdfMengerCube #(3) menger_inst (
+    // .clk(clk),
+    // .valid_in(valid_cube),
+    // .point(pos),
+    // .outputDistance(sdf_objects[1]),
+    // .valid_out(sdf_valid[1])
     // );
 endmodule
