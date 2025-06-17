@@ -2,7 +2,7 @@
 `include "vector_pkg.svh"
 `include "common_defs.svh"
 
-module tb_parallel_fullModule;
+module tb_fullModule;
 
   // Clock and reset
   logic clk = 0;
