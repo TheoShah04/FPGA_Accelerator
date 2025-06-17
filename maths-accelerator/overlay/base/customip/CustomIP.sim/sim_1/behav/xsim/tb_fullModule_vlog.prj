@@ -1,0 +1,23 @@
+# compile verilog/system verilog design source files
+sv xil_defaultlib  --include "../../../../../../../rayMarcher/src" \
+"../../../../../../../rayMarcher/src/buffer_manager.sv" \
+"../../../../../../../rayMarcher/src/coord_counter.sv" \
+"../../../../../../../rayMarcher/src/fullModule.sv" \
+"../../../../../../../rayMarcher/src/getSurfaceVectors.sv" \
+"../../../../../../../rayMarcher/src/inv_sqrt.sv" \
+"../../../../../../../rayMarcher/src/invsqrt_bram.sv" \
+"../../../../../../../rayMarcher/src/rayMarcher.sv" \
+"../../../../../../../rayMarcher/src/ray_generator.sv" \
+"../../../../../../../rayMarcher/src/ray_unit.sv" \
+"../../../../../../../rayMarcher/src/sceneQuery.sv" \
+"../../../../../../../rayMarcher/src/sdfMengerSponge.sv" \
+"../../../../../../../rayMarcher/src/sdfSphere.sv" \
+"../../../../../../../rayMarcher/src/shading.sv" \
+"../../../../../../../rayMarcher/src/vec3Length.sv" \
+"../../../../../../../rayMarcher/tb/tb_fullModule.sv" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort

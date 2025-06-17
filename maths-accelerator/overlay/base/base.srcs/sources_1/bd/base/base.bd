@@ -1446,8 +1446,8 @@
               "s00_regslice": {
                 "vlnv": "xilinx.com:ip:axi_register_slice:2.1",
                 "ip_revision": "33",
-                "xci_name": "base_axi_interconnect_0_imp_s00_regslice_6",
-                "xci_path": "ip\\base_axi_interconnect_0_imp_s00_regslice_6\\base_axi_interconnect_0_imp_s00_regslice_6.xci",
+                "xci_name": "base_axi_interconnect_0_imp_s00_regslice_8",
+                "xci_path": "ip\\base_axi_interconnect_0_imp_s00_regslice_8\\base_axi_interconnect_0_imp_s00_regslice_8.xci",
                 "inst_hier_path": "axi_interconnect_0/s00_couplers/s00_regslice",
                 "interface_ports": {
                   "S_AXI": {
@@ -1728,8 +1728,8 @@
               "m00_regslice": {
                 "vlnv": "xilinx.com:ip:axi_register_slice:2.1",
                 "ip_revision": "33",
-                "xci_name": "base_axi_interconnect_0_imp_m00_regslice_6",
-                "xci_path": "ip\\base_axi_interconnect_0_imp_m00_regslice_6\\base_axi_interconnect_0_imp_m00_regslice_6.xci",
+                "xci_name": "base_axi_interconnect_0_imp_m00_regslice_8",
+                "xci_path": "ip\\base_axi_interconnect_0_imp_m00_regslice_8\\base_axi_interconnect_0_imp_m00_regslice_8.xci",
                 "inst_hier_path": "axi_interconnect_0/m00_couplers/m00_regslice",
                 "interface_ports": {
                   "S_AXI": {
@@ -2123,8 +2123,8 @@
               "s00_regslice": {
                 "vlnv": "xilinx.com:ip:axi_register_slice:2.1",
                 "ip_revision": "33",
-                "xci_name": "base_axi_mem_intercon_imp_s00_regslice_6",
-                "xci_path": "ip\\base_axi_mem_intercon_imp_s00_regslice_6\\base_axi_mem_intercon_imp_s00_regslice_6.xci",
+                "xci_name": "base_axi_mem_intercon_imp_s00_regslice_8",
+                "xci_path": "ip\\base_axi_mem_intercon_imp_s00_regslice_8\\base_axi_mem_intercon_imp_s00_regslice_8.xci",
                 "inst_hier_path": "axi_mem_intercon/s00_couplers/s00_regslice",
                 "interface_ports": {
                   "S_AXI": {
@@ -2249,8 +2249,8 @@
               "s01_regslice": {
                 "vlnv": "xilinx.com:ip:axi_register_slice:2.1",
                 "ip_revision": "33",
-                "xci_name": "base_axi_mem_intercon_imp_s01_regslice_6",
-                "xci_path": "ip\\base_axi_mem_intercon_imp_s01_regslice_6\\base_axi_mem_intercon_imp_s01_regslice_6.xci",
+                "xci_name": "base_axi_mem_intercon_imp_s01_regslice_8",
+                "xci_path": "ip\\base_axi_mem_intercon_imp_s01_regslice_8\\base_axi_mem_intercon_imp_s01_regslice_8.xci",
                 "inst_hier_path": "axi_mem_intercon/s01_couplers/s01_regslice",
                 "interface_ports": {
                   "S_AXI": {
@@ -2343,8 +2343,8 @@
               "m00_regslice": {
                 "vlnv": "xilinx.com:ip:axi_register_slice:2.1",
                 "ip_revision": "33",
-                "xci_name": "base_axi_mem_intercon_imp_m00_regslice_6",
-                "xci_path": "ip\\base_axi_mem_intercon_imp_m00_regslice_6\\base_axi_mem_intercon_imp_m00_regslice_6.xci",
+                "xci_name": "base_axi_mem_intercon_imp_m00_regslice_8",
+                "xci_path": "ip\\base_axi_mem_intercon_imp_m00_regslice_8\\base_axi_mem_intercon_imp_m00_regslice_8.xci",
                 "inst_hier_path": "axi_mem_intercon/m00_couplers/m00_regslice",
                 "interface_ports": {
                   "S_AXI": {
@@ -4115,8 +4115,8 @@
                   "s00_regslice": {
                     "vlnv": "xilinx.com:ip:axi_register_slice:2.1",
                     "ip_revision": "33",
-                    "xci_name": "base_microblaze_0_axi_periph_imp_s00_regslice_9",
-                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_s00_regslice_9\\base_microblaze_0_axi_periph_imp_s00_regslice_9.xci",
+                    "xci_name": "base_microblaze_0_axi_periph_imp_s00_regslice_12",
+                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_s00_regslice_12\\base_microblaze_0_axi_periph_imp_s00_regslice_12.xci",
                     "inst_hier_path": "iop_arduino/microblaze_0_axi_periph/s00_couplers/s00_regslice",
                     "interface_ports": {
                       "S_AXI": {
@@ -4209,8 +4209,8 @@
                   "m00_regslice": {
                     "vlnv": "xilinx.com:ip:axi_register_slice:2.1",
                     "ip_revision": "33",
-                    "xci_name": "base_microblaze_0_axi_periph_imp_m00_regslice_9",
-                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m00_regslice_9\\base_microblaze_0_axi_periph_imp_m00_regslice_9.xci",
+                    "xci_name": "base_microblaze_0_axi_periph_imp_m00_regslice_12",
+                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m00_regslice_12\\base_microblaze_0_axi_periph_imp_m00_regslice_12.xci",
                     "inst_hier_path": "iop_arduino/microblaze_0_axi_periph/m00_couplers/m00_regslice",
                     "interface_ports": {
                       "S_AXI": {
@@ -4303,8 +4303,8 @@
                   "m01_regslice": {
                     "vlnv": "xilinx.com:ip:axi_register_slice:2.1",
                     "ip_revision": "33",
-                    "xci_name": "base_microblaze_0_axi_periph_imp_m01_regslice_9",
-                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m01_regslice_9\\base_microblaze_0_axi_periph_imp_m01_regslice_9.xci",
+                    "xci_name": "base_microblaze_0_axi_periph_imp_m01_regslice_12",
+                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m01_regslice_12\\base_microblaze_0_axi_periph_imp_m01_regslice_12.xci",
                     "inst_hier_path": "iop_arduino/microblaze_0_axi_periph/m01_couplers/m01_regslice",
                     "interface_ports": {
                       "S_AXI": {
@@ -4397,8 +4397,8 @@
                   "m02_regslice": {
                     "vlnv": "xilinx.com:ip:axi_register_slice:2.1",
                     "ip_revision": "33",
-                    "xci_name": "base_microblaze_0_axi_periph_imp_m02_regslice_9",
-                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m02_regslice_9\\base_microblaze_0_axi_periph_imp_m02_regslice_9.xci",
+                    "xci_name": "base_microblaze_0_axi_periph_imp_m02_regslice_12",
+                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m02_regslice_12\\base_microblaze_0_axi_periph_imp_m02_regslice_12.xci",
                     "inst_hier_path": "iop_arduino/microblaze_0_axi_periph/m02_couplers/m02_regslice",
                     "interface_ports": {
                       "S_AXI": {
@@ -4491,8 +4491,8 @@
                   "m03_regslice": {
                     "vlnv": "xilinx.com:ip:axi_register_slice:2.1",
                     "ip_revision": "33",
-                    "xci_name": "base_microblaze_0_axi_periph_imp_m03_regslice_9",
-                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m03_regslice_9\\base_microblaze_0_axi_periph_imp_m03_regslice_9.xci",
+                    "xci_name": "base_microblaze_0_axi_periph_imp_m03_regslice_12",
+                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m03_regslice_12\\base_microblaze_0_axi_periph_imp_m03_regslice_12.xci",
                     "inst_hier_path": "iop_arduino/microblaze_0_axi_periph/m03_couplers/m03_regslice",
                     "interface_ports": {
                       "S_AXI": {
@@ -4585,8 +4585,8 @@
                   "m04_regslice": {
                     "vlnv": "xilinx.com:ip:axi_register_slice:2.1",
                     "ip_revision": "33",
-                    "xci_name": "base_microblaze_0_axi_periph_imp_m04_regslice_9",
-                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m04_regslice_9\\base_microblaze_0_axi_periph_imp_m04_regslice_9.xci",
+                    "xci_name": "base_microblaze_0_axi_periph_imp_m04_regslice_12",
+                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m04_regslice_12\\base_microblaze_0_axi_periph_imp_m04_regslice_12.xci",
                     "inst_hier_path": "iop_arduino/microblaze_0_axi_periph/m04_couplers/m04_regslice",
                     "interface_ports": {
                       "S_AXI": {
@@ -4679,8 +4679,8 @@
                   "m05_regslice": {
                     "vlnv": "xilinx.com:ip:axi_register_slice:2.1",
                     "ip_revision": "33",
-                    "xci_name": "base_microblaze_0_axi_periph_imp_m05_regslice_9",
-                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m05_regslice_9\\base_microblaze_0_axi_periph_imp_m05_regslice_9.xci",
+                    "xci_name": "base_microblaze_0_axi_periph_imp_m05_regslice_12",
+                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m05_regslice_12\\base_microblaze_0_axi_periph_imp_m05_regslice_12.xci",
                     "inst_hier_path": "iop_arduino/microblaze_0_axi_periph/m05_couplers/m05_regslice",
                     "interface_ports": {
                       "S_AXI": {
@@ -4773,8 +4773,8 @@
                   "m06_regslice": {
                     "vlnv": "xilinx.com:ip:axi_register_slice:2.1",
                     "ip_revision": "33",
-                    "xci_name": "base_microblaze_0_axi_periph_imp_m06_regslice_9",
-                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m06_regslice_9\\base_microblaze_0_axi_periph_imp_m06_regslice_9.xci",
+                    "xci_name": "base_microblaze_0_axi_periph_imp_m06_regslice_12",
+                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m06_regslice_12\\base_microblaze_0_axi_periph_imp_m06_regslice_12.xci",
                     "inst_hier_path": "iop_arduino/microblaze_0_axi_periph/m06_couplers/m06_regslice",
                     "interface_ports": {
                       "S_AXI": {
@@ -4867,8 +4867,8 @@
                   "m07_regslice": {
                     "vlnv": "xilinx.com:ip:axi_register_slice:2.1",
                     "ip_revision": "33",
-                    "xci_name": "base_microblaze_0_axi_periph_imp_m07_regslice_9",
-                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m07_regslice_9\\base_microblaze_0_axi_periph_imp_m07_regslice_9.xci",
+                    "xci_name": "base_microblaze_0_axi_periph_imp_m07_regslice_12",
+                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m07_regslice_12\\base_microblaze_0_axi_periph_imp_m07_regslice_12.xci",
                     "inst_hier_path": "iop_arduino/microblaze_0_axi_periph/m07_couplers/m07_regslice",
                     "interface_ports": {
                       "S_AXI": {
@@ -8396,8 +8396,8 @@
                   "s00_regslice": {
                     "vlnv": "xilinx.com:ip:axi_register_slice:2.1",
                     "ip_revision": "33",
-                    "xci_name": "base_microblaze_0_axi_periph_imp_s00_regslice_10",
-                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_s00_regslice_10\\base_microblaze_0_axi_periph_imp_s00_regslice_10.xci",
+                    "xci_name": "base_microblaze_0_axi_periph_imp_s00_regslice_13",
+                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_s00_regslice_13\\base_microblaze_0_axi_periph_imp_s00_regslice_13.xci",
                     "inst_hier_path": "iop_pmoda/microblaze_0_axi_periph/s00_couplers/s00_regslice",
                     "interface_ports": {
                       "S_AXI": {
@@ -8490,8 +8490,8 @@
                   "m00_regslice": {
                     "vlnv": "xilinx.com:ip:axi_register_slice:2.1",
                     "ip_revision": "33",
-                    "xci_name": "base_microblaze_0_axi_periph_imp_m00_regslice_10",
-                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m00_regslice_10\\base_microblaze_0_axi_periph_imp_m00_regslice_10.xci",
+                    "xci_name": "base_microblaze_0_axi_periph_imp_m00_regslice_13",
+                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m00_regslice_13\\base_microblaze_0_axi_periph_imp_m00_regslice_13.xci",
                     "inst_hier_path": "iop_pmoda/microblaze_0_axi_periph/m00_couplers/m00_regslice",
                     "interface_ports": {
                       "S_AXI": {
@@ -8584,8 +8584,8 @@
                   "m01_regslice": {
                     "vlnv": "xilinx.com:ip:axi_register_slice:2.1",
                     "ip_revision": "33",
-                    "xci_name": "base_microblaze_0_axi_periph_imp_m01_regslice_10",
-                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m01_regslice_10\\base_microblaze_0_axi_periph_imp_m01_regslice_10.xci",
+                    "xci_name": "base_microblaze_0_axi_periph_imp_m01_regslice_13",
+                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m01_regslice_13\\base_microblaze_0_axi_periph_imp_m01_regslice_13.xci",
                     "inst_hier_path": "iop_pmoda/microblaze_0_axi_periph/m01_couplers/m01_regslice",
                     "interface_ports": {
                       "S_AXI": {
@@ -8678,8 +8678,8 @@
                   "m02_regslice": {
                     "vlnv": "xilinx.com:ip:axi_register_slice:2.1",
                     "ip_revision": "33",
-                    "xci_name": "base_microblaze_0_axi_periph_imp_m02_regslice_10",
-                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m02_regslice_10\\base_microblaze_0_axi_periph_imp_m02_regslice_10.xci",
+                    "xci_name": "base_microblaze_0_axi_periph_imp_m02_regslice_13",
+                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m02_regslice_13\\base_microblaze_0_axi_periph_imp_m02_regslice_13.xci",
                     "inst_hier_path": "iop_pmoda/microblaze_0_axi_periph/m02_couplers/m02_regslice",
                     "interface_ports": {
                       "S_AXI": {
@@ -8772,8 +8772,8 @@
                   "m03_regslice": {
                     "vlnv": "xilinx.com:ip:axi_register_slice:2.1",
                     "ip_revision": "33",
-                    "xci_name": "base_microblaze_0_axi_periph_imp_m03_regslice_10",
-                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m03_regslice_10\\base_microblaze_0_axi_periph_imp_m03_regslice_10.xci",
+                    "xci_name": "base_microblaze_0_axi_periph_imp_m03_regslice_13",
+                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m03_regslice_13\\base_microblaze_0_axi_periph_imp_m03_regslice_13.xci",
                     "inst_hier_path": "iop_pmoda/microblaze_0_axi_periph/m03_couplers/m03_regslice",
                     "interface_ports": {
                       "S_AXI": {
@@ -8866,8 +8866,8 @@
                   "m04_regslice": {
                     "vlnv": "xilinx.com:ip:axi_register_slice:2.1",
                     "ip_revision": "33",
-                    "xci_name": "base_microblaze_0_axi_periph_imp_m04_regslice_10",
-                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m04_regslice_10\\base_microblaze_0_axi_periph_imp_m04_regslice_10.xci",
+                    "xci_name": "base_microblaze_0_axi_periph_imp_m04_regslice_13",
+                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m04_regslice_13\\base_microblaze_0_axi_periph_imp_m04_regslice_13.xci",
                     "inst_hier_path": "iop_pmoda/microblaze_0_axi_periph/m04_couplers/m04_regslice",
                     "interface_ports": {
                       "S_AXI": {
@@ -8960,8 +8960,8 @@
                   "m05_regslice": {
                     "vlnv": "xilinx.com:ip:axi_register_slice:2.1",
                     "ip_revision": "33",
-                    "xci_name": "base_microblaze_0_axi_periph_imp_m05_regslice_10",
-                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m05_regslice_10\\base_microblaze_0_axi_periph_imp_m05_regslice_10.xci",
+                    "xci_name": "base_microblaze_0_axi_periph_imp_m05_regslice_13",
+                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m05_regslice_13\\base_microblaze_0_axi_periph_imp_m05_regslice_13.xci",
                     "inst_hier_path": "iop_pmoda/microblaze_0_axi_periph/m05_couplers/m05_regslice",
                     "interface_ports": {
                       "S_AXI": {
@@ -9054,8 +9054,8 @@
                   "m06_regslice": {
                     "vlnv": "xilinx.com:ip:axi_register_slice:2.1",
                     "ip_revision": "33",
-                    "xci_name": "base_microblaze_0_axi_periph_imp_m06_regslice_10",
-                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m06_regslice_10\\base_microblaze_0_axi_periph_imp_m06_regslice_10.xci",
+                    "xci_name": "base_microblaze_0_axi_periph_imp_m06_regslice_13",
+                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m06_regslice_13\\base_microblaze_0_axi_periph_imp_m06_regslice_13.xci",
                     "inst_hier_path": "iop_pmoda/microblaze_0_axi_periph/m06_couplers/m06_regslice",
                     "interface_ports": {
                       "S_AXI": {
@@ -9148,8 +9148,8 @@
                   "m07_regslice": {
                     "vlnv": "xilinx.com:ip:axi_register_slice:2.1",
                     "ip_revision": "33",
-                    "xci_name": "base_microblaze_0_axi_periph_imp_m07_regslice_10",
-                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m07_regslice_10\\base_microblaze_0_axi_periph_imp_m07_regslice_10.xci",
+                    "xci_name": "base_microblaze_0_axi_periph_imp_m07_regslice_13",
+                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m07_regslice_13\\base_microblaze_0_axi_periph_imp_m07_regslice_13.xci",
                     "inst_hier_path": "iop_pmoda/microblaze_0_axi_periph/m07_couplers/m07_regslice",
                     "interface_ports": {
                       "S_AXI": {
@@ -10525,8 +10525,8 @@
                   "s00_regslice": {
                     "vlnv": "xilinx.com:ip:axi_register_slice:2.1",
                     "ip_revision": "33",
-                    "xci_name": "base_microblaze_0_axi_periph_imp_s00_regslice_11",
-                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_s00_regslice_11\\base_microblaze_0_axi_periph_imp_s00_regslice_11.xci",
+                    "xci_name": "base_microblaze_0_axi_periph_imp_s00_regslice_14",
+                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_s00_regslice_14\\base_microblaze_0_axi_periph_imp_s00_regslice_14.xci",
                     "inst_hier_path": "iop_pmodb/microblaze_0_axi_periph/s00_couplers/s00_regslice",
                     "interface_ports": {
                       "S_AXI": {
@@ -10619,8 +10619,8 @@
                   "m00_regslice": {
                     "vlnv": "xilinx.com:ip:axi_register_slice:2.1",
                     "ip_revision": "33",
-                    "xci_name": "base_microblaze_0_axi_periph_imp_m00_regslice_11",
-                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m00_regslice_11\\base_microblaze_0_axi_periph_imp_m00_regslice_11.xci",
+                    "xci_name": "base_microblaze_0_axi_periph_imp_m00_regslice_14",
+                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m00_regslice_14\\base_microblaze_0_axi_periph_imp_m00_regslice_14.xci",
                     "inst_hier_path": "iop_pmodb/microblaze_0_axi_periph/m00_couplers/m00_regslice",
                     "interface_ports": {
                       "S_AXI": {
@@ -10713,8 +10713,8 @@
                   "m01_regslice": {
                     "vlnv": "xilinx.com:ip:axi_register_slice:2.1",
                     "ip_revision": "33",
-                    "xci_name": "base_microblaze_0_axi_periph_imp_m01_regslice_11",
-                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m01_regslice_11\\base_microblaze_0_axi_periph_imp_m01_regslice_11.xci",
+                    "xci_name": "base_microblaze_0_axi_periph_imp_m01_regslice_14",
+                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m01_regslice_14\\base_microblaze_0_axi_periph_imp_m01_regslice_14.xci",
                     "inst_hier_path": "iop_pmodb/microblaze_0_axi_periph/m01_couplers/m01_regslice",
                     "interface_ports": {
                       "S_AXI": {
@@ -10807,8 +10807,8 @@
                   "m02_regslice": {
                     "vlnv": "xilinx.com:ip:axi_register_slice:2.1",
                     "ip_revision": "33",
-                    "xci_name": "base_microblaze_0_axi_periph_imp_m02_regslice_11",
-                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m02_regslice_11\\base_microblaze_0_axi_periph_imp_m02_regslice_11.xci",
+                    "xci_name": "base_microblaze_0_axi_periph_imp_m02_regslice_14",
+                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m02_regslice_14\\base_microblaze_0_axi_periph_imp_m02_regslice_14.xci",
                     "inst_hier_path": "iop_pmodb/microblaze_0_axi_periph/m02_couplers/m02_regslice",
                     "interface_ports": {
                       "S_AXI": {
@@ -10901,8 +10901,8 @@
                   "m03_regslice": {
                     "vlnv": "xilinx.com:ip:axi_register_slice:2.1",
                     "ip_revision": "33",
-                    "xci_name": "base_microblaze_0_axi_periph_imp_m03_regslice_11",
-                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m03_regslice_11\\base_microblaze_0_axi_periph_imp_m03_regslice_11.xci",
+                    "xci_name": "base_microblaze_0_axi_periph_imp_m03_regslice_14",
+                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m03_regslice_14\\base_microblaze_0_axi_periph_imp_m03_regslice_14.xci",
                     "inst_hier_path": "iop_pmodb/microblaze_0_axi_periph/m03_couplers/m03_regslice",
                     "interface_ports": {
                       "S_AXI": {
@@ -10995,8 +10995,8 @@
                   "m04_regslice": {
                     "vlnv": "xilinx.com:ip:axi_register_slice:2.1",
                     "ip_revision": "33",
-                    "xci_name": "base_microblaze_0_axi_periph_imp_m04_regslice_11",
-                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m04_regslice_11\\base_microblaze_0_axi_periph_imp_m04_regslice_11.xci",
+                    "xci_name": "base_microblaze_0_axi_periph_imp_m04_regslice_14",
+                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m04_regslice_14\\base_microblaze_0_axi_periph_imp_m04_regslice_14.xci",
                     "inst_hier_path": "iop_pmodb/microblaze_0_axi_periph/m04_couplers/m04_regslice",
                     "interface_ports": {
                       "S_AXI": {
@@ -11089,8 +11089,8 @@
                   "m05_regslice": {
                     "vlnv": "xilinx.com:ip:axi_register_slice:2.1",
                     "ip_revision": "33",
-                    "xci_name": "base_microblaze_0_axi_periph_imp_m05_regslice_11",
-                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m05_regslice_11\\base_microblaze_0_axi_periph_imp_m05_regslice_11.xci",
+                    "xci_name": "base_microblaze_0_axi_periph_imp_m05_regslice_14",
+                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m05_regslice_14\\base_microblaze_0_axi_periph_imp_m05_regslice_14.xci",
                     "inst_hier_path": "iop_pmodb/microblaze_0_axi_periph/m05_couplers/m05_regslice",
                     "interface_ports": {
                       "S_AXI": {
@@ -11183,8 +11183,8 @@
                   "m06_regslice": {
                     "vlnv": "xilinx.com:ip:axi_register_slice:2.1",
                     "ip_revision": "33",
-                    "xci_name": "base_microblaze_0_axi_periph_imp_m06_regslice_11",
-                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m06_regslice_11\\base_microblaze_0_axi_periph_imp_m06_regslice_11.xci",
+                    "xci_name": "base_microblaze_0_axi_periph_imp_m06_regslice_14",
+                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m06_regslice_14\\base_microblaze_0_axi_periph_imp_m06_regslice_14.xci",
                     "inst_hier_path": "iop_pmodb/microblaze_0_axi_periph/m06_couplers/m06_regslice",
                     "interface_ports": {
                       "S_AXI": {
@@ -11277,8 +11277,8 @@
                   "m07_regslice": {
                     "vlnv": "xilinx.com:ip:axi_register_slice:2.1",
                     "ip_revision": "33",
-                    "xci_name": "base_microblaze_0_axi_periph_imp_m07_regslice_11",
-                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m07_regslice_11\\base_microblaze_0_axi_periph_imp_m07_regslice_11.xci",
+                    "xci_name": "base_microblaze_0_axi_periph_imp_m07_regslice_14",
+                    "xci_path": "ip\\base_microblaze_0_axi_periph_imp_m07_regslice_14\\base_microblaze_0_axi_periph_imp_m07_regslice_14.xci",
                     "inst_hier_path": "iop_pmodb/microblaze_0_axi_periph/m07_couplers/m07_regslice",
                     "interface_ports": {
                       "S_AXI": {
@@ -17811,8 +17811,8 @@
                   "s00_regslice": {
                     "vlnv": "xilinx.com:ip:axi_register_slice:2.1",
                     "ip_revision": "33",
-                    "xci_name": "base_axi_interconnect_0_imp_s00_regslice_7",
-                    "xci_path": "ip\\base_axi_interconnect_0_imp_s00_regslice_7\\base_axi_interconnect_0_imp_s00_regslice_7.xci",
+                    "xci_name": "base_axi_interconnect_0_imp_s00_regslice_9",
+                    "xci_path": "ip\\base_axi_interconnect_0_imp_s00_regslice_9\\base_axi_interconnect_0_imp_s00_regslice_9.xci",
                     "inst_hier_path": "video/axi_interconnect_0/s00_couplers/s00_regslice",
                     "interface_ports": {
                       "S_AXI": {
@@ -17937,8 +17937,8 @@
                   "m00_regslice": {
                     "vlnv": "xilinx.com:ip:axi_register_slice:2.1",
                     "ip_revision": "33",
-                    "xci_name": "base_axi_interconnect_0_imp_m00_regslice_7",
-                    "xci_path": "ip\\base_axi_interconnect_0_imp_m00_regslice_7\\base_axi_interconnect_0_imp_m00_regslice_7.xci",
+                    "xci_name": "base_axi_interconnect_0_imp_m00_regslice_9",
+                    "xci_path": "ip\\base_axi_interconnect_0_imp_m00_regslice_9\\base_axi_interconnect_0_imp_m00_regslice_9.xci",
                     "inst_hier_path": "video/axi_interconnect_0/m00_couplers/m00_regslice",
                     "interface_ports": {
                       "S_AXI": {
@@ -19572,8 +19572,8 @@
                   "s00_regslice": {
                     "vlnv": "xilinx.com:ip:axi_register_slice:2.1",
                     "ip_revision": "33",
-                    "xci_name": "base_axi_mem_intercon_imp_s00_regslice_7",
-                    "xci_path": "ip\\base_axi_mem_intercon_imp_s00_regslice_7\\base_axi_mem_intercon_imp_s00_regslice_7.xci",
+                    "xci_name": "base_axi_mem_intercon_imp_s00_regslice_9",
+                    "xci_path": "ip\\base_axi_mem_intercon_imp_s00_regslice_9\\base_axi_mem_intercon_imp_s00_regslice_9.xci",
                     "inst_hier_path": "video/axi_mem_intercon/s00_couplers/s00_regslice",
                     "interface_ports": {
                       "S_AXI": {
@@ -19666,8 +19666,8 @@
                   "s01_regslice": {
                     "vlnv": "xilinx.com:ip:axi_register_slice:2.1",
                     "ip_revision": "33",
-                    "xci_name": "base_axi_mem_intercon_imp_s01_regslice_7",
-                    "xci_path": "ip\\base_axi_mem_intercon_imp_s01_regslice_7\\base_axi_mem_intercon_imp_s01_regslice_7.xci",
+                    "xci_name": "base_axi_mem_intercon_imp_s01_regslice_9",
+                    "xci_path": "ip\\base_axi_mem_intercon_imp_s01_regslice_9\\base_axi_mem_intercon_imp_s01_regslice_9.xci",
                     "inst_hier_path": "video/axi_mem_intercon/s01_couplers/s01_regslice",
                     "interface_ports": {
                       "S_AXI": {
@@ -19848,8 +19848,8 @@
                   "m00_regslice": {
                     "vlnv": "xilinx.com:ip:axi_register_slice:2.1",
                     "ip_revision": "33",
-                    "xci_name": "base_axi_mem_intercon_imp_m00_regslice_7",
-                    "xci_path": "ip\\base_axi_mem_intercon_imp_m00_regslice_7\\base_axi_mem_intercon_imp_m00_regslice_7.xci",
+                    "xci_name": "base_axi_mem_intercon_imp_m00_regslice_9",
+                    "xci_path": "ip\\base_axi_mem_intercon_imp_m00_regslice_9\\base_axi_mem_intercon_imp_m00_regslice_9.xci",
                     "inst_hier_path": "video/axi_mem_intercon/m00_couplers/m00_regslice",
                     "interface_ports": {
                       "S_AXI": {

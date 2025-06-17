@@ -6,6 +6,7 @@
 `define WORD_WIDTH   (`INT_BITS+`FRAC_BITS)
 
 `define FP_HALF         32'sh00800000
+`define FP_QUARTER      32'sh00400000
 
 `define SCREEN_WIDTH    640
 `define SCREEN_HEIGHT   480

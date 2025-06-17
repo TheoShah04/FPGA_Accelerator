@@ -2,16 +2,11 @@
 `include "vector_pkg.svh"
 `include "common_defs.svh"
 
-
-
-
 module tb_fullModule;
-
 
   // Clock and reset
   logic clk = 0;
   logic rst;
-
 
   // Inputs to DUT
   fp screen_x, screen_y;
@@ -24,7 +19,6 @@ module tb_fullModule;
   vec3 light_pos;
   logic sdf_sel;
 
-
   // Outputs from DUT
   logic valid_out;
   logic [23:0] shade_out;
@@ -34,13 +28,9 @@ module tb_fullModule;
   // Clock generation
   always #5 clk = ~clk;
 
-
-
-
   //internal/input
-  real angle_rad;
+  real angle_rad_90, angle_rad_45;
   fp zoom,cos_val,cos_scaled,sin_val,sin_scaled;
-
 
   // DUT instantiation
   fullModule dut (
@@ -61,17 +51,14 @@ module tb_fullModule;
     .eol(eol)
   );
 
-
   // Fixed-point helpers
   function automatic fp to_fixed(input real val);
     return $rtoi(val * (2.0 ** 24));
   endfunction
 
-
   function automatic fp to_fixed_Q11_21(input real val);
     return $rtoi(val * (2.0 ** 21));
   endfunction
-
 
   function automatic vec3 vec3_normalise(input vec3 v);
     real xr, yr, zr, mag;
@@ -91,25 +78,21 @@ module tb_fullModule;
     end
   endfunction
 
-
   // Simulation loop
   initial begin
     $dumpfile("fullModule_test.vcd");
     $dumpvars(0, tb_fullModule.valid_out);
     $dumpvars(0, tb_fullModule.shade_out);
 
-
     // Initial values
-    angle_rad  = 1.5708;
-    zoom = to_fixed(0.5);
+    angle_rad_90 = 1.5708; //90 degrees
+    angle_rad_45 = 0.7854; //45 degrees
+    zoom = to_fixed(2.0);
     
-    cos_val = to_fixed($cos(angle_rad));
-    sin_val = to_fixed($sin(angle_rad));
+    cos_val = to_fixed($cos(angle_rad_45));
+    sin_val = to_fixed($sin(angle_rad_45));
     cos_scaled = fp_mul(zoom, cos_val);
     sin_scaled = fp_mul(zoom, sin_val);
-   
-   
-
 
     pixel_count = 0;
     rst = 1'b0;
@@ -120,17 +103,13 @@ module tb_fullModule;
     camera_right = vec3_normalise(vec3_cross(camera_forward, camera_up)); //normalise vector in software here maybe?
    
     ray_origin     = make_vec3(cos_scaled, to_fixed(0.0), sin_scaled);
-    light_pos      = make_vec3(to_fixed(0.0), to_fixed(2.0), to_fixed(5.0));
-    //world_up       = make_vec3(to_fixed(0.0), to_fixed(1.0), to_fixed(0.0));
-    sdf_sel = 0; // Sphere or square
-
+    light_pos      = make_vec3(to_fixed(3.0), to_fixed(2.0), to_fixed(5.0));
+    sdf_sel = 1; // Sphere or square
 
     // Reset sequence
     #20;
     rst = 1'b1;
     #10;
-   
-
 
     // Loop over 640x480 pixels (307,200 pixels)
      //valid_in = 1;
@@ -154,14 +133,9 @@ module tb_fullModule;
       end
     end
 
-
     $display("Finished generating %0d pixels...", pixel_count);
     #100;
         $finish;
   end
 
-
 endmodule
-
-
-	
