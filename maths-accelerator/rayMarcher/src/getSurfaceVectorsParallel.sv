@@ -156,10 +156,10 @@ module getSurfaceVectorsParallel #(
     fp normalVec1, normalVec2, normalVec3, normalVec4, normalVec5; 
     always_ff @ (posedge clk) begin
         if (!rst) begin
-            normalVec2 <= '0;
+            normalVec1 <= '0;
             normalVec_mag_sq <= '0;
             lightVec_mag_sq <= '0;
-            lightVec2 <= '0;
+            lightVec1 <= '0;
             limit_clamp_1 <= 1'b0;
             normalVec_subvalid <= 1'b0;
             lightVec_subvalid <= 1'b0;
