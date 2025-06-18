@@ -97,7 +97,6 @@ module tb_parallelFullModule;
     cos_scaled = fp_mul(zoom, cos_val);
     sin_scaled = fp_mul(zoom, sin_val);
 
-    pixel_count = 0;
     rst = 1'b0;
     valid_in = 0;
     ready_in = 1'b1;
