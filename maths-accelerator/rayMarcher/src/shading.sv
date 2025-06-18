@@ -34,7 +34,7 @@ module shading #(
 
     localparam logic [DATA_WIDTH-1:0] DIFF_R = 32'h00cccccd;  
     localparam logic [DATA_WIDTH-1:0] DIFF_G = 32'h00b33333;    
-    localparam logic [DATA_WIDTH-1:0] DIFF_B = 32'h0099999a;   
+    localparam logic [DATA_WIDTH-1:0] DIFF_B = 32'h00800000;   
 
     logic valid_1, valid_2, valid_3;
     logic hit_1, hit_2, hit_3;
