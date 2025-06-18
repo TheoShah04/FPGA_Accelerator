@@ -45,22 +45,23 @@ module getSurfaceVectorsParallel #(
         vec3    p;    
     } stage1_entry_t;
 
-  stage1_entry_t   stage1_q[$]; 
+    stage1_entry_t   stage1_q[$]; 
+    stage1_entry_t tmp;
 
     always_ff @(posedge clk) begin
         if (!rst) begin
             stage1_valid <= 1'b0;
-            stage1_q = {};   // clear the queue
+            stage1_q.delete();       // clears the queue
             pos_xyy <= '0;
             pos_yxy <= '0;
             pos_yyx <= '0;
             pos_xxx <= '0;
+            tmp <= '0;
         end 
         else if (valid_in && (stage1_q.size() < MAX_DEPTH)) begin
-            stage1_q.push_back(stage1_entry_t'{
-                .p   : p,
-                .hit : hit_in
-            });
+            tmp.p = p;
+            tmp.hit = hit_in;
+            stage1_q.push_back(tmp);
             pos_xyy <= vec3_add(p, eps_xyy);
             pos_yxy <= vec3_add(p, eps_yxy);
             pos_yyx <= vec3_add(p, eps_yyx);

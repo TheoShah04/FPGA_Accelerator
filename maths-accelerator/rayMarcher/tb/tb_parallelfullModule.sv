@@ -96,7 +96,7 @@ module tb_parallelFullModule;
     sin_val = to_fixed($sin(angle_rad_45));
     cos_scaled = fp_mul(zoom, cos_val);
     sin_scaled = fp_mul(zoom, sin_val);
-
+    
     rst = 1'b0;
     valid_in = 0;
     ready_in = 1'b1;
