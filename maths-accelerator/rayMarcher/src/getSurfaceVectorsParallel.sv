@@ -21,7 +21,7 @@ module getSurfaceVectorsParallel #(
     fp FP_ONE = 32'h01000000; //1.0f;
     fp FP_NEG_ONE = 32'hff000000; //-1.0f;
     fp dS_xyy, dS_yxy, dS_yyx, dS_xxx;
-    vec3 a, b, c, d, normalVec, lightVec;
+    vec3 normalVec, lightVec;
     fp normalVec_mag_sq, inv_normalVec_mag, lightVec_mag_sq, inv_lightVec_mag;
     logic module_finished_xyy, module_finished_yxy, module_finished_yyx, module_finished_xxx, normalVec_valid, lightVec_valid, normalVec_sqrt_valid, lightVec_sqrt_valid;
     vec3 h_xyy, h_yxy, h_yyx, h_xxx, pos_xyy, pos_yxy, pos_yyx, pos_xxx;
@@ -140,6 +140,14 @@ module getSurfaceVectorsParallel #(
     logic stage2_valid;
     assign stage2_valid = module_finished_xyy && module_finished_yxy && module_finished_yyx && module_finished_xxx; //If all the queries dont complete at the same time this wont work. Might have to change later.
     stage1_entry_t data;
+    vec3 a, b, c, d;
+
+    always_comb begin
+        a = vec3_scale(h_xyy, dS_xyy);
+        b = vec3_scale(h_yxy, dS_yxy);
+        c = vec3_scale(h_yyx, dS_yyx);
+        d = vec3_scale(h_xxx, dS_xxx);
+    end
 
     always_ff @ (posedge clk) begin
         if (!rst) begin
@@ -150,14 +158,18 @@ module getSurfaceVectorsParallel #(
             hit_in_3 <= 1'b0;
         end 
         else if(stage2_valid) begin
-            normalVec <= vec3_add(vec3_add(vec3_scale(h_xyy, dS_xyy), vec3_scale(h_yxy, dS_yxy)), vec3_add(vec3_scale(h_yyx, dS_yyx), vec3_scale(h_xxx, dS_xxx)));
+            normalVec <= vec3_add(vec3_add(a, b), vec3_add(c, d));
             normalVec_valid <= 1'b1;
             lightVec_valid <= 1'b1;
             if(!obj_sel) begin //Sphere: 7 clock latency
                 lightVec <= vec3_sub(lightPos, data_7.p);
                 hit_in_3 <= data_7.hit;
             end
-            else begin //Cube: 1 clock latency
+            // else begin //Cube: 1 clock latency
+            //     lightVec <= vec3_sub(lightPos, data_2.p);
+            //     hit_in_3 <= data_2.hit; 
+            // end
+            else begin //Box Frame: 8 clock latency
                 lightVec <= vec3_sub(lightPos, data_2.p);
                 hit_in_3 <= data_2.hit; 
             end
