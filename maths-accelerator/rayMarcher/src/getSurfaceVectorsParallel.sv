@@ -3,7 +3,8 @@
 `include "common_defs.svh"
 
 module getSurfaceVectorsParallel #(
-    parameter fp eps = 32'h00004189 //eps = 0.001;
+    parameter fp eps = 32'h0019999a //eps = 0.05; switched from 0.001
+    //parameter fp eps = 32'h00004189
 )(
     input clk,
     input rst,
@@ -152,9 +153,9 @@ module getSurfaceVectorsParallel #(
             normalVec <= vec3_add(vec3_add(vec3_scale(h_xyy, dS_xyy), vec3_scale(h_yxy, dS_yxy)), vec3_add(vec3_scale(h_yyx, dS_yyx), vec3_scale(h_xxx, dS_xxx)));
             normalVec_valid <= 1'b1;
             lightVec_valid <= 1'b1;
-            if(!obj_sel) begin //Sphere: 5 clock latency
-                lightVec <= vec3_sub(lightPos, data_6.p);
-                hit_in_3 <= data_6.hit;
+            if(!obj_sel) begin //Sphere: 7 clock latency
+                lightVec <= vec3_sub(lightPos, data_7.p);
+                hit_in_3 <= data_7.hit;
             end
             else begin //Cube: 1 clock latency
                 lightVec <= vec3_sub(lightPos, data_2.p);
@@ -175,8 +176,10 @@ module getSurfaceVectorsParallel #(
     vec3 normalVec_clamped;
     logic lightVec_subvalid, normalVec_subvalid;
     logic limit_clamp_1,limit_clamp_2,limit_clamp_3, limit_clamp_4,limit_clamp_5;
-    fp lightVec1, lightVec2, lightVec3, lightVec4, lightVec5;
-    fp normalVec1, normalVec2, normalVec3, normalVec4, normalVec5; 
+    vec3 lightVec1, lightVec2, lightVec3, lightVec4, lightVec5;
+    vec3 normalVec1, normalVec2, normalVec3, normalVec4, normalVec5; 
+    fp normalVec_mag_sq_t;
+    assign normalVec_mag_sq_t = vec3_dot(normalVec, normalVec);
     always_ff @ (posedge clk) begin
         if (!rst) begin
             normalVec1 <= '0;
@@ -191,18 +194,29 @@ module getSurfaceVectorsParallel #(
         else if (normalVec_valid && lightVec_valid) begin
             if(hit_in_3) begin
                 lightVec_mag_sq <= vec3_dot(lightVec, lightVec);
-                normalVec_mag_sq <= vec3_dot(normalVec, normalVec);
-                if (normalVec_mag_sq <= 32'sh00000410) begin
-                    normalVec_mag_sq <= normalVec_mag_sq << 10;
+                if (normalVec_mag_sq_t <= 32'sh00000410) begin
+                    normalVec_mag_sq <= normalVec_mag_sq_t << 10;
                     limit_clamp_1 <= 1'b1;
                 end
-                else limit_clamp_1 <= 1'b0;
+                else begin 
+                    limit_clamp_1 <= 1'b0;
+                    normalVec_mag_sq <= normalVec_mag_sq_t;
+                end
             end
             normalVec_subvalid <= normalVec_valid;
             lightVec_subvalid <= lightVec_valid;
             normalVec1 <= normalVec;
             hit_in_4 <= hit_in_3;
             lightVec1 <= lightVec;
+            limit_clamp_1 <= 1'b0;
+        end
+        else begin
+            normalVec_subvalid <= 1'b0;
+            lightVec_subvalid <= 1'b0;
+            hit_in_4 <= 1'b0;
+            normalVec1 <= '0;
+            lightVec1 <= '0;  
+            limit_clamp_1 <= 1'b0;       
         end
     end
 
@@ -273,10 +287,10 @@ module getSurfaceVectorsParallel #(
             hit_out <= 1'b0;
         end 
         else if (normalVec_sqrt_valid && lightVec_sqrt_valid) begin
-            pre_surface_Normal <= vec3_scale(normalVec5, inv_normalVec_mag);
-            surfaceLightVector <= vec3_scale(lightVec5, inv_lightVec_mag);
+            pre_surface_Normal <= vec3_scale(normalVec4, inv_normalVec_mag);
+            surfaceLightVector <= vec3_scale(lightVec4, inv_lightVec_mag);
             valid_out <= 1'b1;
-            hit_out <= hit_in_8;
+            hit_out <= hit_in_7;
         end
         else begin
             valid_out <= 1'b0;
@@ -285,7 +299,7 @@ module getSurfaceVectorsParallel #(
     end
 
     always_comb begin
-        if (limit_clamp_5)         //Change to always_comb block
+        if (limit_clamp_4)         //Change to always_comb block
             surfaceNormal = pre_surface_Normal << 5;
         else
             surfaceNormal = pre_surface_Normal;

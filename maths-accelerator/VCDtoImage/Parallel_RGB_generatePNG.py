@@ -2,12 +2,12 @@ from vcdvcd import VCDVCD
 from PIL import Image
 
 # --- CONFIGURATION ---
-vcd_file     = "C:/Projects/FPGA_Accelerator/maths-accelerator/rayMarcher/sim_vivado/sim_vivado.sim/sim_1//behav/xsim/parallelFullModule_test.vcd"
+vcd_file     = "C:/Projects/FPGA_Accelerator/maths-accelerator/rayMarcher/sim_vivado/sim_vivado.sim/sim_1/behav/xsim/parallelFullModule_test.vcd"
 clk_signal   = "tb_parallelFullModule.clk"
 valid_signal = "tb_parallelFullModule.valid_out"
 shade_signal = "tb_parallelFullModule.shade_out[23:0]"
 width, height = 640, 480
-output_image = "C:/Projects/FPGA_Accelerator/maths-accelerator/VCDtoImage/OutputImages/parallel_sphere2.png"
+output_image = "C:/Projects/FPGA_Accelerator/maths-accelerator/VCDtoImage/OutputImages/parallel_sphere8.png"
 
 print("Parsing VCD…")
 vcd = VCDVCD(vcd_file,

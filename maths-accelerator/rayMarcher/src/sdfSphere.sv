@@ -8,7 +8,7 @@ module sdfSphere(
     input vec3 p,
     input fp radius,
     output fp outputDistance,
-    output logic valid_out
+    output logic valid_out_sphere
 );
     fp vectorLength; 
     logic module_finished;
@@ -30,6 +30,6 @@ module sdfSphere(
         .valid_out(module_finished)
     );
     assign outputDistance = vectorLength - radius;
-    assign valid_out = module_finished;
+    assign valid_out_sphere = module_finished;
 
 endmodule

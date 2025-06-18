@@ -49,7 +49,7 @@ module fullModule_parallel #(
     vec3 light_vec;
     logic hit_out, surfaceVec_valid;
 
-    getSurfaceVectors surface_calc(
+    getSurfaceVectorsParallel surface_calc(
         .clk(clk),
         .rst(rst),
         .obj_sel(sdf_sel),
