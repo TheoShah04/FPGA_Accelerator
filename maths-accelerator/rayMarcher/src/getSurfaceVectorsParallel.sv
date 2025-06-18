@@ -27,7 +27,6 @@ module getSurfaceVectorsParallel #(
     logic hit_in_2, hit_in_3, hit_in_4, hit_in_5, hit_in_6, hit_in_7, hit_in_8;
     vec3 p_2, p_3, p_4;
     vec3 eps_xyy, eps_yxy, eps_yyx, eps_xxx;
-    localparam int MAX_DEPTH = 6;
 
     assign h_xyy = make_vec3(FP_ONE, FP_NEG_ONE, FP_NEG_ONE); //See tetrahedron technique: https://iquilezles.org/articles/normalsSDF/
     assign h_yxy = make_vec3(FP_NEG_ONE, FP_ONE, FP_NEG_ONE);
@@ -45,23 +44,20 @@ module getSurfaceVectorsParallel #(
         vec3    p;    
     } stage1_entry_t;
 
-    stage1_entry_t   stage1_q[$]; 
-    stage1_entry_t tmp;
+    stage1_entry_t data_1, data_2, data_3, data_4, data_5, data_6, data_7, data_8; 
 
     always_ff @(posedge clk) begin
         if (!rst) begin
             stage1_valid <= 1'b0;
-            stage1_q.delete();       // clears the queue
             pos_xyy <= '0;
             pos_yxy <= '0;
             pos_yyx <= '0;
             pos_xxx <= '0;
-            tmp <= '0;
+            data_1 <= '0;
         end 
-        else if (valid_in && (stage1_q.size() < MAX_DEPTH)) begin
-            tmp.p = p;
-            tmp.hit = hit_in;
-            stage1_q.push_back(tmp);
+        else if (valid_in) begin
+            data_1.hit <= hit_in;
+            data_1.p <= p; 
             pos_xyy <= vec3_add(p, eps_xyy);
             pos_yxy <= vec3_add(p, eps_yxy);
             pos_yyx <= vec3_add(p, eps_yyx);
@@ -70,10 +66,32 @@ module getSurfaceVectorsParallel #(
         end
         else begin
             stage1_valid <= 1'b0;
+            data_1 <= '0;
             pos_xyy <= '0;
             pos_yxy <= '0;
             pos_yyx <= '0;
             pos_xxx <= '0;
+        end
+    end
+
+    always_ff @(posedge clk) begin
+        if (!rst) begin
+            data_2 <= '0;
+            data_3 <= '0;
+            data_4 <= '0;
+            data_5 <= '0;
+            data_6 <= '0;
+            data_7 <= '0;
+            data_8 <= '0;
+            end 
+        else begin
+            data_2 <= data_1;
+            data_3 <= data_2;
+            data_4 <= data_3;
+            data_5 <= data_4;
+            data_6 <= data_5;
+            data_7 <= data_6;
+            data_8 <= data_7;
         end
     end
 
@@ -130,13 +148,18 @@ module getSurfaceVectorsParallel #(
             lightVec_valid <= 1'b0;
             hit_in_3 <= 1'b0;
         end 
-        else if(stage2_valid && stage1_q.size() > 0) begin
-            data = stage1_q.pop_front();
+        else if(stage2_valid) begin
             normalVec <= vec3_add(vec3_add(vec3_scale(h_xyy, dS_xyy), vec3_scale(h_yxy, dS_yxy)), vec3_add(vec3_scale(h_yyx, dS_yyx), vec3_scale(h_xxx, dS_xxx)));
             normalVec_valid <= 1'b1;
             lightVec_valid <= 1'b1;
-            lightVec <= vec3_sub(lightPos, data.p);
-            hit_in_3 <= data.hit;
+            if(!obj_sel) begin //Sphere: 5 clock latency
+                lightVec <= vec3_sub(lightPos, data_6.p);
+                hit_in_3 <= data_6.hit;
+            end
+            else begin //Cube: 1 clock latency
+                lightVec <= vec3_sub(lightPos, data_2.p);
+                hit_in_3 <= data_2.hit; 
+            end
         end 
         else begin
             normalVec_valid <= 1'b0;
@@ -242,7 +265,7 @@ module getSurfaceVectorsParallel #(
     vec3 pre_surface_Normal;
 
     //Final Stage 3 (Calculate S * 1/sqrt(S))
-    always_ff @ (posedge clk or negedge rst) begin 
+    always_ff @ (posedge clk) begin 
         if (!rst) begin
             pre_surface_Normal <= '0;
             surfaceLightVector <= '0;
