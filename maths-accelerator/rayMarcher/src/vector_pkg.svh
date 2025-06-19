@@ -38,6 +38,10 @@ function automatic fp fp_neg(input fp a);
   return -a;
 endfunction
 
+function automatic fp fp_min(fp a, fp b);
+    return (a < b) ? a : b;
+endfunction
+
 function automatic fp fp_max(input fp a, input fp b);
   return ($signed(a) > $signed(b)) ? a : b;
 endfunction
@@ -126,6 +130,12 @@ function automatic vec3 vec3_fract(input vec3 a);
   vec3_fract.x = fp_fract(a.x);
   vec3_fract.y = fp_fract(a.y);
   vec3_fract.z = fp_fract(a.z);
+endfunction
+
+function automatic vec3 vec3_max_zero(vec3 v);
+    return '{(v.x > 0.0) ? v.x : 0.0,
+              (v.y > 0.0) ? v.y : 0.0,
+              (v.z > 0.0) ? v.z : 0.0};
 endfunction
 
 `endif

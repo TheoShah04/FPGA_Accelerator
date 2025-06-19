@@ -57,6 +57,7 @@ module sceneQuery(
     fp e = 32'h00400000;
     sdfBoxFrame boxFrame(
         .clk(clk),
+        .rst(rst),
         .p(pos),       // input point vector
         .e(e),       // edge thickness (float)
         .valid_in(valid_cube),

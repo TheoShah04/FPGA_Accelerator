@@ -3,6 +3,7 @@
 
 module sdfBoxFrame(
     input  logic clk,
+    input  logic rst,
     input  vec3  p,       // input point vector
     input  fp    e,       // edge thickness (float)
     input  logic valid_in,
@@ -10,8 +11,8 @@ module sdfBoxFrame(
     output logic valid_out
 );
 
-
-    localparam vec3 b = make_vec3{24'h008000, 24'h004ccd, 24'h008000};
+    vec3 b;
+    assign b = make_vec3(32'h00800000, 32'h004ccccd, 32'h00800000);
 
     vec3 p_abs_stage1a, p_abs_stage1b, q_stage1b;
     vec3 v1, v2, v3;
@@ -19,44 +20,21 @@ module sdfBoxFrame(
 
 
     logic valid_d1, valid_d2, valid_d3;
-    logic [31:0] len1, len2, len3;
     logic valid_2,valid_3;
 
     fp   d1, d2, d3;
     fp   min_sq_dist;
 
-
-
     logic valid_len1, valid_len2, valid_len3;
-    fp   len1, len2, len3;
+    fp len1, len2, len3;
 
-    function automatic fp fp_abs(input fp a);
-        return (a < 0) ? fp_neg(a) : a;
-    endfunction
-
-    // Max of each component with zero
-    function automatic vec3 vec3_max_zero(vec3 v);
-        return '{(v.x > 0.0) ? v.x : 0.0,
-                 (v.y > 0.0) ? v.y : 0.0,
-                 (v.z > 0.0) ? v.z : 0.0};
-    endfunction
-
-
-    // Min of two floats
-    function automatic fp fp_min(fp a, fp b);
-        return (a < b) ? a : b;
-    endfunction
-
-
-
+    vec3 tmp_abs;
     // stage 1 just doing : p = np.abs(p) - b
     always_ff @(posedge clk) begin
         if (!rst) begin
-            p_abs_stage1a <= '0;
-            q_stage1a <= '0;
             valid_1a <= 1'b0;
+            tmp_abs <= '0;
         end else if (valid_in) begin
-            vec3 tmp_abs;
             tmp_abs.x <= fp_abs(p.x);
             tmp_abs.y <= fp_abs(p.y);
             tmp_abs.z <= fp_abs(p.z);
@@ -68,10 +46,12 @@ module sdfBoxFrame(
 
     // stage 1.b just doing : q = np.abs(p + e) - e
     vec3 tmp_q;
-    assign p_abs_stage1a = vec3_sub(tmp_abs, b);
-    assign tmp_q.x = fp_abs(p_abs_stage1a.x + e);
-    assign tmp_q.y = fp_abs(p_abs_stage1a.y + e);
-    assign tmp_q.z = fp_abs(p_abs_stage1a.z + e);
+    always_comb begin
+        p_abs_stage1a = vec3_sub(tmp_abs, b);
+        tmp_q.x = fp_abs(p_abs_stage1a.x + e);
+        tmp_q.y = fp_abs(p_abs_stage1a.y + e);
+        tmp_q.z = fp_abs(p_abs_stage1a.z + e);
+    end
 
     always_ff @(posedge clk) begin
         if (!rst) begin
@@ -94,9 +74,9 @@ module sdfBoxFrame(
             v3 <= '0;
             valid_2 <= 1'b0;
         end else if (valid_1b) begin
-            v1 <= vec3_max_zero(make_vec3(p_abs_stage1a.x, q_stage1a.y, q_stage1a.z));
-            v2 <= vec3_max_zero(make_vec3(q_stage1a.x, p_abs_stage1a.y, q_stage1a.z));
-            v3 <= vec3_max_zero(make_vec3(q_stage1a.x, q_stage1a.y, p_abs_stage1a.z));
+            v1 <= vec3_max_zero(make_vec3(p_abs_stage1b.x, q_stage1b.y, q_stage1b.z));
+            v2 <= vec3_max_zero(make_vec3(q_stage1b.x, p_abs_stage1b.y, q_stage1b.z));
+            v3 <= vec3_max_zero(make_vec3(q_stage1b.x, q_stage1b.y, p_abs_stage1b.z));
 
             valid_2 <= 1'b1;
         end else begin
@@ -140,8 +120,7 @@ module sdfBoxFrame(
     // stage 3 returning the smallest distance
     always_ff @(posedge clk) begin
         if (!rst) begin
-            min_len <= 0;
-            distance <= 0;
+            distance <= '0;
             valid_out <= 1'b0;
         end else if (valid_3) begin
             distance <= (temp_min < len3) ? temp_min : len3;
@@ -149,6 +128,6 @@ module sdfBoxFrame(
         end else begin
             valid_out <= 1'b0;
         end
-    end
+    end
 
 endmodule
