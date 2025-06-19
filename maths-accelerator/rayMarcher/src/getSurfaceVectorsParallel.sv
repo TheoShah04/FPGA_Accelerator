@@ -169,9 +169,9 @@ module getSurfaceVectorsParallel #(
             //     lightVec <= vec3_sub(lightPos, data_2.p);
             //     hit_in_3 <= data_2.hit; 
             // end
-            else begin //Box Frame: 8 clock latency
-                lightVec <= vec3_sub(lightPos, data_2.p);
-                hit_in_3 <= data_2.hit; 
+            else begin //Box Frame: 7 clock latency
+                lightVec <= vec3_sub(lightPos, data_7.p);
+                hit_in_3 <= data_7.hit; 
             end
         end 
         else begin
