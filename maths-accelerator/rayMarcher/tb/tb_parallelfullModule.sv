@@ -17,7 +17,7 @@ module tb_parallelFullModule;
   vec3 camera_up;
   vec3 ray_origin;
   vec3 light_pos;
-  logic sdf_sel;
+  logic [2:0] sdf_sel;
 
   // Outputs from DUT
   logic valid_out;

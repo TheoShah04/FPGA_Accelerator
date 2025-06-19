@@ -13,7 +13,7 @@ module fullModule #(
     input vec3 camera_forward,
     input vec3 camera_right,
     input vec3 ray_origin,
-    input logic sdf_sel,
+    input logic [2:0] sdf_sel,
     input logic ready_in,
     output logic [`COLOR_WIDTH-1:0] shade_out,
     output logic valid_out,

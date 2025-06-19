@@ -211,14 +211,14 @@ always @ (posedge out_stream_aclk) begin
 end
     //Ray Unit I/O ports
 
-    wire sdf_sel;
+    wire [2:0] sdf_sel;
     wire sof, eol;   
     wire [23:0] shade_out; 
 
     
  
     //assign sdf_sel = light_objsel_q[0];
-    assign sdf_sel = 1'b0;
+    assign sdf_sel = 3'b0;
 
 
   fullModule_parallel dut (
