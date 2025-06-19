@@ -1,92 +1,105 @@
 `timescale 1ns/1ps
 
 module tb_inv_sqrt;
-
     parameter WIDTH = 32;
-    parameter N_TEST = 6;  // how many inputs to fire in a burst
+    parameter N_TEST = 11;
 
-    logic                  clk;
-    logic                  rst;
-    logic                  valid_in;
-    logic  [WIDTH-1:0]     x;
-    logic                  valid_out;
-    logic  [WIDTH-1:0]     inv_sqrt;
+    // Basic signals
+    logic clk;
+    logic rst;
+    logic valid_in;
+    logic [WIDTH-1:0] x;
+    logic valid_out;
+    logic [WIDTH-1:0] inv_sqrt;
 
-    // Simple queue to echo back which 'x' corresponds to each output
-    logic [WIDTH-1:0]      x_queue [0:N_TEST-1];
-    integer                q_head, q_tail;
+    // Simple tracking variables - only driven in one place each
+    integer test_count;
+    integer output_count;
 
+    // DUT instance
     inv_sqrt #(.WIDTH(WIDTH)) dut (
-        .clk       (clk),
-        .rst       (rst),
-        .valid_in  (valid_in),
-        .x         (x),
-        .valid_out (valid_out),
-        .inv_sqrt  (inv_sqrt)
+        .clk(clk),
+        .rst(rst),
+        .valid_in(valid_in),
+        .x(x),
+        .valid_out(valid_out),
+        .inv_sqrt(inv_sqrt)
     );
 
     // Clock generation
     initial clk = 0;
     always #5 clk = ~clk;
 
-    // Dump waves
+    // VCD dump
     initial begin
         $dumpfile("inv_sqrt_test.vcd");
         $dumpvars(0, tb_inv_sqrt);
     end
 
-    // Print outputs as they arrive
-    always_ff @(posedge clk) begin
-        if (valid_out) begin
-            $display("Time %0t: x = %h → inv_sqrt = %h",
-                     $time, x_queue[q_head], inv_sqrt);
-            q_head = q_head + 1;
+    // Simple function to get test values
+    function logic [WIDTH-1:0] get_test_value(integer index);
+        case (index)
+            0: get_test_value = 32'h01000000;  // 1.0
+            1: get_test_value = 32'h04000000;  // 4.0
+            2: get_test_value = 32'h00400000;  // 0.25
+            3: get_test_value = 32'h00800000;  // 0.5
+            4: get_test_value = 32'h02000000;  // 2.0
+            5: get_test_value = 32'h08000000;  // 8.0
+            6: get_test_value = 32'h00200000;  // 0.125
+            7: get_test_value = 32'h01200000;  // 16.0
+            8: get_test_value = 32'h00333333;  // 0.0124
+            9: get_test_value = 32'h01400000;  // 0.078125
+            10: get_test_value = 32'h01000000;  // 1
+            default: get_test_value = 32'h01000000;
+        endcase
+    endfunction
+
+    // Convert Q8.24 to real for display
+    function real q8_24_to_real(logic [31:0] val);
+        return $itor($signed(val)) / (2.0 ** 24);
+    endfunction
+
+    // Simple output monitor - only drives output_count here
+    always @(posedge clk) begin
+        if (rst && valid_out) begin
+            $display("Time %0t: Output %0d = %h (%.6f)", 
+                     $time, output_count, inv_sqrt, q8_24_to_real(inv_sqrt));
+            output_count <= output_count + 1;
         end
     end
 
+    // Main test sequence
     initial begin
-        integer i;
-        // -------------------------------------------------------
-        // reset
-        // -------------------------------------------------------
-        rst      = 0;
+        // Initialize everything
+        rst = 0;
         valid_in = 0;
-        x        = '0;
-        q_head   = 0;
-        q_tail   = 0;
+        x = 0;
+        test_count = 0;
+        output_count = 0;
+
+        // Reset sequence
+        #20;
+        rst = 1;
         #20;
 
-        rst = 1;
-        #10;
-
-        // -------------------------------------------------------
-        // BURST: push N_TEST inputs, one per clock
-        // -------------------------------------------------------
-        for (i = 0; i < N_TEST; i = i + 1) begin
+        // Send test inputs back-to-back
+        repeat(N_TEST) begin
             @(posedge clk);
             valid_in = 1;
-            // first value fixed, the rest random
-            if (i == 0)
-                x = 32'h19000000;       // 25 in Q8.24
-            else
-                x = $urandom;
-
-            // enqueue for later print
-            x_queue[q_tail] = x;
-            q_tail = q_tail + 1;
+            x = get_test_value(test_count);
+            $display("Sending input %0d: %h (%.6f)", 
+                     test_count, x, q8_24_to_real(x));
+            test_count = test_count + 1;
         end
 
-        // drop valid_in
+        // Stop sending inputs
         @(posedge clk);
         valid_in = 0;
 
-        // -------------------------------------------------------
-        // Wait for all N_TEST outputs
-        // -------------------------------------------------------
-        repeat (N_TEST) @(posedge valid_out);
+        // Simple wait for outputs with timeout
+        repeat(50) @(posedge clk);
 
-        #20;
-        $display("All %0d results received. Done.", N_TEST);
+        #50;
         $finish;
     end
 
