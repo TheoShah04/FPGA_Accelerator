@@ -133,9 +133,9 @@ function automatic vec3 vec3_fract(input vec3 a);
 endfunction
 
 function automatic vec3 vec3_max_zero(vec3 v);
-    return '{(v.x > 0.0) ? v.x : 0.0,
-              (v.y > 0.0) ? v.y : 0.0,
-              (v.z > 0.0) ? v.z : 0.0};
+    return '{(v.x > 0.0) ? v.x : '0,
+              (v.y > 0.0) ? v.y : '0,
+              (v.z > 0.0) ? v.z : '0};
 endfunction
 
 `endif

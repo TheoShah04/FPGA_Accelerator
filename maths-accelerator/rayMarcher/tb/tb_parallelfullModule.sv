@@ -106,7 +106,7 @@ module tb_parallelFullModule;
    
     ray_origin     = make_vec3(to_fixed(0.0), to_fixed(0.0), to_fixed(3.0));
     light_pos      = make_vec3(to_fixed(3.0), to_fixed(2.0), to_fixed(5.0));
-    sdf_sel = 0; // Sphere or square
+    sdf_sel = 3'b000; // Sphere or square
 
     // Reset sequence
     #20;

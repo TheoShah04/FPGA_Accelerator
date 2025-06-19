@@ -3,7 +3,7 @@
 `include "common_defs.svh"
 
 module getSurfaceVectorsParallel #(
-    parameter fp eps = 32'h0019999a //eps = 0.05; switched from 0.001
+    parameter fp eps = 32'h00028f5c //eps = 0.001
     //parameter fp eps = 32'h00004189
 )(
     input clk,
@@ -178,8 +178,8 @@ module getSurfaceVectorsParallel #(
             end
             //infinite cube 2 clock latency: 
             else if (obj_sel == 3'b011) begin
-                lightVec <= vec3_sub(lightPos, data_3.p);
-                hit_in_3 <= data_3.hit; 
+                lightVec <= vec3_sub(lightPos, data_2.p);
+                hit_in_3 <= data_2.hit; 
             end
         end 
         else begin

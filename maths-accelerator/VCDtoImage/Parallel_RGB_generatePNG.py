@@ -7,7 +7,7 @@ clk_signal   = "tb_parallelFullModule.clk"
 valid_signal = "tb_parallelFullModule.valid_out"
 shade_signal = "tb_parallelFullModule.shade_out[23:0]"
 width, height = 640, 480
-output_image = "C:/Projects/FPGA_Accelerator/maths-accelerator/VCDtoImage/OutputImages/parallel_sphere14.png"
+output_image = "C:/Projects/FPGA_Accelerator/maths-accelerator/VCDtoImage/OutputImages/parallel_infiCube2Check.png"
 
 print("Parsing VCD…")
 vcd = VCDVCD(vcd_file,
