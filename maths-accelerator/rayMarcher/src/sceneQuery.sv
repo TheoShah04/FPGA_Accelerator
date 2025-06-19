@@ -22,7 +22,8 @@ module sceneQuery(
 
     assign valid_sphere = valid_in && (obj_sel == 3'b000);   
     assign valid_cube = valid_in && (obj_sel == 3'b001);
-    assign valid_inf_cube = valid_in && (obj_sel == 3'b010);
+    assign valid_boxframe = valid_in && (obj_sel == 3'b010);
+    assign valid_inf_cube = valid_in && (obj_sel == 3'b011);
 
     // logic [95:0] boxFrameDimensions = (1.0f, 1.0f, 1.0f);
     // logic [31:0] barThickness = 0.1f;
@@ -45,15 +46,15 @@ module sceneQuery(
         .valid_out_sphere(sdf_valid[0])
     );
 
-    // latency: 1 clock cycle
-    // sdfCube cube (
-    //     .clk(clk),
-    //     .valid_in(valid_cube),
-    //     .point(pos),
-    //     .radius(s),
-    //     .outputDistance(sdf_objects[1]),
-    //     .valid_out(sdf_valid[1])
-    // );
+    //latency: 1 clock cycle
+    sdfCube cube (
+        .clk(clk),
+        .valid_in(valid_cube),
+        .point(pos),
+        .radius(s),
+        .outputDistance(sdf_objects[1]),
+        .valid_out(sdf_valid[1])
+    );
 
     fp e = 32'h00400000;
     sdfBoxFrame boxFrame(
@@ -61,9 +62,9 @@ module sceneQuery(
         .rst(rst),
         .p(pos),       // input point vector
         .e(e),       // edge thickness (float)
-        .valid_in(valid_cube),
-        .distance(sdf_objects[1]),
-        .valid_out(sdf_valid[1])
+        .valid_in(valid_boxframe),
+        .distance(sdf_objects[2]),
+        .valid_out(sdf_valid[2])
 );
 
     // latency: 2 clock cycles
@@ -72,8 +73,8 @@ module sceneQuery(
         .valid_in(valid_inf_cube),
         .point(pos),
         .radius(s),
-        .outputDistance(sdf_objects[2]),
-        .valid_out(sdf_valid[2])
+        .outputDistance(sdf_objects[3]),
+        .valid_out(sdf_valid[3])
     );
 
     // latency: ? clock cycles

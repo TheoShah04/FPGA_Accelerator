@@ -8,7 +8,7 @@ module getSurfaceVectorsParallel #(
 )(
     input clk,
     input rst,
-    input logic obj_sel,
+    input logic [2:0] obj_sel,
     input logic valid_in,
     input vec3 p,
     input vec3 lightPos,
@@ -161,17 +161,25 @@ module getSurfaceVectorsParallel #(
             normalVec <= vec3_add(vec3_add(a, b), vec3_add(c, d));
             normalVec_valid <= 1'b1;
             lightVec_valid <= 1'b1;
-            if(!obj_sel) begin //Sphere: 7 clock latency
+            //Sphere: 6 clock latency
+            if(obj_sel == 3'b000) begin 
                 lightVec <= vec3_sub(lightPos, data_7.p);
                 hit_in_3 <= data_7.hit;
             end
-            // else begin //Cube: 1 clock latency
-            //     lightVec <= vec3_sub(lightPos, data_2.p);
-            //     hit_in_3 <= data_2.hit; 
-            // end
-            else begin //Box Frame: 7 clock latency
+            //Cube: 1 clock latency
+            else if (obj_sel == 3'b001) begin    
+                lightVec <= vec3_sub(lightPos, data_2.p);
+                hit_in_3 <= data_2.hit; 
+            end
+            //Box Frame: 6 clock latency
+            else if (obj_sel == 3'b010) begin
                 lightVec <= vec3_sub(lightPos, data_7.p);
                 hit_in_3 <= data_7.hit; 
+            end
+            //infinite cube 2 clock latency: 
+            else if (obj_sel == 3'b011) begin
+                lightVec <= vec3_sub(lightPos, data_3.p);
+                hit_in_3 <= data_3.hit; 
             end
         end 
         else begin
