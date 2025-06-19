@@ -233,7 +233,7 @@ end
 
     //Ray Unit I/O ports
 
-    logic sdf_sel;
+    logic [2:0] sdf_sel;
     logic valid_out;
     logic sof, eol;   
     logic [23:0] shade_out; 
@@ -241,7 +241,7 @@ end
     
  
     //assign sdf_sel = light_objsel_q[0];
-    assign sdf_sel = 1'b0;
+    assign sdf_sel = 3'b0;
     
     
         

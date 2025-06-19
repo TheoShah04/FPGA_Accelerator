@@ -24,5 +24,5 @@ the FPGA to parse the incoming data and apply the updated parameters in hardware
 
 ### Results
 
-![Sphere](doc/sphere_shaded.png)
-![Lattice of Cubes](doc/InfSquare.png)
+![Sphere](maths-accelerator/doc/sphere_shaded.png)
+![Lattice of Cubes](maths-accelerator/doc/InfSquare.png)
