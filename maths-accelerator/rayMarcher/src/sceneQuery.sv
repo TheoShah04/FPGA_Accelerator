@@ -6,13 +6,13 @@ module sceneQuery(
     input logic rst,
     input logic valid_in,
     input vec3 pos,
-    input logic obj_sel,
+    input logic [2:0] obj_sel,
     output fp closestDistance,
     output logic valid_out
 );
 
-    fp sdf_objects [2]; // [0] is sphere [1] is cube
-    logic sdf_valid [2];
+    fp sdf_objects [8]; // [0] is sphere [1] is cube
+    logic sdf_valid [8];
 
     assign closestDistance = sdf_objects[obj_sel];
     assign valid_out = sdf_valid[obj_sel];
@@ -20,8 +20,8 @@ module sceneQuery(
     logic valid_sphere;    
     logic valid_cube; 
 
-    assign valid_sphere = valid_in && (obj_sel == 1'b0);   
-    assign valid_cube = valid_in && (obj_sel == 1'b1);
+    assign valid_sphere = valid_in && (obj_sel == 3'b000);   
+    assign valid_cube = valid_in && (obj_sel == 3'b001);
 
     // logic [95:0] boxFrameDimensions = (1.0f, 1.0f, 1.0f);
     // logic [31:0] barThickness = 0.1f;

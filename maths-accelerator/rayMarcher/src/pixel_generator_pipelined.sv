@@ -228,7 +228,7 @@ buffer_manager buffer (
     .rst(rst),
     .camera_forward(camera_forward),
     .ray_origin(camera_pos),
-    .sdf_sel(1'b1),
+    .sdf_sel(3'b001),
     .surface_point_out(surface_point),
     .hit_out(hit),
     .pixel_valid_out(pixel_buffer_valid)

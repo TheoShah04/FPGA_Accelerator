@@ -12,7 +12,7 @@ module buffer_manager #(
     input vec3 camera_right,
     input vec3 camera_up,
     input vec3 ray_origin,
-    input logic sdf_sel,
+    input logic [2:0] sdf_sel,
 
     output vec3 surface_point_out,
     output logic hit_out,

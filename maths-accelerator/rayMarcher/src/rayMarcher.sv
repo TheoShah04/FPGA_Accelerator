@@ -12,7 +12,7 @@ module rayMarcher #(
     input logic valid_in, //signal to start new raymarch process
     input vec3 rayOrigin,
     input vec3 rayDir,
-    input logic obj_sel,
+    input logic [2:0] obj_sel,
     output vec3 point, //the 3d coordinate of the end of the ray
     output logic valid_out, //signal to send to higher module that raymarch process is done
     output logic hit
