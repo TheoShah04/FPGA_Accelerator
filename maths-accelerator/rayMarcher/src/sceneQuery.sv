@@ -22,6 +22,7 @@ module sceneQuery(
 
     assign valid_sphere = valid_in && (obj_sel == 3'b000);   
     assign valid_cube = valid_in && (obj_sel == 3'b001);
+    assign valid_inf_cube = valid_in && (obj_sel == 3'b010);
 
     // logic [95:0] boxFrameDimensions = (1.0f, 1.0f, 1.0f);
     // logic [31:0] barThickness = 0.1f;
@@ -66,14 +67,14 @@ module sceneQuery(
 );
 
     // latency: 2 clock cycles
-    // sdfInfiniteCube InfiniteCube (
-    //     .clk(clk),
-    //     .valid_in(valid_cube),
-    //     .point(pos),
-    //     .radius(s),
-    //     .outputDistance(sdf_objects[1]),
-    //     .valid_out(sdf_valid[1])
-    // );
+    sdfInfiniteCube InfiniteCube (
+        .clk(clk),
+        .valid_in(valid_inf_cube),
+        .point(pos),
+        .radius(s),
+        .outputDistance(sdf_objects[2]),
+        .valid_out(sdf_valid[2])
+    );
 
     // latency: ? clock cycles
     // sdfMengerCube #(3) menger_inst (
